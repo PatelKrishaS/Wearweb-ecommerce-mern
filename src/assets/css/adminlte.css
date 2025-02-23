@@ -12987,7 +12987,21 @@ textarea.form-control-lg {
   min-width: var(--lte-sidebar-width);
   max-width: var(--lte-sidebar-width);
   transition: min-width 0.3s ease-in-out, max-width 0.3s ease-in-out, margin-left 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+  height: 100vh;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Hide horizontal scrolling */
+  scrollbar-width: thin; /* For Firefox */
 }
+
+.app-sidebar::-webkit-scrollbar {
+  width: 6px; /* For Chrome, Safari */
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+  background-color: #6c757d; /* Customize scrollbar color */
+  border-radius: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-sidebar {
     transition: none;
@@ -12996,6 +13010,9 @@ textarea.form-control-lg {
 
 .sidebar-brand {
   display: flex;
+  position: sticky;
+  top: 0px;
+  z-index: 1020;
   align-items: center;
   justify-content: center;
   height: 3.5rem;
@@ -13006,6 +13023,9 @@ textarea.form-control-lg {
   border-bottom: 1px solid var(--bs-border-color);
   transition: width 0.3s ease-in-out;
 }
+
+
+
 @media (prefers-reduced-motion: reduce) {
   .sidebar-brand {
     transition: none;
@@ -13180,6 +13200,9 @@ textarea.form-control-lg {
   padding: 0;
   list-style: none;
 }
+
+
+
 .nav-indent .sidebar-menu .nav-treeview {
   padding-left: 0.5rem;
 }
@@ -15375,5 +15398,13 @@ html.maximized-card {
 .img-size-32 {
   width: 32px;
 }
+
+.sidebar-content {
+ 
+  overflow-y: auto; /* Enable scrolling */
+  max-height: calc(100vh - 60px); /* Prevents content from being hidden */
+}
+
+
 
 /*# sourceMappingURL=adminlte.css.map */

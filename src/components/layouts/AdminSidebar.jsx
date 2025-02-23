@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { UserNavbar } from './UserNavbar'
-import { Outlet } from 'react-router-dom'
+import React, { useState } from 'react';
+import { AdminNavbar } from './AdminNavbar';
+import { Outlet } from 'react-router-dom';
 import WWLogo from "../../assets/WW-logo.png"
 
-export const UserSidebar = () => {
+
+export const AdminSidebar = () => {
   const [openMenus, setOpenMenus] = useState({});
 
   // Toggle function for submenus
@@ -16,26 +17,15 @@ export const UserSidebar = () => {
   ));
   };
 
-  // const toggleMenu = (menuId) => {
-  //   setOpenMenus((prev) => {
-  //     const newState = {
-  //       ...prev,
-  //       [menuId]: !prev[menuId], // Toggle the clicked menu
-  //     };
-  //     console.log('Updated State:', newState); // Debugging log
-  //     return newState;
-  //   });
-  // };
-  
 
   return (
     <>
-      <UserNavbar/>
-      <aside className="app-sidebar bg-body-secondary  shadow" data-bs-theme="dark">
+      <AdminNavbar />
+      <aside className="app-sidebar bg-body-secondary shadow"  data-bs-theme="dark">
         <div className="sidebar-brand" style={{height:'80px'}}>
           <a href="./index.html" className="brand-link">
             <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='73px'/>
-            <span className="brand-text fw-light">USER</span>
+            <span className="brand-text fw-light">ADMIN</span>
           </a>
         </div>
 
@@ -48,7 +38,7 @@ export const UserSidebar = () => {
                 <a href="#" className="nav-link" onClick={() => toggleMenu('platform')}>
                   <i className="nav-icon bi bi-speedometer"></i>
                   <p>
-                  Account
+                    Platform Management
                     <i className={`nav-arrow bi ${openMenus.platform ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
@@ -56,25 +46,31 @@ export const UserSidebar = () => {
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Orders</p>
+                      <p>Dashboard</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Wishlist</p>
+                      <p>User Management</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Addresses</p>
+                      <p>Seller Approvals</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Payment Methods</p>
+                      <p>Product Moderation</p>
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="./index2.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Category Management</p>
                     </a>
                   </li>
                 </ul>
@@ -85,7 +81,7 @@ export const UserSidebar = () => {
                 <a href="#" className="nav-link" onClick={() => toggleMenu('analytics')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
-                  Shopping
+                    Analytics
                     <i className={`nav-arrow bi ${openMenus.analytics ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
@@ -93,19 +89,19 @@ export const UserSidebar = () => {
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Recently Viewed</p>
+                      <p>Sales Trends</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Recommended For You</p>
+                      <p>User Activity</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Deals & Offers</p>
+                      <p>Inventory Reports</p>
                     </a>
                   </li>
                 </ul>
@@ -114,7 +110,7 @@ export const UserSidebar = () => {
                 <a href="#" className="nav-link" onClick={() => toggleMenu('system')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
-                    Support
+                    System Settings
                     <i className={`nav-arrow bi ${openMenus.system ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
@@ -122,19 +118,19 @@ export const UserSidebar = () => {
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Help Center</p>
+                      <p>Site Configuration</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Contact Us</p>
+                      <p>Payment Gateways</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Return Policy</p>
+                      <p>API Keys</p>
                     </a>
                   </li>
                 </ul>
@@ -143,7 +139,7 @@ export const UserSidebar = () => {
                 <a href="#" className="nav-link" onClick={() => toggleMenu('support')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
-                    Settings
+                    Support
                     <i className={`nav-arrow bi ${openMenus.support ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
@@ -151,19 +147,13 @@ export const UserSidebar = () => {
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Profile Settings</p>
+                      <p>Dispute Resolution</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Change Password</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="./index.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Notification Preferences</p>
+                      <p>Help Center</p>
                     </a>
                   </li>
                 </ul>

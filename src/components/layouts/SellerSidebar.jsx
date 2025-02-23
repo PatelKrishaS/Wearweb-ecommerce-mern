@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { UserNavbar } from './UserNavbar'
+import { SellerNavbar } from './SellerNavbar'
 import { Outlet } from 'react-router-dom'
 import WWLogo from "../../assets/WW-logo.png"
 
-export const UserSidebar = () => {
+export const SellerSidebar = () => {
   const [openMenus, setOpenMenus] = useState({});
 
   // Toggle function for submenus
@@ -16,26 +16,15 @@ export const UserSidebar = () => {
   ));
   };
 
-  // const toggleMenu = (menuId) => {
-  //   setOpenMenus((prev) => {
-  //     const newState = {
-  //       ...prev,
-  //       [menuId]: !prev[menuId], // Toggle the clicked menu
-  //     };
-  //     console.log('Updated State:', newState); // Debugging log
-  //     return newState;
-  //   });
-  // };
-  
 
   return (
     <>
-      <UserNavbar/>
+      <SellerNavbar/>
       <aside className="app-sidebar bg-body-secondary  shadow" data-bs-theme="dark">
         <div className="sidebar-brand" style={{height:'80px'}}>
           <a href="./index.html" className="brand-link">
             <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='73px'/>
-            <span className="brand-text fw-light">USER</span>
+            <span className="brand-text fw-light">SELLER</span>
           </a>
         </div>
 
@@ -43,49 +32,43 @@ export const UserSidebar = () => {
           <nav className="mt-2">
             <ul className="nav sidebar-menu flex-column" role="menu">
               
-              {/* Platform Management */}
-              <li className={`nav-item ${openMenus.platform ? 'menu-open' : ''}`}>
-                <a href="#" className="nav-link" onClick={() => toggleMenu('platform')}>
+              {/* Store Management */}
+              <li className={`nav-item ${openMenus.store ? 'menu-open' : ''}`}>
+                <a href="#" className="nav-link" onClick={() => toggleMenu('store')}>
                   <i className="nav-icon bi bi-speedometer"></i>
                   <p>
-                  Account
-                    <i className={`nav-arrow bi ${openMenus.platform ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
+                  Store Management
+                    <i className={`nav-arrow bi ${openMenus.store ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
-                <ul id="platform-menu" className={`nav nav-treeview collapse ${openMenus.platform ? 'show' : ''}`}>
+                <ul id="store-menu" className={`nav nav-treeview collapse ${openMenus.store ? 'show' : ''}`}>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Orders</p>
+                      <p>Product Listings</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Wishlist</p>
+                      <p>Inventory Management</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Addresses</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="./index2.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Payment Methods</p>
+                      <p>Order Fulfillment</p>
                     </a>
                   </li>
                 </ul>
               </li>
 
-              {/* Analytics */}
+              {/*Sale and Analytics */}
               <li className={`nav-item ${openMenus.analytics ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('analytics')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
-                  Shopping
+                  Sales & Analytics
                     <i className={`nav-arrow bi ${openMenus.analytics ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
@@ -93,48 +76,74 @@ export const UserSidebar = () => {
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Recently Viewed</p>
+                      <p>Sales Reports</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Recommended For You</p>
+                      <p>Customer Insights</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Deals & Offers</p>
+                      <p>Revenue Trends</p>
                     </a>
                   </li>
                 </ul>
               </li>
-              <li className={`nav-item ${openMenus.system ? 'menu-open' : ''}`}>
-                <a href="#" className="nav-link" onClick={() => toggleMenu('system')}>
+              <li className={`nav-item ${openMenus.marketing ? 'menu-open' : ''}`}>
+                <a href="#" className="nav-link" onClick={() => toggleMenu('marketing')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
-                    Support
-                    <i className={`nav-arrow bi ${openMenus.system ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
+                  Marketing
+                    <i className={`nav-arrow bi ${openMenus.marketing ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
-                <ul id="system-menu" className={`nav nav-treeview collapse ${openMenus.system ? 'show' : ''}`}>
+                <ul id="marketing-menu" className={`nav nav-treeview collapse ${openMenus.marketing ? 'show' : ''}`}>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Help Center</p>
+                      <p>Promotions/Coupons</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Contact Us</p>
+                      <p>Ads Manager</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li className={`nav-item ${openMenus.settings ? 'menu-open' : ''}`}>
+                <a href="#" className="nav-link" onClick={() => toggleMenu('settings')}>
+                  {/* <i className="nav-icon bi bi-graph-up"></i> */}
+                  {/* <i class="fa-regular fa-gear"></i> */}
+                  <i className="fas fa-cog"></i>
+
+                  <p>
+                    Settings
+                    <i className={`nav-arrow bi ${openMenus.settings ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
+                  </p>
+                </a>
+                <ul id="settings-menu" className={`nav nav-treeview collapse ${openMenus.settings ? 'show' : ''}`}>
+                  <li className="nav-item">
+                    <a href="./index.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Store Profile</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Return Policy</p>
+                      <p>GST/Bank Details </p>
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a href="./index.html" className="nav-link">
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>Shipping Policies</p>
                     </a>
                   </li>
                 </ul>
@@ -143,7 +152,7 @@ export const UserSidebar = () => {
                 <a href="#" className="nav-link" onClick={() => toggleMenu('support')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
-                    Settings
+                  Support
                     <i className={`nav-arrow bi ${openMenus.support ? 'bi-chevron-down' : 'bi-chevron-right'}`}></i>
                   </p>
                 </a>
@@ -151,19 +160,13 @@ export const UserSidebar = () => {
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Profile Settings</p>
+                      <p>Seller Help Center</p>
                     </a>
                   </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Change Password</p>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="./index.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Notification Preferences</p>
+                      <p>Contact Support</p>
                     </a>
                   </li>
                 </ul>
