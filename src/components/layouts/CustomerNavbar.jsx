@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const UserNavbar = () => {
+export const CustomerNavbar = () => {
   return (
     <nav className="app-header navbar navbar-expand bg-body">
     {/*begin::Container*/}

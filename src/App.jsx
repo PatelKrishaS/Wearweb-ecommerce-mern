@@ -1,16 +1,12 @@
 import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
-import { UserNavbar } from './components/layouts/UserNavbar'
 // import './App.css'
 import './assets/css/adminlte.css'
 import './assets/css/adminlte.min.css'
-import { UserSidebar } from './components/layouts/UserSidebar'
 import { Route, Routes } from 'react-router-dom'
 import { Login } from './components/common/Login'
 import { Signup } from './components/common/Signup'
-import { UserDashboard } from './components/user/UserDashboard'
-import { UserProfile } from './components/user/UserProfile'
 import { AdminSidebar } from './components/layouts/AdminSidebar'
 import { AdminDashboard } from './components/admin/AdminDashboard'
 import { AdminProfile } from './components/admin/AdminProfile'
@@ -18,6 +14,10 @@ import { SellerSidebar } from './components/layouts/SellerSidebar'
 import { SellerDashboard } from './components/seller/SellerDashboard'
 import { SellerProfile } from './components/seller/SellerProfile'
 import { ProductListing } from './components/common/ProductListing'
+import { CustomerProfile } from './components/customer/CustomerProfile'
+import { CustomerDashboard } from './components/customer/CustomerDashboard'
+import { CustomerSidebar } from './components/layouts/CustomerSidebar'
+import { CustomerNavbar } from './components/layouts/CustomerNavbar'
 
 
 function App() {
@@ -27,9 +27,9 @@ function App() {
      <body className='layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded sidebar-open' >
       <div className='app-wrapper'>
         <Routes>
-          <Route path='/user' element={<UserSidebar/>}>
-            <Route path='dashboard' element= {<UserDashboard/>}></Route>
-            <Route path='profile' element= {<UserProfile/>}></Route>
+          <Route path='/customer' element={<CustomerSidebar/>}>
+            <Route path='profile' element= {<CustomerProfile/>}></Route>
+            <Route path='dashboard' element= {<CustomerDashboard/>}></Route>
           </Route>
           <Route path='/admin' element={<AdminSidebar/>}>
             <Route path='dashboard' element= {<AdminDashboard/>}></Route>

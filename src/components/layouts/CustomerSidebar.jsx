@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { UserNavbar } from './UserNavbar'
 import { Outlet } from 'react-router-dom'
 import WWLogo from "../../assets/WW-logo.png"
+import { CustomerNavbar } from './CustomerNavbar';
 
-export const UserSidebar = () => {
+export const CustomerSidebar = () => {
   const [openMenus, setOpenMenus] = useState({});
 
   // Toggle function for submenus
@@ -30,7 +30,7 @@ export const UserSidebar = () => {
 
   return (
     <>
-      <UserNavbar/>
+      <CustomerNavbar/>
       <aside className="app-sidebar bg-body-secondary  shadow" data-bs-theme="dark">
         <div className="sidebar-brand" style={{height:'80px'}}>
           <a href="./index.html" className="brand-link">
