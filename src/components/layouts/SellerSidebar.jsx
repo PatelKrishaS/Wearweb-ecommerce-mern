@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { SellerNavbar } from './SellerNavbar'
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import WWLogo from "../../assets/WW-logo.png"
 
 export const SellerSidebar = () => {
@@ -43,10 +43,10 @@ export const SellerSidebar = () => {
                 </a>
                 <ul id="store-menu" className={`nav nav-treeview collapse ${openMenus.store ? 'show' : ''}`}>
                   <li className="nav-item">
-                    <a href="./index.html" className="nav-link">
+                  <Link to="/seller/store-management/product-listing" className="nav-link"> {/* Use Link */}
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Product Listings</p>
-                    </a>
+                    </Link>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">

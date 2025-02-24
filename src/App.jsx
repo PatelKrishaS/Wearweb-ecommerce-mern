@@ -17,6 +17,7 @@ import { AdminProfile } from './components/admin/AdminProfile'
 import { SellerSidebar } from './components/layouts/SellerSidebar'
 import { SellerDashboard } from './components/seller/SellerDashboard'
 import { SellerProfile } from './components/seller/SellerProfile'
+import { ProductListing } from './components/common/ProductListing'
 
 
 function App() {
@@ -37,6 +38,11 @@ function App() {
           <Route path='/seller' element={<SellerSidebar/>}>
           <Route path='dashboard' element= {<SellerDashboard/>}></Route>
           <Route path='profile' element= {<SellerProfile/>}></Route>
+            <Route path="store-management">
+              <Route path="product-listing" element={<ProductListing />} />
+              {/* <Route path="inventory-management" element={<InventoryManagement />} />
+              <Route path="order-fulfillment" element={<OrderFulfillment />} /> */}
+            </Route>
           </Route>
           <Route path='/login' element={<Login/>}></Route>
           <Route path='/signup' element={<Signup/>}></Route>
