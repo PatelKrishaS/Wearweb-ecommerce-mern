@@ -1,0 +1,26 @@
+.nav> li p{
+    color: #27445D;
+}
+
+.nav-icon {
+    color: #143D60 !important; /* Change to your desired color */
+  }
+
+  .app-sidebar shadow{
+    background-color: salmon   !important;
+  }
+  
+  .fas.fa-cog {
+    color: #143D60 !important; /* Change to any color */
+  }
+
+.bg-body{
+    border-bottom: 1px solid rgb(180, 179, 179) !important;
+  
+}
+
+form>button> .btn,.btn-outline-primary{
+width: 33px !important;
+padding: 6px 5px 6px 5px !important;
+
+}
