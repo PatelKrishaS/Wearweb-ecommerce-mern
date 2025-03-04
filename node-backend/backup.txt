@@ -1,0 +1,93 @@
+app.js
+console.log("Hello");
+var user = require("./user")
+console.log(user);
+console.log(user.userName);
+console.log(user.userAge);
+user.printUserData(100)
+
+user.js
+console.log("user file loaded...");
+
+var userName = "Ram"
+var userAge = 20;
+
+const printUserData = (a) => {
+    console.log("printUserData called from user.js file...", a);
+    
+}
+//exports
+// module.exports = userName;
+// module.exports = userAge;
+
+module.exports = {
+    userName, userAge, printUserData
+}
+
+
+
+app.js
+//https://node5.onrender.com/user/user : domain + endpoints
+
+//http://localhost:3000/test
+app.get("/test",(req, res) => {
+    console.log("test api called...");
+    res.send("hello test api called...")
+    
+})
+
+// http://localhost:3000/users
+app.get("/users", (req, res) => {
+    res.json({
+        message: "Users API called...",
+        data: [
+            {
+                id: 1,
+                name: "Ram Sharma",
+                email: "ram.sharma@example.com",
+                status: "Active"
+            },
+            {
+                id: 2,
+                name: "Shyam Verma",
+                email: "shyam.verma@example.com",
+                status: "Inactive"
+            },
+            {
+                id: 3,
+                name: "Seeta Joshi",
+                email: "seeta.joshi@example.com",
+                status: "Active"
+            }
+        ]
+    });
+});
+
+
+
+// http://localhost:3000/employees
+app.get("/employees", (req, res) => {
+    res.json({
+        message: "Employees API called...",
+        data: [
+            {
+                id: 1,
+                name: "Raghav Nanda",
+                position: "Software Engineer",
+                department: "IT"
+            },
+            {
+                id: 2,
+                name: "Raj Shamani",
+                position: "Project Manager",
+                department: "Management"
+            },
+            {
+                id: 3,
+                name: "Riya Verma",
+                position: "HR Specialist",
+                department: "Human Resources"
+            }
+        ]
+    });
+});
