@@ -1,9 +1,20 @@
-const routes = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const userAddressController = require("../controllers/UserAddressController");
 
-routes.get("/user-addresses", userAddressController.getAllUserAddresses);
-routes.post("/user-address", userAddressController.addUserAddress);
-routes.delete("/user-address/:id", userAddressController.deleteUserAddressById);
-routes.get("/user-address/:id", userAddressController.getUserAddressById);
+// Add a new address
+router.post("/add", userAddressController.addUserAddress);
 
-module.exports = routes;
+// Get all addresses for a user
+router.get("/user/:userId", userAddressController.getUserAddresses);
+
+// Get all user addresses (for all users)
+router.get("/all", userAddressController.getAllUserAddresses);
+
+// Update an address
+router.put("/update/:id", userAddressController.updateUserAddress);
+
+// Delete an address
+router.delete("/delete/:id", userAddressController.deleteUserAddress);
+
+module.exports = router;

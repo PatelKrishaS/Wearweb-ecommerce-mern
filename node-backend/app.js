@@ -32,6 +32,9 @@ app.use("/category",categoryRoutes)
 const subcategoryRoutes = require("./src/routes/SubCategoryRoutes")
 app.use("/subcategory",subcategoryRoutes) 
 
+const areaRoutes = require("./src/routes/AreaRoutes")
+app.use("/area",areaRoutes) 
+
 mongoose.connect("mongodb://localhost:27017/MyDatabase").then(()=>{
     console.log("database connected....")
 })

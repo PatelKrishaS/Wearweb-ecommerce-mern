@@ -1,8 +1,8 @@
-const State = require("../models/StateModel");
+const stateModel = require("../models/StateModel");
 
 const addState = async (req, res) => {
   try {
-    const savedState = await State.create(req.body);
+    const savedState = await stateModel.create(req.body);
     res.status(201).json({
       message: "State added successfully",
       data: savedState,
@@ -14,7 +14,7 @@ const addState = async (req, res) => {
 
 const getAllStates = async (req, res) => {
   try {
-    const states = await State.find();
+    const states = await stateModel.find();
     res.status(200).json({
       message: "All states fetched successfully",
       data: states,
@@ -26,7 +26,7 @@ const getAllStates = async (req, res) => {
 
 const getStateById = async (req, res) => {
   try {
-    const state = await State.findById(req.params.id);
+    const state = await stateModel.findById(req.params.id);
     if (!state) {
       return res.status(404).json({ message: "State not found" });
     }
@@ -41,7 +41,7 @@ const getStateById = async (req, res) => {
 
 const deleteStateById = async (req, res) => {
   try {
-    const deletedState = await State.findByIdAndDelete(req.params.id);
+    const deletedState = await stateModel.findByIdAndDelete(req.params.id);
     if (!deletedState) {
       return res.status(404).json({ message: "State not found" });
     }

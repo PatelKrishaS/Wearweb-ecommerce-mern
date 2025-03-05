@@ -1,102 +1,70 @@
-// components/CustomerAddressPage.js
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-export const CustomerAddressPage = ({ userId }) => {
+const AddressPage = ({ userId }) => {
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [areas, setAreas] = useState([]);
-
   const [formData, setFormData] = useState({
+    title: "",
+    unitName: "",
     street: "",
+    landMark: "",
     cityId: "",
     stateId: "",
-    areaId: "",
-    pincode: "",
-    country: "India", // Default country
-    isDefault: false,
+    addressDetail: "",
+    zipCode: "",
   });
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
   // Fetch all states
   const fetchStates = async () => {
-    try {
-      const res = await axios.get("/state/getallstates");
-      setStates(res.data.data);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await axios.get("/state/getallstates");
+    setStates(res.data.data);
   };
 
   // Fetch cities by state ID
   const fetchCitiesByState = async (stateId) => {
-    try {
-      const res = await axios.get(`/city/getcitybystate/${stateId}`);
-      setCities(res.data.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Fetch areas by city ID
-  const fetchAreasByCity = async (cityId) => {
-    try {
-      const res = await axios.get(`/area/getareabycity/${cityId}`);
-      setAreas(res.data.data);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await axios.get(`/city/getcitybystate/${stateId}`);
+    setCities(res.data.data);
   };
 
   // Fetch addresses for the user
   const fetchAddresses = async () => {
-    try {
-      const res = await axios.get(`/address/user/${userId}`);
-      setAddresses(res.data.data);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await axios.get(`/user-address/user/${userId}`);
+    setAddresses(res.data.data);
   };
 
   // Handle form input changes
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   // Handle state dropdown change
   const handleStateChange = async (e) => {
     const stateId = e.target.value;
-    setFormData({ ...formData, stateId, cityId: "", areaId: "" }); // Reset city and area
+    setFormData({ ...formData, stateId, cityId: "" }); // Reset cityId
     await fetchCitiesByState(stateId);
-  };
-
-  // Handle city dropdown change
-  const handleCityChange = async (e) => {
-    const cityId = e.target.value;
-    setFormData({ ...formData, cityId, areaId: "" }); // Reset area
-    await fetchAreasByCity(cityId);
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/address/add", { ...formData, userId });
+      const res = await axios.post("/user-address/add", { ...formData, userId });
       alert("Address added successfully!");
       setShowForm(false); // Hide the form
       setFormData({ // Reset form data
+        title: "",
+        unitName: "",
         street: "",
+        landMark: "",
         cityId: "",
         stateId: "",
-        areaId: "",
-        pincode: "",
-        country: "India",
-        isDefault: false,
+        addressDetail: "",
+        zipCode: "",
       });
       fetchAddresses(); // Refresh the address list
     } catch (err) {
@@ -127,6 +95,31 @@ export const CustomerAddressPage = ({ userId }) => {
             <h5 className="card-title">Add New Address</h5>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
+                <label>Title</label>
+                <select
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                >
+                  <option value="">Select Title</option>
+                  <option value="Home">Home</option>
+                  <option value="Office">Office</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Unit Name</label>
+                <input
+                  type="text"
+                  name="unitName"
+                  value={formData.unitName}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
                 <label>Street</label>
                 <input
                   type="text"
@@ -137,8 +130,16 @@ export const CustomerAddressPage = ({ userId }) => {
                   required
                 />
               </div>
-
-              {/* State Dropdown */}
+              <div className="form-group">
+                <label>Landmark</label>
+                <input
+                  type="text"
+                  name="landMark"
+                  value={formData.landMark}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
               <div className="form-group">
                 <label>State</label>
                 <select
@@ -156,14 +157,12 @@ export const CustomerAddressPage = ({ userId }) => {
                   ))}
                 </select>
               </div>
-
-              {/* City Dropdown */}
               <div className="form-group">
                 <label>City</label>
                 <select
                   name="cityId"
                   value={formData.cityId}
-                  onChange={handleCityChange}
+                  onChange={handleChange}
                   className="form-control"
                   required
                   disabled={!formData.stateId}
@@ -176,58 +175,26 @@ export const CustomerAddressPage = ({ userId }) => {
                   ))}
                 </select>
               </div>
-
-              {/* Area Dropdown */}
               <div className="form-group">
-                <label>Area</label>
-                <select
-                  name="areaId"
-                  value={formData.areaId}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                  disabled={!formData.cityId}
-                >
-                  <option value="">Select Area</option>
-                  {areas.map((area) => (
-                    <option key={area._id} value={area._id}>
-                      {area.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Pincode</label>
+                <label>Address Detail</label>
                 <input
                   type="text"
-                  name="pincode"
-                  value={formData.pincode}
+                  name="addressDetail"
+                  value={formData.addressDetail}
                   onChange={handleChange}
                   className="form-control"
-                  required
                 />
               </div>
               <div className="form-group">
-                <label>Country</label>
+                <label>Zip Code</label>
                 <input
                   type="text"
-                  name="country"
-                  value={formData.country}
+                  name="zipCode"
+                  value={formData.zipCode}
                   onChange={handleChange}
                   className="form-control"
                   required
                 />
-              </div>
-              <div className="form-group form-check">
-                <input
-                  type="checkbox"
-                  name="isDefault"
-                  checked={formData.isDefault}
-                  onChange={handleChange}
-                  className="form-check-input"
-                />
-                <label className="form-check-label">Set as Default</label>
               </div>
               <button type="submit" className="btn btn-success">
                 Save Address
@@ -237,19 +204,20 @@ export const CustomerAddressPage = ({ userId }) => {
         </div>
       )}
 
-      {/* Display Addresses in Cards */}
+      {/* Display Addresses */}
       <div className="row">
         {addresses.map((address) => (
           <div key={address._id} className="col-md-4 mb-4">
             <div className="card">
               <div className="card-body">
-                <h5 className="card-title">{address.street}</h5>
+                <h5 className="card-title">{address.title}</h5>
                 <p className="card-text">
-                  {address.city}, {address.state}, {address.country} - {address.pincode}
+                  {address.unitName}, {address.street}, {address.landMark}
                 </p>
-                {address.isDefault && (
-                  <span className="badge badge-success">Default</span>
-                )}
+                <p className="card-text">
+                  {address.cityId?.name}, {address.stateId?.name}, {address.zipCode}
+                </p>
+                <p className="card-text">{address.addressDetail}</p>
               </div>
             </div>
           </div>
@@ -259,3 +227,4 @@ export const CustomerAddressPage = ({ userId }) => {
   );
 };
 
+export default AddressPage;
