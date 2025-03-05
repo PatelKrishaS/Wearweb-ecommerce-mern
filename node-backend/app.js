@@ -15,7 +15,22 @@ app.use(roleRoutes)
 const userRoutes = require("./src/routes/UserRoutes")
 app.use(userRoutes)
 
+const stateRoutes = require("./src/routes/StateRoutes")
+app.use("/state", stateRoutes)
+//Instead of     http://localhost:3000/addState   should use: 
+//http://localhost:3000/state/addState
 
+const cityRoutes = require("./src/routes/CityRoutes")
+app.use("/city",cityRoutes) //http://localhost:3000/city/addCity
+
+const userAddressRoutes = require("./src/routes/UserAddressRoutes")
+app.use("/user-address",userAddressRoutes) //http://localhost:3000/city/addUserAddress
+
+const categoryRoutes = require("./src/routes/CategoryRoutes")
+app.use("/category",categoryRoutes) 
+
+const subcategoryRoutes = require("./src/routes/SubCategoryRoutes")
+app.use("/subcategory",subcategoryRoutes) 
 
 mongoose.connect("mongodb://localhost:27017/MyDatabase").then(()=>{
     console.log("database connected....")

@@ -19,6 +19,7 @@ import { CustomerSidebar } from './components/layouts/CustomerSidebar'
 import { CustomerNavbar } from './components/layouts/CustomerNavbar'
 import axios from 'axios'
 import { ProductListing } from './components/seller/ProductListing'
+import { CustomerAddressPage } from './components/customer/CustomerAddressPage'
 
 
 function App() {
@@ -44,14 +45,18 @@ function App() {
           <Route path='/customer' element={<CustomerSidebar/>}>
             <Route path='profile' element= {<CustomerProfile/>}></Route>
             <Route path='dashboard' element= {<CustomerDashboard/>}></Route>
+            <Route path='account'>
+              <Route path='my-profile' element={<CustomerProfile/>} /> 
+              <Route path='addresses' element={<CustomerAddressPage/>} /> 
+            </Route>
           </Route>
           <Route path='/admin' element={<AdminSidebar/>}>
             <Route path='dashboard' element= {<AdminDashboard/>}></Route>
             <Route path='profile' element= {<AdminProfile/>}></Route>
           </Route>
           <Route path='/seller' element={<SellerSidebar/>}>
-          <Route path='dashboard' element= {<SellerDashboard/>}></Route>
-          <Route path='profile' element= {<SellerProfile/>}></Route>
+            <Route path='dashboard' element= {<SellerDashboard/>}></Route>
+            <Route path='profile' element= {<SellerProfile/>}></Route>
             <Route path='store-management'>
               <Route path='product-listing' element={<ProductListing />} />
             </Route>

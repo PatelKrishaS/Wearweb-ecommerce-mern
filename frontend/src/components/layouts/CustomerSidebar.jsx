@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import WWLogo from "../../assets/WW-logo.png"
 import { CustomerNavbar } from './CustomerNavbar';
 
@@ -62,6 +62,12 @@ export const CustomerSidebar = () => {
                 </a>
                 <ul id="platform-menu" className={`nav nav-treeview collapse ${openMenus.platform ? 'show' : ''}`}>
                   <li className="nav-item">
+                  <Link to="/customer/account/my-profile" className="nav-link"> 
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>My Profile</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Orders</p>
@@ -74,10 +80,10 @@ export const CustomerSidebar = () => {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a href="./index2.html" className="nav-link">
+                  <Link to="/customer/account/addresses" className="nav-link"> 
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Addresses</p>
-                    </a>
+                    </Link>
                   </li>
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
