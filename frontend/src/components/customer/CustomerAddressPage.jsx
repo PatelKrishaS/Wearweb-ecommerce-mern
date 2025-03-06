@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const AddressPage = ({ userId }) => {
+export const CustomerAddressPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,22 +18,44 @@ const AddressPage = ({ userId }) => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
+  // Retrieve userId from localStorage
+  const userId = localStorage.getItem("userId");
+
   // Fetch all states
   const fetchStates = async () => {
-    const res = await axios.get("/state/getallstates");
-    setStates(res.data.data);
+    try {
+      console.log("Fetching states..."); // Debug: Check if the function is called
+      const res = await axios.get("/state/getallstates");
+      console.log("API Response:", res); // Debug: Check the entire response
+      console.log("States fetched:", res.data.data); // Debug: Check the data structure
+      setStates(res.data.data);
+    } catch (err) {
+      console.error("Failed to fetch states:", err);
+    }
   };
 
   // Fetch cities by state ID
   const fetchCitiesByState = async (stateId) => {
-    const res = await axios.get(`/city/getcitybystate/${stateId}`);
-    setCities(res.data.data);
+    try {
+      const res = await axios.get(`/city/getcitybystate/${stateId}`);
+      setCities(res.data.data);
+    } catch (err) {
+      console.error("Failed to fetch cities:", err);
+    }
   };
 
   // Fetch addresses for the user
   const fetchAddresses = async () => {
-    const res = await axios.get(`/user-address/user/${userId}`);
-    setAddresses(res.data.data);
+    if (!userId) {
+      console.error("User ID is undefined");
+      return;
+    }
+    try {
+      const res = await axios.get(`/user-address/user/${userId}`);
+      setAddresses(res.data.data);
+    } catch (err) {
+      console.error("Failed to fetch addresses:", err);
+    }
   };
 
   // Handle form input changes
@@ -76,8 +98,10 @@ const AddressPage = ({ userId }) => {
   // Fetch states and addresses on component mount
   useEffect(() => {
     fetchStates();
-    fetchAddresses();
-  }, [userId]);
+    if (userId) {
+      fetchAddresses(); // Only fetch addresses if userId is defined
+    }
+  }, [userId]); // Re-run effect if userId changes
 
   return (
     <div className="container">
@@ -152,7 +176,7 @@ const AddressPage = ({ userId }) => {
                   <option value="">Select State</option>
                   {states.map((state) => (
                     <option key={state._id} value={state._id}>
-                      {state.name}
+                      {state.stateName}
                     </option>
                   ))}
                 </select>
@@ -170,7 +194,7 @@ const AddressPage = ({ userId }) => {
                   <option value="">Select City</option>
                   {cities.map((city) => (
                     <option key={city._id} value={city._id}>
-                      {city.name}
+                      {city.cityName}
                     </option>
                   ))}
                 </select>
@@ -226,5 +250,3 @@ const AddressPage = ({ userId }) => {
     </div>
   );
 };
-
-export default AddressPage;
