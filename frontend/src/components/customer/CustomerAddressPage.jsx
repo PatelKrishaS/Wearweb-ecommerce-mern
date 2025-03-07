@@ -1,111 +1,116 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 export const CustomerAddressPage = () => {
-  const [addresses, setAddresses] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    unitName: "",
-    street: "",
-    landMark: "",
-    cityId: "",
-    stateId: "",
-    addressDetail: "",
-    zipCode: "",
-  });
-
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-
-  // Retrieve userId from localStorage
-  const userId = localStorage.getItem("userId");
+  const [states, setStates] = useState([]); // State to store all states
+  const [cities, setCities] = useState([]); // State to store cities for the selected state
+  const [areas, setAreas] = useState([]); // State to store areas for the selected city
+  const [showForm, setShowForm] = useState(false); // State to toggle form visibility
+  const [userAddresses, setUserAddresses] = useState([]); // State to store user addresses
 
   // Fetch all states
   const fetchStates = async () => {
     try {
-      console.log("Fetching states..."); // Debug: Check if the function is called
       const res = await axios.get("/state/getallstates");
-      console.log("API Response:", res); // Debug: Check the entire response
-      console.log("States fetched:", res.data.data); // Debug: Check the data structure
       setStates(res.data.data);
     } catch (err) {
       console.error("Failed to fetch states:", err);
     }
   };
 
-  // Fetch cities by state ID
+  // Fetch cities for the selected state
   const fetchCitiesByState = async (stateId) => {
     try {
       const res = await axios.get(`/city/getcitybystate/${stateId}`);
       setCities(res.data.data);
+      setAreas([]); // Reset areas when state changes
     } catch (err) {
       console.error("Failed to fetch cities:", err);
     }
   };
 
-  // Fetch addresses for the user
-  const fetchAddresses = async () => {
-    if (!userId) {
-      console.error("User ID is undefined");
-      return;
-    }
+  // Fetch areas for the selected city
+  const fetchAreasByCity = async (cityId) => {
     try {
-      const res = await axios.get(`/user-address/user/${userId}`);
-      setAddresses(res.data.data);
+      const res = await axios.get(`/area/getareabycity/${cityId}`);
+      setAreas(res.data.data);
     } catch (err) {
-      console.error("Failed to fetch addresses:", err);
+      console.error("Failed to fetch areas:", err);
     }
   };
 
-  // Handle form input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  // Fetch addresses for the current user
+  const fetchUserAddresses = async () => {
+    try {
+      const userId = localStorage.getItem("id");
+      if (!userId) {
+        alert("User ID not found. Please log in again.");
+        return;
+      }
+
+      const res = await axios.get(`/user-address/user/${userId}`);
+      setUserAddresses(res.data.data); // Assuming the API returns { data: [...] }
+    } catch (err) {
+      console.error("Failed to fetch user addresses:", err);
+    }
   };
 
-  // Handle state dropdown change
-  const handleStateChange = async (e) => {
-    const stateId = e.target.value;
-    setFormData({ ...formData, stateId, cityId: "" }); // Reset cityId
-    await fetchCitiesByState(stateId);
-  };
+  // Fetch states and user addresses on component mount
+  useEffect(() => {
+    fetchStates();
+    fetchUserAddresses();
+  }, []);
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const submitHandler = async (data) => {
     try {
-      const res = await axios.post("/user-address/add", { ...formData, userId });
-      alert("Address added successfully!");
-      setShowForm(false); // Hide the form
-      setFormData({ // Reset form data
-        title: "",
-        unitName: "",
-        street: "",
-        landMark: "",
-        cityId: "",
-        stateId: "",
-        addressDetail: "",
-        zipCode: "",
+      const userId = localStorage.getItem("id");
+      if (!userId) {
+        alert("User ID not found. Please log in again.");
+        return;
+      }
+
+      // Prepare the payload with the correct field names
+      const payload = {
+        userId,
+        title: data.title,
+        unitName: data.unitName,
+        street: data.street,
+        landMark: data.landmark,
+        addressDetail: data.addressDetail,
+        cityId: data.cityId,
+        stateId: data.stateId,
+        areaId: data.areaId,
+        zipCode: data.zipCode, // Use zipCode instead of pincode
+      };
+
+      console.log("Data being sent:", payload); // Log the payload
+
+      const res = await axios.post("http://localhost:3000/user-address/add", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      fetchAddresses(); // Refresh the address list
+      console.log("Response from server:", res.data); // Log the response
+
+      reset();
+      setShowForm(false);
+      alert("Address added successfully");
+
+      // Refresh the list of addresses after adding a new one
+      fetchUserAddresses();
     } catch (err) {
-      console.error(err);
+      console.error("Failed to save address:", err.response?.data || err.message); // Log the error
       alert("Failed to add address");
     }
   };
 
-  // Fetch states and addresses on component mount
-  useEffect(() => {
-    fetchStates();
-    if (userId) {
-      fetchAddresses(); // Only fetch addresses if userId is defined
-    }
-  }, [userId]); // Re-run effect if userId changes
-
   return (
     <div className="container">
-      <h1>Addresses</h1>
+      <h1>User Addresses</h1>
 
       {/* Add Address Button */}
       <button className="btn btn-primary mb-3" onClick={() => setShowForm(!showForm)}>
@@ -117,61 +122,76 @@ export const CustomerAddressPage = () => {
         <div className="card mb-4">
           <div className="card-body">
             <h5 className="card-title">Add New Address</h5>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(submitHandler)}>
+              {/* Title Dropdown */}
               <div className="form-group">
                 <label>Title</label>
                 <select
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
+                  {...register("title", { required: "Title is required" })}
                   className="form-control"
-                  required
                 >
-                  <option value="">Select Title</option>
+                  <option value="">Select title</option>
                   <option value="Home">Home</option>
                   <option value="Office">Office</option>
                   <option value="Other">Other</option>
                 </select>
+                {errors.title && <span className="text-danger">{errors.title.message}</span>}
               </div>
+
+              {/* Unit Name Input */}
               <div className="form-group">
                 <label>Unit Name</label>
                 <input
                   type="text"
-                  name="unitName"
-                  value={formData.unitName}
-                  onChange={handleChange}
+                  {...register("unitName", { required: "Unit Name is required" })}
                   className="form-control"
                 />
+                {errors.unitName && <span className="text-danger">{errors.unitName.message}</span>}
               </div>
+
+              {/* Street Input */}
               <div className="form-group">
                 <label>Street</label>
                 <input
                   type="text"
-                  name="street"
-                  value={formData.street}
-                  onChange={handleChange}
+                  {...register("street", { required: "Street is required" })}
                   className="form-control"
-                  required
                 />
+                {errors.street && <span className="text-danger">{errors.street.message}</span>}
               </div>
+
+              {/* Landmark Input */}
               <div className="form-group">
                 <label>Landmark</label>
                 <input
                   type="text"
-                  name="landMark"
-                  value={formData.landMark}
-                  onChange={handleChange}
+                  {...register("landmark", { required: "Landmark is required" })}
                   className="form-control"
                 />
+                {errors.landmark && <span className="text-danger">{errors.landmark.message}</span>}
               </div>
+
+              {/* Address Detail Input */}
+              <div className="form-group">
+                <label>Address Detail</label>
+                <textarea
+                  {...register("addressDetail")}
+                  className="form-control"
+                  rows="3"
+                  placeholder="Enter additional address details"
+                />
+              </div>
+
+              {/* State Dropdown */}
               <div className="form-group">
                 <label>State</label>
                 <select
-                  name="stateId"
-                  value={formData.stateId}
-                  onChange={handleStateChange}
+                  {...register("stateId", { required: "State is required" })}
                   className="form-control"
-                  required
+                  onChange={(e) => {
+                    const stateId = e.target.value;
+                    fetchCitiesByState(stateId);
+                  }}
                 >
                   <option value="">Select State</option>
                   {states.map((state) => (
@@ -180,16 +200,20 @@ export const CustomerAddressPage = () => {
                     </option>
                   ))}
                 </select>
+                {errors.stateId && <span className="text-danger">{errors.stateId.message}</span>}
               </div>
+
+              {/* City Dropdown */}
               <div className="form-group">
                 <label>City</label>
                 <select
-                  name="cityId"
-                  value={formData.cityId}
-                  onChange={handleChange}
+                  {...register("cityId", { required: "City is required" })}
                   className="form-control"
-                  required
-                  disabled={!formData.stateId}
+                  onChange={(e) => {
+                    const cityId = e.target.value;
+                    fetchAreasByCity(cityId);
+                  }}
+                  disabled={!cities.length}
                 >
                   <option value="">Select City</option>
                   {cities.map((city) => (
@@ -198,28 +222,44 @@ export const CustomerAddressPage = () => {
                     </option>
                   ))}
                 </select>
+                {errors.cityId && <span className="text-danger">{errors.cityId.message}</span>}
               </div>
+
+              {/* Area Dropdown */}
               <div className="form-group">
-                <label>Address Detail</label>
+                <label>Area</label>
+                <select
+                  {...register("areaId")} // Optional field
+                  className="form-control"
+                  disabled={!areas.length}
+                >
+                  <option value="">Select Area</option>
+                  {areas.map((area) => (
+                    <option key={area._id} value={area._id}>
+                      {area.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.areaId && <span className="text-danger">{errors.areaId.message}</span>}
+              </div>
+
+              {/* ZipCode Input */}
+              <div className="form-group">
+                <label>ZipCode</label>
                 <input
                   type="text"
-                  name="addressDetail"
-                  value={formData.addressDetail}
-                  onChange={handleChange}
+                  {...register("zipCode", {
+                    required: "ZipCode is required",
+                    minLength: { value: 6, message: "ZipCode must be 6 digits" },
+                    maxLength: { value: 6, message: "ZipCode must be 6 digits" },
+                    pattern: { value: /^[0-9]{6}$/, message: "Invalid ZipCode" },
+                  })}
                   className="form-control"
                 />
+                {errors.zipCode && <span className="text-danger">{errors.zipCode.message}</span>}
               </div>
-              <div className="form-group">
-                <label>Zip Code</label>
-                <input
-                  type="text"
-                  name="zipCode"
-                  value={formData.zipCode}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
-              </div>
+
+              {/* Submit Button */}
               <button type="submit" className="btn btn-success">
                 Save Address
               </button>
@@ -228,24 +268,26 @@ export const CustomerAddressPage = () => {
         </div>
       )}
 
-      {/* Display Addresses */}
-      <div className="row">
-        {addresses.map((address) => (
-          <div key={address._id} className="col-md-4 mb-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">{address.title}</h5>
-                <p className="card-text">
-                  {address.unitName}, {address.street}, {address.landMark}
+      {/* Display User Addresses */}
+      <div className="mt-4">
+        <h3>Your Saved Addresses</h3>
+        {userAddresses.length === 0 ? (
+          <p>No addresses found.</p>
+        ) : (
+          <div className="list-group">
+            {userAddresses.map((address) => (
+              <div key={address._id} className="list-group-item">
+                <h5>{address.title}</h5>
+                <p>
+                  {address.unitName}, {address.street}, {address.landMark}, {address.addressDetail}
                 </p>
-                <p className="card-text">
-                  {address.cityId?.name}, {address.stateId?.name}, {address.zipCode}
+                <p>
+                  {address.cityId?.cityName}, {address.stateId?.stateName}, {address.zipCode}
                 </p>
-                <p className="card-text">{address.addressDetail}</p>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

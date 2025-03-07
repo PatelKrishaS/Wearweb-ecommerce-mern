@@ -32,13 +32,18 @@ const userAddressSchema = new Schema({
         ref: "states",
         required: true
     },
+    areaId: {
+        type: Schema.Types.ObjectId,
+        ref: "areas",
+     },
     addressDetail: {
         type: String
     },
     zipCode: {
         type: String,
         required: true
-    }
+    },
+    
 }, { timestamps: true });
 
 module.exports = mongoose.model("user_addresses", userAddressSchema);
