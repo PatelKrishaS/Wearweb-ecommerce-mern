@@ -20,6 +20,7 @@ import { CustomerNavbar } from './components/layouts/CustomerNavbar'
 import axios from 'axios'
 import { ProductListing } from './components/seller/ProductListing'
 import { CustomerAddressPage } from './components/customer/CustomerAddressPage'
+import { Bounce, ToastContainer } from 'react-toastify'
 
 
 function App() {
@@ -39,6 +40,20 @@ function App() {
 
   return (
     <div className={location.pathname === "/login" || location.pathname === "/signup" ? "" : "app-wrapper"}>
+         <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
+
         <Routes>
           <Route path='/login' element={<Login/>}></Route>
           <Route path='/signup' element={<Signup/>}></Route>

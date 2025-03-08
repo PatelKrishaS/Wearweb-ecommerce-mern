@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import "../../assets/css/signup.css";
 import { Link, useNavigate} from 'react-router-dom';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 
 export const Signup = () => {
@@ -25,7 +26,18 @@ export const Signup = () => {
 
     //res.status
     if(res.status === 201){
-        alert("User created successfully")
+        // alert("User created successfully")
+        toast.success('User created successfully!', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+            });
         navigate("/login")
     }
 }catch (error) {
@@ -101,6 +113,19 @@ export const Signup = () => {
     return (
         <div className='custom-container'>
             <div className='form-container'>
+                <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+                />
                 <form className='form' onSubmit={handleSubmit(submitHandler)} >
                     <h2>Signup</h2>
 

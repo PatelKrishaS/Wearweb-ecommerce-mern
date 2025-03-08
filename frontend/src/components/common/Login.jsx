@@ -2,6 +2,8 @@ import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import "../../assets/css/login.css";
+// import "../../assets/css/toast.css";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const Login = () => {
@@ -23,7 +25,18 @@ export const Login = () => {
 
         console.log(res.data);
             if(res.status === 200){
-                alert("Login Success") //Toaster
+                // alert("Login Success")
+                toast.success('User logged in successfully!', {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: false,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                            transition: Bounce,
+                            });
                 localStorage.setItem("id", res.data.data._id)
                 localStorage.setItem("role",res.data.data.roleId.name)
 
@@ -78,7 +91,8 @@ export const Login = () => {
     // console.log(errors);
 
     return (
-        
+        <>
+            
         <div className='custom-container'>
             <div className='form-container'>
                 <form className='form' onSubmit={handleSubmit(submitHandler)} >
@@ -97,5 +111,6 @@ export const Login = () => {
                 </form>
             </div>
         </div>
+        </>
     );
 };
