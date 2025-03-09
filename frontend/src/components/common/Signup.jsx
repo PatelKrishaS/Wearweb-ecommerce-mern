@@ -29,7 +29,7 @@ export const Signup = () => {
         // alert("User created successfully")
         toast.success('User created successfully!', {
             position: "top-center",
-            autoClose: 5000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: false,
             pauseOnHover: true,
@@ -38,6 +38,9 @@ export const Signup = () => {
             theme: "dark",
             transition: Bounce,
             });
+
+        setTimeout(() => toast.dismiss(id), 2000);
+
         navigate("/login")
     }
 }catch (error) {
@@ -113,19 +116,6 @@ export const Signup = () => {
     return (
         <div className='custom-container'>
             <div className='form-container'>
-                <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-                transition={Bounce}
-                />
                 <form className='form' onSubmit={handleSubmit(submitHandler)} >
                     <h2>Signup</h2>
 

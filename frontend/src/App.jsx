@@ -21,6 +21,7 @@ import axios from 'axios'
 import { ProductListing } from './components/seller/ProductListing'
 import { CustomerAddressPage } from './components/customer/CustomerAddressPage'
 import { Bounce, ToastContainer } from 'react-toastify'
+import LandingPage from './components/common/LandingPage'
 
 
 function App() {
@@ -42,14 +43,14 @@ function App() {
     <div className={location.pathname === "/login" || location.pathname === "/signup" ? "" : "app-wrapper"}>
          <ToastContainer
         position="top-center"
-        autoClose={5000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick={false}
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss = {false}
         draggable
-        pauseOnHover
+        pauseOnHover = {false}
         theme="dark"
         transition={Bounce}
       />
@@ -57,6 +58,8 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login/>}></Route>
           <Route path='/signup' element={<Signup/>}></Route>
+          <Route path="/" element ={<LandingPage/>}></Route>
+
           <Route path='/customer' element={<CustomerSidebar/>}>
             <Route path='profile' element= {<CustomerProfile/>}></Route>
             <Route path='dashboard' element= {<CustomerDashboard/>}></Route>

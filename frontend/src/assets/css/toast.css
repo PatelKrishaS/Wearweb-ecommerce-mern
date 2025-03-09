@@ -1,41 +1,23 @@
-/* Override AdminLTE styles for react-toastify */
-.Toastify__toast-container {
-    z-index: 9999 !important; /* Ensure toast is on top */
-  }
-  
-  .Toastify__toast {
-    font-family: inherit;
-    font-size: 14px;
-    border-radius: 4px;
-    padding: 12px 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .Toastify__toast--success {
-    background-color: #28a745 !important; /* Green for success */
-    color: #fff !important;
-  }
-  
-  .Toastify__toast--error {
-    background-color: #dc3545 !important; /* Red for error */
-    color: #fff !important;
-  }
-  
-  .Toastify__toast--info {
-    background-color: #17a2b8 !important; /* Blue for info */
-    color: #fff !important;
-  }
-  
-  .Toastify__toast--warning {
-    background-color: #ffc107 !important; /* Yellow for warning */
-    color: #000 !important;
-  }
-  
-  .Toastify__close-button {
-    color: #fff;
-    opacity: 0.8;
+/* Ensure the close button is on the right side */
+.Toastify__close-button {
+    position: absolute;
+    /* right: 10px; */
+    text-align: right;
+    width: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
   }
   
   .Toastify__close-button:hover {
     opacity: 1;
+  }
+  
+  .Toastify__close-button svg {
+    fill: #fff; /* Change the color of the close icon */
   }

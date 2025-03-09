@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import "../../assets/css/login.css";
-// import "../../assets/css/toast.css";
+import "../../assets/css/toast.css";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -28,15 +28,18 @@ export const Login = () => {
                 // alert("Login Success")
                 toast.success('User logged in successfully!', {
                             position: "top-center",
-                            autoClose: 5000,
+                            autoClose: 2000,
                             hideProgressBar: false,
                             closeOnClick: false,
-                            pauseOnHover: true,
+                            pauseOnHover: false,
                             draggable: true,
                             progress: undefined,
                             theme: "dark",
                             transition: Bounce,
                             });
+                        
+                setTimeout(() => toast.dismiss(id), 2000);
+
                 localStorage.setItem("id", res.data.data._id)
                 localStorage.setItem("role",res.data.data.roleId.name)
 
@@ -51,7 +54,18 @@ export const Login = () => {
                 }
             }
             else{
-                alert("Login Failed")
+                // alert("Login Failed")
+                toast.success('Login Failed', {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    transition: Bounce,
+                    });
             }
         }
         catch(error){

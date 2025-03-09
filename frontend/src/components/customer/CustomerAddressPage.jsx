@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Bounce, toast } from 'react-toastify';
 
 export const CustomerAddressPage = () => {
   const [states, setStates] = useState([]); // State to store all states
@@ -98,7 +99,20 @@ export const CustomerAddressPage = () => {
 
       reset();
       setShowForm(false);
-      alert("Address added successfully");
+      // alert("Address added successfully");
+      toast.success('Address added successfully!', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        });
+
+    setTimeout(() => toast.dismiss(id), 2000);
 
       // Refresh the list of addresses after adding a new one
       fetchUserAddresses();
@@ -121,7 +135,7 @@ export const CustomerAddressPage = () => {
       {showForm && (
         <div className="card mb-4">
           <div className="card-body">
-            <h5 className="card-title">Add New Address</h5>
+            <h5 className="card-title">Add New Address</h5> <br />
             <form onSubmit={handleSubmit(submitHandler)}>
               {/* Title Dropdown */}
               <div className="form-group">
