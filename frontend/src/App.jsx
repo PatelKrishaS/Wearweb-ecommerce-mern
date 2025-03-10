@@ -22,6 +22,7 @@ import { ProductListing } from './components/seller/ProductListing'
 import { CustomerAddressPage } from './components/customer/CustomerAddressPage'
 import { Bounce, ToastContainer } from 'react-toastify'
 import LandingPage from './components/common/LandingPage'
+import PrivateRoutes from './hooks/PrivateRoutes'
 
 
 function App() {
@@ -60,12 +61,14 @@ function App() {
           <Route path='/signup' element={<Signup/>}></Route>
           <Route path="/" element ={<LandingPage/>}></Route>
 
-          <Route path='/customer' element={<CustomerSidebar/>}>
-            <Route path='profile' element= {<CustomerProfile/>}></Route>
-            <Route path='dashboard' element= {<CustomerDashboard/>}></Route>
-            <Route path='account'>
-              <Route path='my-profile' element={<CustomerProfile/>} /> 
-              <Route path='addresses' element={<CustomerAddressPage/>} /> 
+          <Route path="" element={<PrivateRoutes/>}>
+            <Route path='/customer' element={<CustomerSidebar/>}>
+              <Route path='profile' element= {<CustomerProfile/>}></Route>
+              <Route path='dashboard' element= {<CustomerDashboard/>}></Route>
+              <Route path='account'>
+                <Route path='my-profile' element={<CustomerProfile/>} /> 
+                <Route path='addresses' element={<CustomerAddressPage/>} /> 
+              </Route>
             </Route>
           </Route>
           <Route path='/admin' element={<AdminSidebar/>}>
