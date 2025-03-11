@@ -18,7 +18,15 @@ const sendingMail = async (to, subject, text) => {
             from: 'kaizennova55@gmail.com',
             to: to,
             subject: subject,
-            text: text
+            // text: text
+            html: `<h1>Welcome to Wear Web!</h1>
+            <p>Dear Fashion Enthusiast,</p>
+            <p>Thank you for signing up with <strong>Wear Web</strong>—your ultimate destination for the latest trends in fashion!</p>
+            <p>Explore a curated collection of stylish apparel, accessories, and more. Stay ahead of the trends with exclusive deals, personalized recommendations, and seamless shopping.</p>
+            <p>Have any questions or need styling tips? Our support team is here to help!</p>
+            <p>Happy shopping!</p>
+            <p><strong>The Wear Web Team</strong></p>
+`
         };
 
         const mailResponse = await transporter.sendMail(mailOptions);
@@ -30,4 +38,4 @@ const sendingMail = async (to, subject, text) => {
 };
 
 // Run the function and see the output
-sendingMail("samantha16sp@yopmail.com", "Test Email", "This is a test email!");
+sendingMail("patelamruta2673@gmail.com", "Test Email", "");

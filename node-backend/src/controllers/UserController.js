@@ -2,6 +2,7 @@
 // const RoleModel = require("../models/RoleModel")
 const userModel = require("../models/UserModel")
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
 
 const loginUser = async (req,res) => {
     //req.body email and password: password
@@ -45,42 +46,66 @@ const loginUser = async (req,res) => {
 };
 
 const signup = async (req, res) => {
-    //try catch if else..
-    try{
-        
+    try {
         const { name, email, password, confirmPassword, roleId, phoneNumber, gender } = req.body;
-
 
         // Check if passwords match
         if (password !== confirmPassword) {
             return res.status(400).json({ message: "Passwords do not match." });
         }
 
-         // Check if the email already exists
-         const existingUser = await userModel.findOne({ email: email });
-         if (existingUser) {
-             return res.status(400).json({ message: "Email already registered." });
-         }
+        // Check if the email already exists
+        const existingUser = await userModel.findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already registered." });
+        }
 
-        //password encrypt..
+        // Password encryption
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(password, salt);
         req.body.password = hashedPassword;
 
         // Create user
         const createdUser = await userModel.create(req.body);
+
+        // Send welcome email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: "kaizennova55@gmail.com", 
+                pass: "dilt lfre vota yjpl" // App Password
+            }
+        });
+
+        const mailOptions = {
+            from: 'kaizennova55@gmail.com',
+            to: email,
+            subject: 'Welcome to Wear Web!',
+            html: `
+                <h1>Welcome to Wear Web!</h1>
+                <p>Dear Fashion Enthusiast,</p>
+                <p>Thank you for signing up with <strong>Wear Web</strong>—your ultimate destination for the latest trends in fashion!</p>
+                <p>Explore a curated collection of stylish apparel, accessories, and more. Stay ahead of the trends with exclusive deals, personalized recommendations, and seamless shopping.</p>
+                <p>Have any questions or need styling tips? Our support team is here to help!</p>
+                <p>Happy shopping!</p>
+                <p><strong>The Wear Web Team</strong></p>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("✅ Welcome email sent to:", email);
+
         res.status(201).json({
-            message: "User created...",
+            message: "User created successfully!",
             data: createdUser
         });
 
-    } catch(err){
-         console.error("Signup Error:", err);
+    } catch (err) {
+        console.error("Signup Error:", err);
         res.status(500).json({
             message: "Internal Server Error",
             error: err.message
         });
-        
     }
 };
 
