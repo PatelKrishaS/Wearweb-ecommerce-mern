@@ -1,4 +1,5 @@
 const productModel = require("../models/ProductListingModel");
+const cloudinaryUtil = require("../utils/CloudinaryUtil")
 
 // Add a new product
 const addProduct = async (req, res) => {
@@ -16,11 +17,20 @@ const addProduct = async (req, res) => {
       color,
       material,
       stockQuantity,
-      imageURL1,
-      imageURL2,
-      imageURL3,
     } = req.body;
 
+    // Upload images to Cloudinary
+    const imageURL1 = req.files?.image1
+      ? (await cloudinaryUtil.uploadFileToCloudinary(req.files.image1[0])).secure_url
+      : null;
+    const imageURL2 = req.files?.image2
+      ? (await cloudinaryUtil.uploadFileToCloudinary(req.files.image2[0])).secure_url
+      : null;
+    const imageURL3 = req.files?.image3
+      ? (await cloudinaryUtil.uploadFileToCloudinary(req.files.image3[0])).secure_url
+      : null;
+
+    // Create new product
     const newProduct = await productModel.create({
       sellerId,
       categoryId,
@@ -44,9 +54,11 @@ const addProduct = async (req, res) => {
       data: newProduct,
     });
   } catch (err) {
+    console.error("Error adding product:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // Get all products
 const getAllProducts = async (req, res) => {
