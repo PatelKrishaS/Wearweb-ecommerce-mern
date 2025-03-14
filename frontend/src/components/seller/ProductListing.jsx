@@ -8,6 +8,11 @@ export const ProductListing = () => {
   const [subcategories, setSubcategories] = useState([]); // Stores subcategories for the selected category
   const [showForm, setShowForm] = useState(false); // Toggles the add product form
   const [products, setProducts] = useState([]); // Stores the list of products
+  const [imageFiles, setImageFiles] = useState({
+    image1: null,
+    image2: null,
+    image3: null,
+  }); // Stores uploaded image files
 
   // Fetch all categories
   const fetchCategories = async () => {
@@ -54,6 +59,12 @@ export const ProductListing = () => {
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
+  // Handle file input changes
+  const handleFileChange = (e, fieldName) => {
+    const file = e.target.files[0];
+    setImageFiles((prev) => ({ ...prev, [fieldName]: file }));
+  };
+
   // Handle form submission for adding a new product
   const submitHandler = async (data) => {
     try {
@@ -63,33 +74,38 @@ export const ProductListing = () => {
         return;
       }
 
-      // Prepare the payload for the product
-      const payload = {
-        sellerId: userId,
-        categoryId: data.categoryId,
-        subCategoryId: data.subCategoryId,
-        name: data.name,
-        description: data.description,
-        baseprice: data.baseprice,
-        offerprice: data.offerprice,
-        offerPercentage: data.offerPercentage,
-        size: data.size,
-        color: data.color,
-        material: data.material,
-        stockQuantity: data.stockQuantity,
-      };
+      // Prepare FormData for file uploads
+      const formData = new FormData();
+      formData.append("sellerId", userId);
+      formData.append("categoryId", data.categoryId);
+      formData.append("subCategoryId", data.subCategoryId);
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("baseprice", data.baseprice);
+      formData.append("offerprice", data.offerprice);
+      formData.append("offerPercentage", data.offerPercentage);
+      formData.append("size", data.size);
+      formData.append("color", data.color);
+      formData.append("material", data.material);
+      formData.append("stockQuantity", data.stockQuantity);
 
-      console.log("Data being sent:", payload); // Log the payload
+      // Append image files if they exist
+      if (imageFiles.image1) formData.append("image1", imageFiles.image1);
+      if (imageFiles.image2) formData.append("image2", imageFiles.image2);
+      if (imageFiles.image3) formData.append("image3", imageFiles.image3);
 
-      const res = await axios.post("/product/add", payload, {
+      console.log("Data being sent:", formData); // Log the payload
+
+      const res = await axios.post("/product/add", formData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data", // Required for file uploads
         },
       });
       console.log("Response from server:", res.data); // Log the response
 
       reset();
       setShowForm(false);
+      setImageFiles({ image1: null, image2: null, image3: null }); // Clear uploaded files
       toast.success('Product added successfully!', {
         position: "top-center",
         autoClose: 2000,
@@ -258,6 +274,34 @@ export const ProductListing = () => {
                 {errors.subCategoryId && <span className="text-danger">{errors.subCategoryId.message}</span>}
               </div>
 
+              {/* Image Uploads */}
+              <div className="form-group">
+                <label>Image 1</label>
+                <input
+                  type="file"
+                  onChange={(e) => handleFileChange(e, "image1")}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Image 2</label>
+                <input
+                  type="file"
+                  onChange={(e) => handleFileChange(e, "image2")}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Image 3</label>
+                <input
+                  type="file"
+                  onChange={(e) => handleFileChange(e, "image3")}
+                  className="form-control"
+                />
+              </div>
+
               {/* Submit Button */}
               <button type="submit" className="btn btn-success">
                 Save Product
@@ -266,25 +310,6 @@ export const ProductListing = () => {
           </div>
         </div>
       )}
-
-      {/* Display Products
-      <div className="mt-4">
-        <h3>Your Products</h3>
-        {products.length === 0 ? (
-          <p>No products found.</p>
-        ) : (
-          <div className="list-group">
-            {products.map((product) => (
-              <div key={product._id} className="list-group-item">
-                <h5>{product.name}</h5>
-                <p>{product.description}</p>
-                <p>Base Price: ${product.baseprice}</p>
-                <p>Stock Quantity: {product.stockQuantity}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div> */}
     </div>
   );
 };

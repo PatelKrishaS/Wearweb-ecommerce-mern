@@ -19,6 +19,11 @@ const addProduct = async (req, res) => {
       stockQuantity,
     } = req.body;
 
+    // Validate required fields
+    if (!sellerId || !categoryId || !subCategoryId || !name || !description || !baseprice || !stockQuantity) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
     // Upload images to Cloudinary
     const imageURL1 = req.files?.image1
       ? (await cloudinaryUtil.uploadFileToCloudinary(req.files.image1[0])).secure_url
@@ -55,7 +60,7 @@ const addProduct = async (req, res) => {
     });
   } catch (err) {
     console.error("Error adding product:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Failed to add product", error: err.message });
   }
 };
 
@@ -73,12 +78,12 @@ const getAllProducts = async (req, res) => {
     });
   } catch (err) {
     console.error("Error fetching products:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Failed to fetch products", error: err.message });
   }
 };
 
 // Get products by seller
-const getProducts = async (req, res) => {
+const getProductsBySeller = async (req, res) => {
   try {
     const sellerId = req.params.userId; // Use userId from route parameter
     const products = await productModel.find({ sellerId })
@@ -91,7 +96,7 @@ const getProducts = async (req, res) => {
     });
   } catch (err) {
     console.error("Error fetching products by seller:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Failed to fetch products by seller", error: err.message });
   }
 };
 
@@ -110,13 +115,13 @@ const deleteProduct = async (req, res) => {
     });
   } catch (err) {
     console.error("Error deleting product:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Failed to delete product", error: err.message });
   }
 };
 
 module.exports = {
   addProduct,
   getAllProducts,
-  getProducts, // Updated method name to match the route
+  getProductsBySeller, // Updated method name to match the route
   deleteProduct,
 };
