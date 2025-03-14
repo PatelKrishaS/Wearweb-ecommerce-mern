@@ -57,6 +57,12 @@ export const SellerSidebar = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
+                  <Link to="/seller/store-management/view-my-products" className="nav-link"> {/* Use Link */}
+                      <i className="nav-icon bi bi-circle"></i>
+                      <p>View My Products</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Inventory Management</p>

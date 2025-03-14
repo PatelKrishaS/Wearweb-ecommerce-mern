@@ -1,56 +1,27 @@
-const SubCategory = require("../models/SubCategoryModel");
+const subcategoryModel = require("../models/SubCategoryModel");
 
-const addSubCategory = async (req, res) => {
+const addSubcategory = async (req, res) => {
   try {
-    const savedSubCategory = await SubCategory.create(req.body);
+    const savedSubcategory = await subcategoryModel.create(req.body);
     res.status(201).json({
-      message: "SubCategory added successfully",
-      data: savedSubCategory,
+      message: "Subcategory added successfully",
+      data: savedSubcategory,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-const getAllSubCategories = async (req, res) => {
+const getSubcategoriesByCategory = async (req, res) => {
   try {
-    const subCategories = await SubCategory.find().populate("categoryId");
+    const subcategories = await subcategoryModel.find({ categoryId: req.params.categoryId });
     res.status(200).json({
-      message: "All subcategories fetched successfully",
-      data: subCategories,
+      message: "Subcategories fetched successfully",
+      data: subcategories,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-const getSubCategoryById = async (req, res) => {
-  try {
-    const subCategory = await SubCategory.findById(req.params.id).populate("categoryId");
-    if (!subCategory) {
-      return res.status(404).json({ message: "SubCategory not found" });
-    }
-    res.status(200).json({
-      message: "SubCategory fetched successfully",
-      data: subCategory,
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-const deleteSubCategoryById = async (req, res) => {
-  try {
-    const deletedSubCategory = await SubCategory.findByIdAndDelete(req.params.id);
-    if (!deletedSubCategory) {
-      return res.status(404).json({ message: "SubCategory not found" });
-    }
-    res.status(200).json({
-      message: "SubCategory deleted successfully",
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-module.exports = { addSubCategory, getAllSubCategories, getSubCategoryById, deleteSubCategoryById };
+module.exports = { addSubcategory, getSubcategoriesByCategory };

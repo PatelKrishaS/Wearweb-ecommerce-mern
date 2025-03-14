@@ -23,6 +23,7 @@ import { CustomerAddressPage } from './components/customer/CustomerAddressPage'
 import { Bounce, ToastContainer } from 'react-toastify'
 import LandingPage from './components/common/LandingPage'
 import PrivateRoutes from './hooks/PrivateRoutes'
+import { ViewMyProducts } from './components/seller/ViewMyProducts'
 
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
             <Route path='profile' element= {<SellerProfile/>}></Route>
             <Route path='store-management'>
               <Route path='product-listing' element={<ProductListing />} />
+              <Route path='view-my-products' element={<ViewMyProducts />} />
             </Route>
           </Route>
         </Routes>

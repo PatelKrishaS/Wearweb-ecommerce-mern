@@ -14,7 +14,7 @@ router.post("/add", upload.fields([
 router.get("/", productController.getAllProducts);
 
 // Get products by seller
-router.get("/seller/:sellerId", productController.getProductsBySeller);
+router.get("/user/:userId", productController.getProducts);
 
 // Update a product
 // router.put("/update/:id", productController.updateProduct);

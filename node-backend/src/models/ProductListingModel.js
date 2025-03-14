@@ -51,7 +51,7 @@ const productSchema = new Schema(
     },
     imageURL1: {
       type: String,
-      required: true,
+      // required: true,
     },
     imageURL2: {
       type: String,

@@ -1,5 +1,5 @@
 const productModel = require("../models/ProductListingModel");
-const cloudinaryUtil = require("../utils/CloudinaryUtil")
+const cloudinaryUtil = require("../utils/CloudinaryUtil");
 
 // Add a new product
 const addProduct = async (req, res) => {
@@ -59,7 +59,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-
 // Get all products
 const getAllProducts = async (req, res) => {
   try {
@@ -73,14 +72,15 @@ const getAllProducts = async (req, res) => {
       data: products,
     });
   } catch (err) {
+    console.error("Error fetching products:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
 // Get products by seller
-const getProductsBySeller = async (req, res) => {
+const getProducts = async (req, res) => {
   try {
-    const sellerId = req.params.sellerId;
+    const sellerId = req.params.userId; // Use userId from route parameter
     const products = await productModel.find({ sellerId })
       .populate("categoryId")
       .populate("subCategoryId");
@@ -90,33 +90,10 @@ const getProductsBySeller = async (req, res) => {
       data: products,
     });
   } catch (err) {
+    console.error("Error fetching products by seller:", err);
     res.status(500).json({ message: err.message });
   }
 };
-
-// Update a product
-// const updateProduct = async (req, res) => {
-//   try {
-//     const productId = req.params.id;
-//     const updates = req.body;
-
-//     const updatedProduct = await productModel.findByIdAndUpdate(productId, updates, {
-//       new: true, // Return the updated document
-//       runValidators: true, // Run validation on updates
-//     });
-
-//     if (!updatedProduct) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
-
-//     res.status(200).json({
-//       message: "Product updated successfully",
-//       data: updatedProduct,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
 
 // Delete a product
 const deleteProduct = async (req, res) => {
@@ -132,6 +109,7 @@ const deleteProduct = async (req, res) => {
       message: "Product deleted successfully",
     });
   } catch (err) {
+    console.error("Error deleting product:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -139,6 +117,6 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   addProduct,
   getAllProducts,
-  getProductsBySeller,
+  getProducts, // Updated method name to match the route
   deleteProduct,
 };
