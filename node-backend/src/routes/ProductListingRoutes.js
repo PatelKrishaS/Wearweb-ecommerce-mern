@@ -14,10 +14,13 @@ router.post("/add", upload.fields([
 router.get("/", productController.getAllProducts);
 
 // Get products by seller
-router.get("/user/:userId", productController.getProductsBySeller); // Updated to match controller method
+router.get("/user/:userId", productController.getProductsBySeller);
+
+// Get product by ID
+router.get("/getProductById/:id", productController.getProductById); // Add this route
 
 // Update a product
-// router.put("/update/:id", productController.updateProduct);
+router.put("/update/:id", productController.updateProduct); // Add this route
 
 // Delete a product
 router.delete("/delete/:id", productController.deleteProduct);

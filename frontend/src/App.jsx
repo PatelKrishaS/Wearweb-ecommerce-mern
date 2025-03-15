@@ -24,6 +24,7 @@ import { Bounce, ToastContainer } from 'react-toastify'
 import LandingPage from './components/common/LandingPage'
 import PrivateRoutes from './hooks/PrivateRoutes'
 import { ViewMyProducts } from './components/seller/ViewMyProducts'
+import { ProductDetail } from './components/seller/ProductDetail'
 
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
             <Route path='store-management'>
               <Route path='product-listing' element={<ProductListing />} />
               <Route path='view-my-products' element={<ViewMyProducts />} />
+              <Route path='product/:id' element={<ProductDetail />} />
             </Route>
           </Route>
         </Routes>

@@ -82,6 +82,26 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+// Get product by ID
+const getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({
+      message: "Product fetched successfully",
+      data: product,
+    });
+  } catch (err) {
+    console.error("Error fetching product by ID:", err);
+    res.status(500).json({ message: "Failed to fetch product", error: err.message });
+  }
+};
+
 // Get products by seller
 const getProductsBySeller = async (req, res) => {
   try {
@@ -97,6 +117,34 @@ const getProductsBySeller = async (req, res) => {
   } catch (err) {
     console.error("Error fetching products by seller:", err);
     res.status(500).json({ message: "Failed to fetch products by seller", error: err.message });
+  }
+};
+
+// Update a product
+const updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const updateData = req.body;
+
+    // Validate required fields
+    if (!updateData.name || !updateData.description || !updateData.baseprice || !updateData.stockQuantity) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Find and update the product
+    const updatedProduct = await productModel.findByIdAndUpdate(productId, updateData, { new: true });
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      data: updatedProduct,
+    });
+  } catch (err) {
+    console.error("Error updating product:", err);
+    res.status(500).json({ message: "Failed to update product", error: err.message });
   }
 };
 
@@ -122,6 +170,8 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   addProduct,
   getAllProducts,
+  getProductById,
   getProductsBySeller, // Updated method name to match the route
+  updateProduct,
   deleteProduct,
 };
