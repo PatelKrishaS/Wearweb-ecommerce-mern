@@ -2,8 +2,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Bounce, toast } from 'react-toastify';
-
 
 export const ProductDetail = () => {
   const { id } = useParams(); // Get product ID from URL
@@ -11,6 +9,9 @@ export const ProductDetail = () => {
   const { register, handleSubmit, setValue } = useForm();
   const [product, setProduct] = useState(null); // Stores product details
   const [isEditing, setIsEditing] = useState(false); // Tracks edit mode
+  const [image1, setImage1] = useState(null); // State for image 1
+  const [image2, setImage2] = useState(null); // State for image 2
+  const [image3, setImage3] = useState(null); // State for image 3
 
   // Fetch product details by ID
   useEffect(() => {
@@ -40,21 +41,47 @@ export const ProductDetail = () => {
   // Handle form submission for updating the product
   const submitHandler = async (data) => {
     try {
-      const res = await axios.put(`/product/update/${id}`, data);
-      console.log("Product updated:", res.data);
-        toast.success('Product updated successfully!', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
+      const formData = new FormData();
+
+      // Append all required fields to FormData
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("baseprice", data.baseprice);
+      formData.append("offerprice", data.offerprice);
+      formData.append("offerPercentage", data.offerPercentage);
+      formData.append("size", data.size);
+      formData.append("color", data.color);
+      formData.append("material", data.material);
+      formData.append("stockQuantity", data.stockQuantity);
+      formData.append("categoryId", data.categoryId);
+      formData.append("subCategoryId", data.subCategoryId);
+
+      // Append image files to FormData if new images are selected
+      if (image1) formData.append("image1", image1);
+      if (image2) formData.append("image2", image2);
+      if (image3) formData.append("image3", image3);
+
+      // Append existing image URLs if no new images are selected
+      if (!image1 && product?.imageURL1) formData.append("imageURL1", product.imageURL1);
+      if (!image2 && product?.imageURL2) formData.append("imageURL2", product.imageURL2);
+      if (!image3 && product?.imageURL3) formData.append("imageURL3", product.imageURL3);
+
+      // Log the FormData being sent
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      const res = await axios.put(`http://localhost:3000/product/update/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Required for file uploads
+        },
       });
-      setIsEditing(false); // Exit edit mode
-      navigate(`/seller/store-management/product/${id}`); 
+
+      console.log("Product updated:", res.data);
+      alert("Product updated successfully!");
+
+      // Redirect to the product detail page after successful update
+      navigate(`/seller/store-management/product/${id}`);
     } catch (err) {
       console.error("Failed to update product:", err);
       alert("Failed to update product");
@@ -205,6 +232,41 @@ export const ProductDetail = () => {
                     {...register("stockQuantity", { required: "Stock quantity is required" })}
                     className="form-control"
                   />
+                </div>
+
+                {/* Image upload fields */}
+                <div className="form-group">
+                  <label>Image 1</label>
+                  <input
+                    type="file"
+                    onChange={(e) => setImage1(e.target.files[0])}
+                    className="form-control"
+                  />
+                  {product.imageURL1 && !image1 && (
+                    <p>Current Image: <img src={product.imageURL1} alt="Current Image 1" style={{ height: 50, width: 50 }} /></p>
+                  )}
+                </div>
+                <div className="form-group">
+                  <label>Image 2</label>
+                  <input
+                    type="file"
+                    onChange={(e) => setImage2(e.target.files[0])}
+                    className="form-control"
+                  />
+                  {product.imageURL2 && !image2 && (
+                    <p>Current Image: <img src={product.imageURL2} alt="Current Image 2" style={{ height: 50, width: 50 }} /></p>
+                  )}
+                </div>
+                <div className="form-group">
+                  <label>Image 3</label>
+                  <input
+                    type="file"
+                    onChange={(e) => setImage3(e.target.files[0])}
+                    className="form-control"
+                  />
+                  {product.imageURL3 && !image3 && (
+                    <p>Current Image: <img src={product.imageURL3} alt="Current Image 3" style={{ height: 50, width: 50 }} /></p>
+                  )}
                 </div>
 
                 {/* Submit Button */}

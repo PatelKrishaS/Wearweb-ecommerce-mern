@@ -17,10 +17,18 @@ router.get("/", productController.getAllProducts);
 router.get("/user/:userId", productController.getProductsBySeller);
 
 // Get product by ID
-router.get("/getProductById/:id", productController.getProductById); // Add this route
+router.get("/getProductById/:id", productController.getProductById);
 
-// Update a product
-router.put("/update/:id", productController.updateProduct); // Add this route
+// Update a product (with file upload support)
+router.put(
+  "/update/:id",
+  upload.fields([
+    { name: "image1", maxCount: 1 },
+    { name: "image2", maxCount: 1 },
+    { name: "image3", maxCount: 1 },
+  ]),
+  productController.updateProduct
+);
 
 // Delete a product
 router.delete("/delete/:id", productController.deleteProduct);

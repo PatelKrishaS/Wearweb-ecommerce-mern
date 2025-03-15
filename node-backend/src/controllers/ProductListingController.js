@@ -126,13 +126,26 @@ const updateProduct = async (req, res) => {
     const productId = req.params.id;
     const updateData = req.body;
 
-    // Validate required fields
-    if (!updateData.name || !updateData.description || !updateData.baseprice || !updateData.stockQuantity) {
-      return res.status(400).json({ message: "Missing required fields" });
+    // Log the incoming request data
+    console.log("Incoming update data:", updateData);
+
+    // Upload new images to Cloudinary if provided
+    if (req.files?.image1) {
+      updateData.imageURL1 = (await cloudinaryUtil.uploadFileToCloudinary(req.files.image1[0])).secure_url;
+    }
+    if (req.files?.image2) {
+      updateData.imageURL2 = (await cloudinaryUtil.uploadFileToCloudinary(req.files.image2[0])).secure_url;
+    }
+    if (req.files?.image3) {
+      updateData.imageURL3 = (await cloudinaryUtil.uploadFileToCloudinary(req.files.image3[0])).secure_url;
     }
 
     // Find and update the product
-    const updatedProduct = await productModel.findByIdAndUpdate(productId, updateData, { new: true });
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      productId,
+      { $set: updateData }, // Use $set to update only the provided fields
+      { new: true }
+    );
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
