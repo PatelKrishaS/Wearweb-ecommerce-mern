@@ -25,6 +25,7 @@ import LandingPage from './components/common/LandingPage'
 import PrivateRoutes from './hooks/PrivateRoutes'
 import { ViewMyProducts } from './components/seller/ViewMyProducts'
 import { ProductDetail } from './components/seller/ProductDetail'
+import { UpdateAddress } from './components/customer/UpdateAddress'
 
 
 function App() {
@@ -69,7 +70,8 @@ function App() {
               <Route path='dashboard' element= {<CustomerDashboard/>}></Route>
               <Route path='account'>
                 <Route path='my-profile' element={<CustomerProfile/>} /> 
-                <Route path='addresses' element={<CustomerAddressPage/>} /> 
+                <Route path='addresses' element={<CustomerAddressPage/>} />
+                <Route path="update-address/:id" element={<UpdateAddress />} /> 
               </Route>
             </Route>
           </Route>

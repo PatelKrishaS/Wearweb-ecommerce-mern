@@ -93,6 +93,28 @@ const updateUserAddress = async (req, res) => {
   }
 };
 
+// Get a single address by ID
+const getAddressById = async (req, res) => {
+  try {
+    const addressId = req.params.id;
+    const address = await userAddressModel.findById(addressId)
+      .populate("cityId")
+      .populate("stateId")
+      .populate("areaId");
+
+    if (!address) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+
+    res.status(200).json({
+      message: "Address fetched successfully",
+      data: address,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Delete a user address
 const deleteUserAddress = async (req, res) => {
   try {
@@ -117,5 +139,6 @@ module.exports = {
   getUserAddresses,
   getAllUserAddresses,
   updateUserAddress,
+  getAddressById,
   deleteUserAddress,
 };

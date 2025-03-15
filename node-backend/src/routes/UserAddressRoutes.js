@@ -11,6 +11,9 @@ router.get("/user/:userId", userAddressController.getUserAddresses);
 // Get all user addresses (for all users)
 router.get("/all", userAddressController.getAllUserAddresses);
 
+// Get a single address by ID
+router.get("/:id", userAddressController.getAddressById);
+
 // Update an address
 router.put("/update/:id", userAddressController.updateUserAddress);
 

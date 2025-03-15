@@ -1,14 +1,16 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Bounce, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export const CustomerAddressPage = () => {
-  const [states, setStates] = useState([]); // State to store all states
-  const [cities, setCities] = useState([]); // State to store cities for the selected state
-  const [areas, setAreas] = useState([]); // State to store areas for the selected city
-  const [showForm, setShowForm] = useState(false); // State to toggle form visibility
-  const [userAddresses, setUserAddresses] = useState([]); // State to store user addresses
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [userAddresses, setUserAddresses] = useState([]);
+  const navigate = useNavigate();
 
   // Fetch all states
   const fetchStates = async () => {
@@ -51,7 +53,7 @@ export const CustomerAddressPage = () => {
       }
 
       const res = await axios.get(`/user-address/user/${userId}`);
-      setUserAddresses(res.data.data); // Assuming the API returns { data: [...] }
+      setUserAddresses(res.data.data);
     } catch (err) {
       console.error("Failed to fetch user addresses:", err);
     }
@@ -74,7 +76,6 @@ export const CustomerAddressPage = () => {
         return;
       }
 
-      // Prepare the payload with the correct field names
       const payload = {
         userId,
         title: data.title,
@@ -85,21 +86,17 @@ export const CustomerAddressPage = () => {
         cityId: data.cityId,
         stateId: data.stateId,
         areaId: data.areaId,
-        zipCode: data.zipCode, // Use zipCode instead of pincode
+        zipCode: data.zipCode,
       };
-
-      console.log("Data being sent:", payload); // Log the payload
 
       const res = await axios.post("http://localhost:3000/user-address/add", payload, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log("Response from server:", res.data); // Log the response
 
       reset();
       setShowForm(false);
-      // alert("Address added successfully");
       toast.success('Address added successfully!', {
         position: "top-center",
         autoClose: 2000,
@@ -110,15 +107,13 @@ export const CustomerAddressPage = () => {
         progress: undefined,
         theme: "dark",
         transition: Bounce,
-        });
-
-    setTimeout(() => toast.dismiss(id), 2000);
+      });
 
       // Refresh the list of addresses after adding a new one
       fetchUserAddresses();
     } catch (err) {
-      console.error("Failed to save address:", err.response?.data || err.message); // Log the error
-      alert("Failed to add address");
+      console.error("Failed to save address:", err.response?.data || err.message);
+      toast.error('Failed to add address!');
     }
   };
 
@@ -243,7 +238,7 @@ export const CustomerAddressPage = () => {
               <div className="form-group">
                 <label>Area</label>
                 <select
-                  {...register("areaId")} // Optional field
+                  {...register("areaId")}
                   className="form-control"
                   disabled={!areas.length}
                 >
@@ -298,6 +293,15 @@ export const CustomerAddressPage = () => {
                 <p>
                   {address.cityId?.cityName}, {address.stateId?.stateName}, {address.zipCode}
                 </p>
+                <button
+                  className="btn btn-warning"
+                  onClick={() => {
+                    console.log("Edit button clicked"); // Debugging
+                    navigate(`/customer/account/update-address/${address._id}`); // Absolute path
+                  }}
+                >
+                  Edit
+                </button>
               </div>
             ))}
           </div>

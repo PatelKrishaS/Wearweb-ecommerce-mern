@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Bounce, toast } from 'react-toastify';
 
 export const ProductDetail = () => {
   const { id } = useParams(); // Get product ID from URL
@@ -78,14 +79,22 @@ export const ProductDetail = () => {
       });
 
       console.log("Product updated:", res.data);
-      alert("Product updated successfully!");
-
+      toast.success('Product updated successfully!', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
       // Redirect to the product detail page after successful update
       navigate(`/seller/store-management/product/${id}`);
     } catch (err) {
       console.error("Failed to update product:", err);
-      alert("Failed to update product");
-    }
+    toast.error('Failed to update product!');    }
   };
 
   if (!product) {
