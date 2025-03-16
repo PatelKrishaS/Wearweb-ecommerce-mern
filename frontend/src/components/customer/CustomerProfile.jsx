@@ -1,143 +1,190 @@
-import { useState } from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 export const CustomerProfile = () => {
+  const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState({
-    fullName: "Krisha Patel",
-    email: "krisha@example.com",
-    phone: "123-456-7890",
-    bio: "Software Engineer & Tech Enthusiast",
-  });
+  const { register, handleSubmit, setValue } = useForm();
+  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({ ...userData });
+  // Fetch user details on component mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const userId = localStorage.getItem("userId");
+      console.log("User ID from localStorage:", userId); // Debugging
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+      if (!userId || userId === "null") {
+        toast.error("User ID not found. Please log in again.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        navigate("/login"); // Redirect to login page
+        return;
+      }
+
+      try {
+        const res = await axios.get(`http://localhost:3000/user/${userId}`);
+        console.log("API Response:", res.data); // Debugging
+        setUser(res.data.data);
+        setValue("name", res.data.data.name);
+        setValue("phoneNumber", res.data.data.phoneNumber);
+        setValue("email", res.data.data.email);
+        setValue("gender", res.data.data.gender);
+        setValue("age", res.data.data.age);
+      } catch (err) {
+        console.error("Failed to fetch user details:", err);
+        if (err.response) {
+          console.error("Server responded with:", err.response.status);
+        } else if (err.request) {
+          console.error("No response received from server");
+        } else {
+          console.error("Error setting up the request:", err.message);
+        }
+        toast.error("Failed to fetch user details. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    };
+    fetchUserDetails();
+  }, [setValue, navigate]);
+
+  // Handle form submission for updating user details
+  const submitHandler = async (data) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId || userId === "null") {
+        toast.error("User ID not found. Please log in again.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        return;
+      }
+
+      const res = await axios.put(`http://localhost:3000/user/${userId}`, data);
+      console.log("User updated:", res.data);
+      toast.success("Profile updated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      // Refetch user details to update the UI
+      const updatedUser = await axios.get(`http://localhost:3000/user/${userId}`);
+      setUser(updatedUser.data.data);
+
+      // Exit edit mode
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      toast.error("Failed to update profile. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
-  const handleSave = () => {
-    setUserData(formData);
-    setIsEditing(false);
-  };
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <>
     <div className="container mt-5">
-      <div className="card shadow">
-        <div className="card-body">
-          <h2 className="card-title text-center mb-4">User Profile</h2>
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <div className="card p-4 shadow">
+            <h2 className="text-center mb-4">Customer Profile</h2>
 
-          {isEditing ? (
-            <div>
-              {/* Edit Form */}
-              <div className="mb-3">
-                <label className="form-label">Full Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                />
+            {/* Display user details */}
+            {!isEditing ? (
+              <div>
+                <p><strong>Name:</strong> {user.name}</p>
+                <p><strong>Phone Number:</strong> {user.phoneNumber}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Gender:</strong> {user.gender}</p>
+                <p><strong>Age:</strong> {user.age}</p>
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={() => setIsEditing(true)} // Enter edit mode
+                >
+                  Edit Profile
+                </button>
               </div>
+            ) : (
+              // Edit form
+              <form onSubmit={handleSubmit(submitHandler)}>
+                {/* Name */}
+                <div className="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    {...register("name", { required: "Name is required" })}
+                    className="form-control"
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
+                {/* Phone Number */}
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <input
+                    type="text"
+                    {...register("phoneNumber", { required: "Phone Number is required" })}
+                    className="form-control"
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label">Phone</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </div>
+                {/* Email */}
+                <div className="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    {...register("email", { required: "Email is required" })}
+                    className="form-control"
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label">Bio</label>
-                <textarea
-                  className="form-control"
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
+                {/* Gender */}
+                <div className="form-group">
+                  <label>Gender</label>
+                  <select
+                    {...register("gender", { required: "Gender is required" })}
+                    className="form-control"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
 
-              <button className="btn btn-primary me-2" onClick={handleSave}>
-                Save
-              </button>
-              <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div>
-              {/* Display User Details */}
-              <p><strong>Full Name:</strong> {userData.fullName}</p>
-              <p><strong>Email:</strong> {userData.email}</p>
-              <p><strong>Phone:</strong> {userData.phone}</p>
-              <p><strong>Bio:</strong> {userData.bio}</p>
+                {/* Age */}
+                <div className="form-group">
+                  <label>Age</label>
+                  <input
+                    type="number"
+                    {...register("age", { min: 1, required: "Age is required" })}
+                    className="form-control"
+                  />
+                </div>
 
-              <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
-                Edit Profile
-              </button>
-            </div>
-          )}
+                {/* Submit Button */}
+                <button type="submit" className="btn btn-success w-100 mt-3">
+                  Update Profile
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary w-100 mt-2"
+                  onClick={() => setIsEditing(false)} // Cancel edit mode
+                >
+                  Cancel
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>
-
-    <div className="card card-primary card-outline mb-4">
-                  {/* <!--begin::Header--> */}
-                  <div className="card-header"><div class="card-title">Quick Example</div></div>
-                  {/* <!--end::Header--> */}
-                  {/* <!--begin::Form--> */}
-                  <form>
-                    {/* <!--begin::Body--> */}
-                    <div className="card-body">
-                      <div className="mb-3">
-                        <label for="exampleInputEmail1" className="form-label">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"/>
-                        <div id="emailHelp" className="form-text">
-                          We'll never share your email with anyone else.
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label for="exampleInputPassword1" className="form-label">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1"/>
-                      </div>
-                      <div className="input-group mb-3">
-                        <input type="file" class="form-control" id="inputGroupFile02"/>
-                        <label class="input-group-text" htmlFor="inputGroupFile02">Upload</label>
-                      </div>
-                      <div className="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1"/>
-                        <label class="htmlForm-check-label" for="exampleCheck1">Check me out</label>
-                      </div>
-                    </div>
-                    {/* <!--end::Body--> */}
-                    {/* <!--begin::Footer--> */}
-                    <div className="card-footer">
-                      <button type="submit" className="btn btn-primary">Submit</button>
-                    </div>
-                    {/* <!--end::Footer--> */}
-                  </form>
-                  {/* <!--end::Form--> */}
-                </div>
-    </>
   );
 };
-
-
-

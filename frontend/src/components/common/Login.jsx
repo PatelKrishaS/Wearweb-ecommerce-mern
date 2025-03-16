@@ -16,65 +16,45 @@ export const Login = () => {
     //     console.log(`Login attempt with Email: ${data.email}`);
     // };
 
-    const submitHandler = async(data) => {
-        // console.log("User Data:", { ...data, password: "********" });
-        //login api... http://localhost:3000/user/login
-        try{
-        const res = await axios.post("/user/login", data)
-        // console.log("API Response:", res.data); // Log the response
-
+    const submitHandler = async (data) => {
+    try {
+        const res = await axios.post("/user/login", data);
         console.log(res.data);
-            if(res.status === 200){
-                // alert("Login Success")
-                toast.success('User logged in successfully!', {
-                            position: "top-center",
-                            autoClose: 2000,
-                            hideProgressBar: false,
-                            closeOnClick: false,
-                            pauseOnHover: false,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "dark",
-                            transition: Bounce,
-                            });
-                        
-                setTimeout(() => toast.dismiss(id), 2000);
 
-                localStorage.setItem("id", res.data.data._id)
-                localStorage.setItem("role",res.data.data.roleId.name)
+        if (res.status === 200) {
+            const toastId = toast.success('User logged in successfully!', {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+                });
+            
+            setTimeout(() => toast.dismiss(toastId), 2000);
+            // Set userId in localStorage
+            localStorage.setItem("userId", res.data.data._id); // Updated key to "userId"
+            localStorage.setItem("role", res.data.data.roleId.name);
 
-                if(res.data.data.roleId.name === "CUSTOMER"){
-                    navigate("/customer") //check in app.js
-                } else if(res.data.data.roleId.name === "SELLER"){
-                    navigate("/seller")
-                } else if(res.data.data.roleId.name === "ADMIN"){
-                    navigate("/admin")
-                } else{
-                    navigate("/login");
-                }
-            }
-            else{
-                // alert("Login Failed")
-                toast.success('Login Failed', {
-                    position: "top-center",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                    transition: Bounce,
-                    });
+            // Redirect based on role
+            if (res.data.data.roleId.name === "CUSTOMER") {
+                navigate("/customer");
+            } else if (res.data.data.roleId.name === "SELLER") {
+                navigate("/seller");
+            } else if (res.data.data.roleId.name === "ADMIN") {
+                navigate("/admin");
+            } else {
+                navigate("/login");
             }
         }
-        catch(error){
-            console.error("Login Failed: ", error);
-            alert("Login Failed. Please check your credentials and try again.")
-        }
-        
-    };
-
+    } catch (error) {
+        console.error("Login Failed: ", error);
+        toast.error("Login Failed. Please check your credentials and try again.");
+    }
+};
     const validationSchema = {
         emailValidator: {
             required: {
