@@ -14,7 +14,7 @@ export const CustomerProfile = () => {
   // Fetch user details on component mount
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem("id");
       console.log("User ID from localStorage:", userId); // Debugging
 
       if (!userId || userId === "null") {
@@ -56,7 +56,7 @@ export const CustomerProfile = () => {
   // Handle form submission for updating user details
   const submitHandler = async (data) => {
     try {
-      const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem("id");
       if (!userId || userId === "null") {
         toast.error("User ID not found. Please log in again.", {
           position: "top-right",

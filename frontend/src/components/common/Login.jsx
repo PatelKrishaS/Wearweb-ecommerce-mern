@@ -36,8 +36,9 @@ export const Login = () => {
             
             setTimeout(() => toast.dismiss(toastId), 2000);
             // Set userId in localStorage
-            localStorage.setItem("userId", res.data.data._id); // Updated key to "userId"
+            localStorage.setItem("id", res.data.data._id); 
             localStorage.setItem("role", res.data.data.roleId.name);
+            localStorage.removeItem("userId");
 
             // Redirect based on role
             if (res.data.data.roleId.name === "CUSTOMER") {
