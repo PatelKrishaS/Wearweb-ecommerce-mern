@@ -1,6 +1,19 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export const SellerNavbar = ({ toggleSidebar }) => {
+
+    const navigate = useNavigate(); // Initialize useNavigate
+
+  // Handle sign-out
+  const handleSignOut = () => {
+    // Clear localStorage
+    localStorage.removeItem("id");
+    localStorage.removeItem("role");
+
+    // Redirect to the login page
+    navigate("/login"); // Use navigate for redirection
+  };
   return (
     <nav className="app-header navbar navbar-expand bg-body">
         {/*begin::Container*/}
@@ -258,8 +271,12 @@ export const SellerNavbar = ({ toggleSidebar }) => {
                 <a href="#" className="btn btn-default btn-flat">
                     Profile
                 </a>
-                <a href="#" className="btn btn-default btn-flat float-end">
-                    Sign out
+                <a
+                  href="#"
+                  className="btn btn-default btn-flat float-end"
+                  onClick={handleSignOut} 
+                >
+                  Sign out
                 </a>
                 </li>
                 {/*end::Menu Footer*/}
