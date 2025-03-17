@@ -60,32 +60,36 @@ function App() {
       />
 
         <Routes>
-          <Route path='/login' element={<Login/>}></Route>
-          <Route path='/signup' element={<Signup/>}></Route>
-          <Route path="/" element ={<LandingPage/>}></Route>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<LandingPage />} />
 
-          <Route path="" element={<PrivateRoutes/>}>
-            <Route path='/customer' element={<CustomerSidebar/>}>
-              <Route path='profile' element= {<CustomerProfile/>}></Route>
-              <Route path='dashboard' element= {<CustomerDashboard/>}></Route>
-              <Route path='account'>
-                <Route path='my-profile' element={<CustomerProfile/>} /> 
-                <Route path='addresses' element={<CustomerAddressPage/>} />
-                <Route path="update-address/:id" element={<UpdateAddress />} /> 
+          {/* Protected Routes */}
+          <Route element={<PrivateRoutes />}>
+            <Route path="/customer" element={<CustomerSidebar />}>
+              <Route path="profile" element={<CustomerProfile />} />
+              <Route path="dashboard" element={<CustomerDashboard />} />
+              <Route path="account">
+                <Route path="my-profile" element={<CustomerProfile />} />
+                <Route path="addresses" element={<CustomerAddressPage />} />
+                <Route path="update-address/:id" element={<UpdateAddress />} />
               </Route>
             </Route>
-          </Route>
-          <Route path='/admin' element={<AdminSidebar/>}>
-            <Route path='dashboard' element= {<AdminDashboard/>}></Route>
-            <Route path='profile' element= {<AdminProfile/>}></Route>
-          </Route>
-          <Route path='/seller' element={<SellerSidebar/>}>
-            <Route path='dashboard' element= {<SellerDashboard/>}></Route>
-            <Route path='profile' element= {<SellerProfile/>}></Route>
-            <Route path='store-management'>
-              <Route path='product-listing' element={<ProductListing />} />
-              <Route path='view-my-products' element={<ViewMyProducts />} />
-              <Route path='product/:id' element={<ProductDetail />} />
+
+            <Route path="/admin" element={<AdminSidebar />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="profile" element={<AdminProfile />} />
+            </Route>
+
+            <Route path="/seller" element={<SellerSidebar />}>
+              <Route path="dashboard" element={<SellerDashboard />} />
+              <Route path="profile" element={<SellerProfile />} />
+              <Route path="store-management">
+                <Route path="product-listing" element={<ProductListing />} />
+                <Route path="view-my-products" element={<ViewMyProducts />} />
+                <Route path="product/:id" element={<ProductDetail />} />
+              </Route>
             </Route>
           </Route>
         </Routes>
