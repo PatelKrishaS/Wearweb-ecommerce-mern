@@ -3,6 +3,7 @@
 const userModel = require("../models/UserModel")
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
+const { uploadFileToCloudinary } = require("../utils/CloudinaryUtil"); 
 
 const loginUser = async (req,res) => {
     //req.body email and password: password
@@ -131,35 +132,36 @@ const addUser = async(req, res) => {
 // Update user by ID
 const updateUser = async (req, res) => {
     try {
-        const userId = req.params.id;
-        const updateData = req.body;
-
-        // Check if the user exists
-        const user = await userModel.findById(userId);
-        if (!user) {
-            return res.status(404).json({
-                message: "User not found.",
-            });
-        }
-
-        // Update the user
-        const updatedUser = await userModel.findByIdAndUpdate(userId, updateData, {
-            new: true, // Return the updated document
-            runValidators: true, // Run Mongoose validators on update
-        });
-
-        res.status(200).json({
-            message: "User updated successfully!",
-            data: updatedUser,
-        });
+      const userId = req.params.id;
+      const updateData = req.body;
+  
+      // Check if the user exists
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+  
+      // Upload profile picture to Cloudinary if provided
+      if (req.file) {
+        const result = await uploadFileToCloudinary(req.file, "wear-web/users"); // Use "wear-web/users" folder
+        updateData.profilePicture = result.secure_url; // Save the Cloudinary URL
+      }
+  
+      // Update the user
+      const updatedUser = await userModel.findByIdAndUpdate(userId, updateData, {
+        new: true, // Return the updated document
+        runValidators: true, // Run Mongoose validators on update
+      });
+  
+      res.status(200).json({
+        message: "User updated successfully!",
+        data: updatedUser,
+      });
     } catch (err) {
-        console.error("Failed to update user:", err);
-        res.status(500).json({
-            message: "Internal Server Error",
-            error: err.message,
-        });
+      console.error("Failed to update user:", err);
+      res.status(500).json({ message: "Internal Server Error", error: err.message });
     }
-};
+  };
 
 //deleteUserById
 const deleteUserById = async(req, res) => {

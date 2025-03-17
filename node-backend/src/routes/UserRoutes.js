@@ -1,8 +1,6 @@
-//router
 const routes = require("express").Router()
-
-//controller --> userController
 const userController = require("../controllers/UserController")
+const upload = require("../utils/MulterConfig");
 
 // routes.post("/user", userController.addUser)
 routes.get("/users", userController.getAllUsers)
@@ -10,6 +8,6 @@ routes.delete("/user/:id", userController.deleteUserById)
 routes.get("/user/:id", userController.getUserById)
 routes.post("/user", userController.signup)
 routes.post("/user/login", userController.loginUser)
-routes.put("/user/:id", userController.updateUser);
-
+// Update user by ID (with profile picture upload and other details)
+routes.put("/user/:id", upload.single("profilePicture"), userController.updateUser);
 module.exports = routes

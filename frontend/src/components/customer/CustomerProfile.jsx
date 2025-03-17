@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 export const CustomerProfile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null); // State for profile picture file
   const { register, handleSubmit, setValue } = useForm();
   const navigate = useNavigate();
 
@@ -16,6 +17,7 @@ export const CustomerProfile = () => {
     const fetchUserDetails = async () => {
       const userId = localStorage.getItem("id");
       console.log("User ID from localStorage:", userId); // Debugging
+     
 
       if (!userId || userId === "null") {
         toast.error("User ID not found. Please log in again.", {
@@ -65,7 +67,23 @@ export const CustomerProfile = () => {
         return;
       }
 
-      const res = await axios.put(`http://localhost:3000/user/${userId}`, data);
+      // Prepare FormData for file upload and other form data
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("email", data.email);
+      formData.append("gender", data.gender);
+      formData.append("age", data.age);
+      if (profilePicture) {
+        formData.append("profilePicture", profilePicture); // Append the file
+      }
+
+      const res = await axios.put(`http://localhost:3000/user/${userId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Required for file uploads
+        },
+      });
+
       console.log("User updated:", res.data);
       toast.success("Profile updated successfully!", {
         position: "top-right",
@@ -100,7 +118,14 @@ export const CustomerProfile = () => {
 
             {/* Display user details */}
             {!isEditing ? (
-              <div>
+              <div >
+                {user.profilePicture && (
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    style={{ width: "100px", height: "100px", borderRadius: "50%", position:"relative", left:"40%" }}
+                  />
+                )}
                 <p><strong>Name:</strong> {user.name}</p>
                 <p><strong>Phone Number:</strong> {user.phoneNumber}</p>
                 <p><strong>Email:</strong> {user.email}</p>
@@ -165,6 +190,16 @@ export const CustomerProfile = () => {
                   <input
                     type="number"
                     {...register("age", { min: 1, required: "Age is required" })}
+                    className="form-control"
+                  />
+                </div>
+
+                {/* Profile Picture */}
+                <div className="form-group">
+                  <label>Profile Picture</label>
+                  <input
+                    type="file"
+                    onChange={(e) => setProfilePicture(e.target.files[0])} // Set the file in state
                     className="form-control"
                   />
                 </div>
