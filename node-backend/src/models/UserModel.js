@@ -8,7 +8,7 @@ const userSchema = new Schema({
     },
     age:{
         type:Number,
-        min: 1
+        min: 1 
     },
     gender: {
         type: String,
@@ -40,6 +40,7 @@ const userSchema = new Schema({
         type:String,
         unique:true,
         required: true,
+        lowercase: true,
     }
 
 },{ timestamps: true })

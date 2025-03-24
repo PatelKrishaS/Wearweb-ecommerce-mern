@@ -38,11 +38,12 @@ export const Login = () => {
             // Set userId in localStorage
             localStorage.setItem("id", res.data.data._id); 
             localStorage.setItem("role", res.data.data.roleId.name);
+            localStorage.setItem("loginTime", new Date().getTime());
             localStorage.removeItem("userId");
 
             // Redirect based on role
             if (res.data.data.roleId.name === "CUSTOMER") {
-                navigate("/customer");
+                navigate("/customer/dashboard");
             } else if (res.data.data.roleId.name === "SELLER") {
                 navigate("/seller");
             } else if (res.data.data.roleId.name === "ADMIN") {

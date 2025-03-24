@@ -1,8 +1,28 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import axios from 'axios'; // Import axios for making HTTP requests
 
 export const CustomerNavbar = ({ toggleSidebar }) => {
   const navigate = useNavigate(); // Initialize useNavigate
+  const [user, setUser] = useState(null); // State to store user data
+
+  // Fetch user data when the component mounts
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userId = localStorage.getItem("id"); // Get the user ID from localStorage
+        if (userId) {
+          const response = await axios.get(`http://localhost:3000/user/${userId}`); // Fetch user data
+          setUser(response.data.data); // Set the user data in state
+         
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   // Handle sign-out
   const handleSignOut = () => {
@@ -31,36 +51,21 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
               <i className="bi bi-list" />
             </a>
           </li>
-          <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
-              Shop
+          <li className="nav-item ">
+            <a className="nav-link " href="#" id="shopDropdown" role="button" >
+              HOME
             </a>
-            <ul className="dropdown-menu" aria-labelledby="shopDropdown">
-              <li><a className="dropdown-item" href="#">New Arrivals</a></li>
-              <li><a className="dropdown-item" href="#">Categories</a></li>
-              <li><a className="dropdown-item" href="#">Deals & Promotions</a></li>
-            </ul>
+           
           </li>
-          <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-              Account
+          <li className="nav-item ">
+            <a className="nav-link " href="#" id="accountDropdown" role="button" >
+              COLLECTION
             </a>
-            <ul className="dropdown-menu" aria-labelledby="accountDropdown">
-              <li><a className="dropdown-item" href="#">Orders</a></li>
-              <li><a className="dropdown-item" href="#">Wishlist</a></li>
-              <li><a className="dropdown-item" href="#">Address Book</a></li>
-              <li><a className="dropdown-item" href="#">Payment Methods</a></li>
-            </ul>
           </li>
-          <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle" href="#" id="helpDropdown" role="button" data-bs-toggle="dropdown">
-              Help
+          <li className="nav-item ">
+            <a className="nav-link " href="#" id="helpDropdown" role="button" >
+              CONTACT
             </a>
-            <ul className="dropdown-menu" aria-labelledby="helpDropdown">
-              <li><a className="dropdown-item" href="#">FAQs</a></li>
-              <li><a className="dropdown-item" href="#">Contact Support</a></li>
-              <li><a className="dropdown-item" href="#">Return Policy</a></li>
-            </ul>
           </li>
         </ul>
         {/*end::Start Navbar Links*/}
@@ -82,139 +87,21 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
           </li>
           {/*end::Navbar Search*/}
           {/*begin::Messages Dropdown Menu*/}
-          <li className="nav-item dropdown">
-            <a className="nav-link" data-bs-toggle="dropdown" href="#">
-              <i className="bi bi-chat-text" />
-              <span className="navbar-badge badge text-bg-danger">3</span>
-            </a>
-            <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-              <a href="#" className="dropdown-item">
-                {/*begin::Message*/}
-                <div className="d-flex">
-                  <div className="flex-shrink-0">
-                    <img
-                      src="../../dist/assets/img/user1-128x128.jpg"
-                      alt="User Avatar"
-                      className="img-size-50 rounded-circle me-3"
-                    />
-                  </div>
-                  <div className="flex-grow-1">
-                    <h3 className="dropdown-item-title">
-                      Brad Diesel
-                      <span className="float-end fs-7 text-danger">
-                        <i className="bi bi-star-fill" />
-                      </span>
-                    </h3>
-                    <p className="fs-7">Call me whenever you can...</p>
-                    <p className="fs-7 text-secondary">
-                      <i className="bi bi-clock-fill me-1" /> 4 Hours Ago
-                    </p>
-                  </div>
-                </div>
-                {/*end::Message*/}
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                {/*begin::Message*/}
-                <div className="d-flex">
-                  <div className="flex-shrink-0">
-                    <img
-                      src="../../dist/assets/img/user8-128x128.jpg"
-                      alt="User Avatar"
-                      className="img-size-50 rounded-circle me-3"
-                    />
-                  </div>
-                  <div className="flex-grow-1">
-                    <h3 className="dropdown-item-title">
-                      John Pierce
-                      <span className="float-end fs-7 text-secondary">
-                        <i className="bi bi-star-fill" />
-                      </span>
-                    </h3>
-                    <p className="fs-7">I got your message bro</p>
-                    <p className="fs-7 text-secondary">
-                      <i className="bi bi-clock-fill me-1" /> 4 Hours Ago
-                    </p>
-                  </div>
-                </div>
-                {/*end::Message*/}
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                {/*begin::Message*/}
-                <div className="d-flex">
-                  <div className="flex-shrink-0">
-                    <img
-                      src="../../dist/assets/img/user3-128x128.jpg"
-                      alt="User Avatar"
-                      className="img-size-50 rounded-circle me-3"
-                    />
-                  </div>
-                  <div className="flex-grow-1">
-                    <h3 className="dropdown-item-title">
-                      Nora Silvester
-                      <span className="float-end fs-7 text-warning">
-                        <i className="bi bi-star-fill" />
-                      </span>
-                    </h3>
-                    <p className="fs-7">The subject goes here</p>
-                    <p className="fs-7 text-secondary">
-                      <i className="bi bi-clock-fill me-1" /> 4 Hours Ago
-                    </p>
-                  </div>
-                </div>
-                {/*end::Message*/}
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item dropdown-footer">
-                See All Messages
-              </a>
-            </div>
-          </li>
+          
           {/*end::Messages Dropdown Menu*/}
           {/*begin::Notifications Dropdown Menu*/}
-          <li className="nav-item dropdown">
-            <a className="nav-link" data-bs-toggle="dropdown" href="#">
-              <i className="bi bi-bell-fill" />
-              <span className="navbar-badge badge text-bg-warning">15</span>
-            </a>
-            <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-              <span className="dropdown-item dropdown-header">
-                15 Notifications
-              </span>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                <i className="bi bi-envelope me-2" /> 4 new messages
-                <span className="float-end text-secondary fs-7">3 mins</span>
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                <i className="bi bi-people-fill me-2" /> 8 friend requests
-                <span className="float-end text-secondary fs-7">12 hours</span>
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                <i className="bi bi-file-earmark-fill me-2" /> 3 new reports
-                <span className="float-end text-secondary fs-7">2 days</span>
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item dropdown-footer">
-                {" "}
-                See All Notifications{" "}
-              </a>
-            </div>
-          </li>
+          
           {/*end::Notifications Dropdown Menu*/}
           {/*begin::Fullscreen Toggle*/}
           <li className="nav-item">
-            <a className="nav-link" href="#" data-lte-toggle="fullscreen">
+            {/* <a className="nav-link" href="#" data-lte-toggle="fullscreen">
               <i data-lte-icon="maximize" className="bi bi-arrows-fullscreen" />
               <i
                 data-lte-icon="minimize"
                 className="bi bi-fullscreen-exit"
                 style={{ display: "none" }}
               />
-            </a>
+            </a> */}
           </li>
           {/*end::Fullscreen Toggle*/}
           {/*begin::User Menu Dropdown*/}
@@ -224,49 +111,48 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
               className="nav-link dropdown-toggle"
               data-bs-toggle="dropdown"
             >
-              <img
-                src="../../dist/assets/img/user2-160x160.jpg"
-                className="user-image rounded-circle shadow"
-                alt="User Image"
-              />
-              <span className="d-none d-md-inline">Alexander Pierce</span>
+              {user?.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  className="user-image rounded-circle shadow"
+                  alt="User Image"
+                />
+              ) : (
+                <img
+                  src="../../dist/assets/img/user2-160x160.jpg"
+                  className="user-image rounded-circle shadow"
+                  alt="User Image"
+                />
+              )}
+              <span className="d-none d-md-inline">{user?.name || "Alexander Pierce"}</span>
             </a>
             <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
               {/*begin::User Image*/}
               <li className="user-header text-bg-primary">
-                <img
-                  src="../../dist/assets/img/user2-160x160.jpg"
-                  className="rounded-circle shadow"
-                  alt="User Image"
-                />
+                {user?.profilePicture ? (
+                  <img
+                    src={user.profilePicture}
+                    className="rounded-circle shadow"
+                    alt="User Image"
+                  />
+                ) : (
+                  <img
+                    src="../../dist/assets/img/user2-160x160.jpg"
+                    className="rounded-circle shadow"
+                    alt="User Image"
+                  />
+                )}
                 <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2023</small>
+                  {user?.name || "User's name"} 
+                  <small>...</small>
                 </p>
               </li>
               {/*end::User Image*/}
-              {/*begin::Menu Body*/}
-              <li className="user-body">
-                {/*begin::Row*/}
-                <div className="row">
-                  <div className="col-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div className="col-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div className="col-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-                {/*end::Row*/}
-              </li>
-              {/*end::Menu Body*/}
-              {/*begin::Menu Footer*/}
+                
               <li className="user-footer">
-                <a href="#" className="btn btn-default btn-flat">
+                <Link to="/customer/profile" className="btn btn-default btn-flat">
                   Profile
-                </a>
+                </Link>
                 <a
                   href="#"
                   className="btn btn-default btn-flat float-end"

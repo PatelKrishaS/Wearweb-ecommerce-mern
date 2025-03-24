@@ -113,7 +113,7 @@ const signup = async (req, res) => {
 //getAllUsers
 const getAllUsers = async(req, res) => {
     const users = await userModel.find().populate("roleId");
-    res.json({
+    res.status(200).json({
         message: "Users fetched successfully...",
         data: users
     });
@@ -179,7 +179,7 @@ const getUserById =async(req, res) => {
 
     const foundUser = await userModel.findById(req.params.id)
     res.json({
-      message:"role fetched..",
+      message:"User fetched..",
       data:foundUser
     })
 }

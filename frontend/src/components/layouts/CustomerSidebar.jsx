@@ -61,12 +61,12 @@ export const CustomerSidebar = () => {
                   </p>
                 </a>
                 <ul id="platform-menu" className={`nav nav-treeview collapse ${openMenus.platform ? 'show' : ''}`}>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                   <Link to="/customer/account/my-profile" className="nav-link"> 
                       <i className="nav-icon bi bi-circle"></i>
                       <p>My Profile</p>
                     </Link>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
