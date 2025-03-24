@@ -4,6 +4,7 @@ const userModel = require("../models/UserModel")
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const { uploadFileToCloudinary } = require("../utils/CloudinaryUtil"); 
+const { sendingMail } = require("../utils/MailUtil");
 
 const loginUser = async (req,res) => {
     //req.body email and password: password
@@ -70,31 +71,20 @@ const signup = async (req, res) => {
         const createdUser = await userModel.create(req.body);
 
         // Send welcome email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: "kaizennova55@gmail.com", 
-                pass: "dilt lfre vota yjpl" // App Password
-            }
-        });
+        const emailHtml = `
+            <h1>Welcome to Wear Web!</h1>
+            <p>Dear Fashion Enthusiast,</p>
+            <p>Thank you for signing up with <strong>Wear Web</strong>—your ultimate destination for the latest trends in fashion!</p>
+            <p>Explore a curated collection of stylish apparel, accessories, and more. Stay ahead of the trends with exclusive deals, personalized recommendations, and seamless shopping.</p>
+            <p>Have any questions or need styling tips? Our support team is here to help!</p>
+            <p>Happy shopping!</p>
+            <p><strong>The Wear Web Team</strong></p>
+        `;
 
-        const mailOptions = {
-            from: 'kaizennova55@gmail.com',
-            to: email,
-            subject: 'Welcome to Wear Web!',
-            html: `
-                <h1>Welcome to Wear Web!</h1>
-                <p>Dear Fashion Enthusiast,</p>
-                <p>Thank you for signing up with <strong>Wear Web</strong>—your ultimate destination for the latest trends in fashion!</p>
-                <p>Explore a curated collection of stylish apparel, accessories, and more. Stay ahead of the trends with exclusive deals, personalized recommendations, and seamless shopping.</p>
-                <p>Have any questions or need styling tips? Our support team is here to help!</p>
-                <p>Happy shopping!</p>
-                <p><strong>The Wear Web Team</strong></p>
-            `
-        };
-
-        await transporter.sendMail(mailOptions);
+        await sendingMail(email, 'Welcome to Wear Web!', emailHtml);
         console.log("✅ Welcome email sent to:", email);
+
+        
 
         res.status(201).json({
             message: "User created successfully!",

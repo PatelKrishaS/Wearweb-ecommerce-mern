@@ -39,10 +39,10 @@ export const CustomerSidebar = () => {
       <CustomerNavbar toggleSidebar={toggleSidebar}/>
       <aside className={`app-sidebar bg-body-secondary  shadow ${
             isSidebarOpen ? "open" : "d-none"}`} data-bs-theme="dark" >
-        <div className="sidebar-brand" style={{height:'80px'}}>
+        <div className="sidebar-brand" style={{height:'57px'}}>
           <a href="./index.html" className="brand-link">
-            <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='73px'/>
-            <span className="brand-text fw-light">USER</span>
+            <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='72px'/>
+            {/* <span className="brand-text fw-light">USER</span> */}
           </a>
         </div>
 
@@ -80,7 +80,7 @@ export const CustomerSidebar = () => {
                     </a>
                   </li>
                   <li className="nav-item">
-                  <Link to="/customer/account/addresses" className="nav-link"> 
+                  <Link to="/customer/addresses" className="nav-link"> 
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Addresses</p>
                     </Link>

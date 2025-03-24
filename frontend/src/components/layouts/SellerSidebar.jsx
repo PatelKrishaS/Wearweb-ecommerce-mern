@@ -28,9 +28,9 @@ export const SellerSidebar = () => {
       <SellerNavbar toggleSidebar={toggleSidebar}/>
       <aside className={`app-sidebar bg-body-secondary  shadow ${
             isSidebarOpen ? "open" : "d-none"}`} data-bs-theme="dark">
-        <div className="sidebar-brand" style={{height:'80px'}}>
+        <div className="sidebar-brand" style={{height:'57px'}}>
           <a href="./index.html" className="brand-link">
-            <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='73px'/>
+            <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='72px'/>
             <span className="brand-text fw-light">SELLER</span>
           </a>
         </div>

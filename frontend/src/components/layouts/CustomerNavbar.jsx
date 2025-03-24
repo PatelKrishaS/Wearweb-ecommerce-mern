@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import axios from 'axios'; // Import axios for making HTTP requests
+import orders from "../../assets/booking.png"
+import ordersHover from "../../assets/new-booking.png"
+
+
 
 export const CustomerNavbar = ({ toggleSidebar }) => {
   const navigate = useNavigate(); // Initialize useNavigate
   const [user, setUser] = useState(null); // State to store user data
+  const [isHovered, setIsHovered] = useState(false);
+
 
   // Fetch user data when the component mounts
   useEffect(() => {
@@ -63,6 +69,11 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
             </a>
           </li>
           <li className="nav-item ">
+            <a className="nav-link " href="#" id="accountDropdown" role="button" >
+              ABOUT
+            </a>
+          </li>
+          <li className="nav-item ">
             <a className="nav-link " href="#" id="helpDropdown" role="button" >
               CONTACT
             </a>
@@ -70,12 +81,16 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
         </ul>
         {/*end::Start Navbar Links*/}
         {/*begin::End Navbar Links*/}
+
+      
+
         <ul className="navbar-nav ms-auto">
-          {/*begin::Navbar Search*/}
-          <li className="nav-item dropdown">
+
+        {/* <li className="nav-item dropdown">
             <a className="nav-link" href="#" role="button" data-bs-toggle="dropdown">
               <i className="bi bi-search"></i>
             </a>
+            
             <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-3">
               <form className="d-flex">
                 <input className="form-control me-2" type="search" placeholder="Search..." aria-label="Search" />
@@ -84,7 +99,58 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
                 </button>
               </form>
             </div>
+          </li> */}
+
+         
+
+        {/* <li className="nav-item ">
+            <a href="#" className="nav-link ">
+            <img src={orders} alt="AdminLTE Logo"  width='20px' height='20px'/>
+            </a>
+        </li>  */}
+
+        
+
+        {/* Search bar */}
+        <li className="nav-item ">
+            <a href="#" className="nav-link ">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            </a>
+        </li>
+
+          {/* Orders */}
+        <li className="nav-item">
+          <Link 
+            to="/customer/orders" 
+            className="nav-link"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            style={{ display: 'inline-block' }}
+          >
+          <img 
+            src={isHovered ? orders : ordersHover} 
+              alt="Orders" 
+              width="26" 
+              height="25" 
+            />
+          </Link>
+        </li>
+
+        {/* Wishlist icon */}
+        <li className="nav-item ">
+          <Link to='/customer/wishlist' className='nav-link '>
+          <i class="fa-solid fa-heart"></i>
+          </Link>
+        </li>
+
+          {/* Cart icon */}
+          <li className="nav-item ">
+          <Link to='/customer/cart' className='nav-link '>
+          <i class="fa-solid fa-cart-shopping"></i>
+          </Link>
           </li>
+          {/*begin::Navbar Search*/}
+          
           {/*end::Navbar Search*/}
           {/*begin::Messages Dropdown Menu*/}
           
@@ -148,11 +214,30 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
                 </p>
               </li>
               {/*end::User Image*/}
-                
+              <li className="user-body">
+                {/*begin::Row*/}
+                {/* <div className="row"> */}
+                <Link to="/customer/addresses" className="btn btn-default btn-flat">
+                Address
+                </Link> 
+                <Link to="/customer/orders" className="btn btn-default btn-flat" >
+                Orders
+                </Link>    
+                <Link to="#" className="btn btn-default btn-flat" >
+                Settings
+                </Link>    
+                   
+                {/* </div> */}
+                {/*end::Row*/}
+                </li>
               <li className="user-footer">
                 <Link to="/customer/profile" className="btn btn-default btn-flat">
-                  Profile
-                </Link>
+                Profile 
+                </Link>  &nbsp;
+                {/* <Link to="/customer/addresses" className="btn btn-default btn-flat">
+                Address
+                </Link>  */}
+                
                 <a
                   href="#"
                   className="btn btn-default btn-flat float-end"

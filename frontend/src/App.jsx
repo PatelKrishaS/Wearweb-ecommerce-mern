@@ -26,6 +26,9 @@ import PrivateRoutes from './hooks/PrivateRoutes'
 import { ViewMyProducts } from './components/seller/ViewMyProducts'
 import { ProductDetail } from './components/seller/ProductDetail'
 import { UpdateAddress } from './components/customer/UpdateAddress'
+import { CustomerWishlistPage } from './components/customer/CustomerWishlistPage'
+import { CustomerCartPage } from './components/customer/CustomerCartPage'
+import { CustomerOrdersPage } from './components/customer/CustomerOrdersPage'
 
 
 function App() {
@@ -70,9 +73,12 @@ function App() {
             <Route path="/customer" element={<CustomerSidebar />}>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="dashboard" element={<CustomerDashboard />} />
+              <Route path="addresses" element={<CustomerAddressPage />} />
+              <Route path="wishlist" element={<CustomerWishlistPage />} />
+              <Route path="cart" element={<CustomerCartPage />} />
+              <Route path="orders" element={<CustomerOrdersPage />} />
               <Route path="account">
                 <Route path="my-profile" element={<CustomerProfile />} />
-                <Route path="addresses" element={<CustomerAddressPage />} />
                 <Route path="update-address/:id" element={<UpdateAddress />} />
               </Route>
             </Route>
