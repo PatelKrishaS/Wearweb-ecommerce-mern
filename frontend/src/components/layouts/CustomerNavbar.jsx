@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for 
 import axios from 'axios'; // Import axios for making HTTP requests
 import orders from "../../assets/booking.png"
 import ordersHover from "../../assets/new-booking.png"
+import WWLogo from "../../assets/WW-logo.png"
 
 
 
@@ -46,7 +47,7 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
       <div className="container-fluid">
         {/*begin::Start Navbar Links*/}
         <ul className="navbar-nav">
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <a
               className="nav-link btn btn-light"
               data-lte-toggle="sidebar"
@@ -56,9 +57,15 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
             >
               <i className="bi bi-list" />
             </a>
-          </li>
+          </li> */}
+          <div className="sidebar-brand" style={{height:'40px'}}>
+                    <Link to="/customer/dashboard" className="brand-link">
+                      <img src={WWLogo} alt="AdminLTE Logo"  width='50px' height='40px' />
+                      
+                    </Link>
+                  </div>
           <li className="nav-item ">
-            <a className="nav-link " href="#" id="shopDropdown" role="button" >
+            <a className="nav-link " href="#" id="shopDropdown" role="button" style={{marginLeft:'350px'}}>
               HOME
             </a>
            

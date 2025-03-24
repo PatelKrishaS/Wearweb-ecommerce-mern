@@ -37,12 +37,11 @@ export const CustomerSidebar = () => {
   return (
     <>
       <CustomerNavbar toggleSidebar={toggleSidebar}/>
-      <aside className={`app-sidebar bg-body-secondary  shadow ${
-            isSidebarOpen ? "open" : "d-none"}`} data-bs-theme="dark" >
+      {/* <aside className={`app-sidebar bg-body-secondary  shadow ${
+            isSidebarOpen ? "open" : "d-none"}`} data-bs-theme="dark" style={{width:'200px'}} >
         <div className="sidebar-brand" style={{height:'57px'}}>
           <a href="./index.html" className="brand-link">
             <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='72px'/>
-            {/* <span className="brand-text fw-light">USER</span> */}
           </a>
         </div>
 
@@ -51,7 +50,6 @@ export const CustomerSidebar = () => {
           <nav className="mt-2">
             <ul className="nav sidebar-menu flex-column" role="menu">
               
-              {/* Platform Management */}
               <li className={`nav-item ${openMenus.platform ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('platform')}>
                   <i className="nav-icon bi bi-speedometer"></i>
@@ -61,12 +59,7 @@ export const CustomerSidebar = () => {
                   </p>
                 </a>
                 <ul id="platform-menu" className={`nav nav-treeview collapse ${openMenus.platform ? 'show' : ''}`}>
-                  {/* <li className="nav-item">
-                  <Link to="/customer/account/my-profile" className="nav-link"> 
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>My Profile</p>
-                    </Link>
-                  </li> */}
+                 
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
@@ -94,7 +87,7 @@ export const CustomerSidebar = () => {
                 </ul>
               </li>
 
-              {/* Analytics */}
+             
               <li className={`nav-item ${openMenus.analytics ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('analytics')}>
                   <i className="nav-icon bi bi-graph-up"></i>
@@ -110,12 +103,7 @@ export const CustomerSidebar = () => {
                       <p>Recently Viewed</p>
                     </a>
                   </li>
-                  <li className="nav-item">
-                    <a href="./index.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Recommended For You</p>
-                    </a>
-                  </li>
+                  
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
@@ -174,18 +162,12 @@ export const CustomerSidebar = () => {
                       <p>Change Password</p>
                     </a>
                   </li>
-                  <li className="nav-item">
-                    <a href="./index.html" className="nav-link">
-                      <i className="nav-icon bi bi-circle"></i>
-                      <p>Notification Preferences</p>
-                    </a>
-                  </li>
                 </ul>
               </li>
             </ul>
           </nav>
         </div>
-      </aside>
+      </aside> */}
 
       <main className="app-main">
         <Outlet />
