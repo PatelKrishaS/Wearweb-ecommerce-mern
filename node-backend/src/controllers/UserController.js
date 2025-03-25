@@ -5,19 +5,15 @@ const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const { uploadFileToCloudinary } = require("../utils/CloudinaryUtil"); 
 const { sendingMail } = require("../utils/MailUtil");
+const jwt = require('jsonwebtoken');
+
 
 const loginUser = async (req,res) => {
-    //req.body email and password: password
 
-    //password --> plain --> db --> encrypted
-    //bcrypt --> plain, enc --> match : true
+    //req.body email and password: password
     const email = req.body.email;
     const password = req.body.password;
-    //select * from users where email =? and password = ?
-    //userModel.find({email:email, password:password})
-    //email --> object --> abc --{password:hashedPassword}
-    //normal password compare -->
-
+    
     // const foundUserFromEmail =  userModel.findOne({email: req.body.email})
     const foundUserFromEmail = await userModel.findOne({email:email}).populate("roleId")
     console.log(foundUserFromEmail);
@@ -81,8 +77,13 @@ const signup = async (req, res) => {
             <p><strong>The Wear Web Team</strong></p>
         `;
 
-        await sendingMail(email, 'Welcome to Wear Web!', emailHtml);
-        console.log("✅ Welcome email sent to:", email);
+        try {
+            await sendingMail(createdUser.email, 'Welcome to Wear Web!', emailHtml);
+            console.log("✅ Welcome email sent to:", createdUser.email);
+        } catch (error) {
+            console.error("❌ Failed to send welcome email:", error);
+        }
+            
 
         
 
@@ -174,6 +175,99 @@ const getUserById =async(req, res) => {
     })
 }
 
+const forgotPassword = async (req, res) => {
+    try {
+        const email = req.body.email;
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        const foundUser = await userModel.findOne({email:email});
+        if(!foundUser){
+            return res.status(404).json({ message: "User not found. Please register first." });
+        }
+
+        // Token expires in 1 hour
+        const token = jwt.sign(
+            {
+                _id: foundUser._id,          
+                purpose: "password_reset",   
+                exp: Math.floor(Date.now() / 1000) + 3600 // 1-hour expiry
+            },
+            process.env.JWT_SECRET          
+        );
+        
+        const url = `http://localhost:5173/resetpassword/${token}`;
+        const mailContent = `
+            <html>
+                <body>
+                    <h2>Password Reset Request</h2>
+                    <p>You requested to reset your password. Click the link below to proceed:</p>
+                    <a href="${url}">Reset Password</a>
+                    <p>This link will expire in 1 hour.</p>
+                    <p>If you didn't request this, please ignore this email.</p>
+                </body>
+            </html>
+        `; 
+        
+        await sendingMail(foundUser.email, "Password Reset Request", mailContent);
+        
+        res.json({
+            message: "Reset password link has been sent to your email.",
+        });
+    } catch (error) {
+        console.error("Forgot password error:", error);
+        res.status(500).json({ 
+            message: "Failed to process forgot password request.",
+            error: error.message 
+        });
+    }
+}
+
+
+const resetPassword = async(req, res) => {
+    try {
+        const token = req.body.token;
+        const newPassword = req.body.password;
+
+        if (!token || !newPassword) {
+            return res.status(400).json({ message: "Token and new password are required." });
+        }
+
+        // Verify token
+        const userFromToken = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Hash new password
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+        // Update user password
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userFromToken._id,
+            { password: hashedPassword },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        res.json({
+            message: "Password updated successfully!",
+        });
+    } catch (error) {
+        console.error("Password reset error:", error);
+        
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: "Invalid or expired token." });
+        }
+        
+        res.status(500).json({ 
+            message: "Internal server error during password reset.",
+            error: error.message 
+        });
+    }
+};
 
 //exports
 module.exports = {
@@ -183,5 +277,7 @@ module.exports = {
     getUserById,
     updateUser,
     signup,
-    loginUser
+    loginUser,
+    forgotPassword,
+    resetPassword
 }

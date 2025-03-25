@@ -101,7 +101,7 @@ export const Login = () => {
                         <input  type="password" placeholder='Password' {...register("password", validationSchema.passwordValidator)} autoComplete="off" />
                         <span style={{ color: "red" }}>{errors.password?.message}</span>
                     </div>
-                    <a href='#'>Forgot Password?</a>
+                    <Link to='/forgotpassword'>Forgot Password?</Link>
                     <button type='submit'>Login</button>
                     <p>Not Registered?  <Link to="/signup">Signup now</Link></p>
                 </form>

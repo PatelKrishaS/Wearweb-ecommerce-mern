@@ -39,7 +39,7 @@ export const Signup = () => {
             transition: Bounce,
             });
 
-        setTimeout(() => toast.dismiss(id), 2000);
+        // setTimeout(() => toast.dismiss(id), 2000);
 
         navigate("/login")
     }

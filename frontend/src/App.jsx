@@ -29,6 +29,8 @@ import { UpdateAddress } from './components/customer/UpdateAddress'
 import { CustomerWishlistPage } from './components/customer/CustomerWishlistPage'
 import { CustomerCartPage } from './components/customer/CustomerCartPage'
 import { CustomerOrdersPage } from './components/customer/CustomerOrdersPage'
+import { ResetPassword } from './components/common/ResetPassword'
+import { ForgotPassword } from './components/common/ForgotPassword'
 
 
 function App() {
@@ -64,9 +66,11 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/forgotpassword" element={<ForgotPassword/>} />
+          <Route path="/resetpassword/:token" element={<ResetPassword/>} />
 
           {/* Protected Routes */}
           <Route element={<PrivateRoutes />}>

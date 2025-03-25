@@ -10,4 +10,7 @@ routes.post("/user", userController.signup)
 routes.post("/user/login", userController.loginUser)
 // Update user by ID (with profile picture upload and other details)
 routes.put("/user/:id", upload.single("profilePicture"), userController.updateUser);
+routes.post("/user/forgotpassword", userController.forgotPassword)
+routes.post("/user/resetpassword", userController.resetPassword)
+
 module.exports = routes
