@@ -65,25 +65,25 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
                     </Link>
                   </div>
           <li className="nav-item ">
-            <a className="nav-link " href="#" id="shopDropdown" role="button" style={{marginLeft:'350px'}}>
+            <Link className="nav-link " to="/customer/dashboard" id="shopDropdown" role="button" style={{marginLeft:'350px'}}>
               HOME
-            </a>
-           
+            </Link>
+            {/* <hr className='w-2/4 border-none h-[1.5px] bg-gray-700'/> */}
           </li>
           <li className="nav-item ">
-            <a className="nav-link " href="#" id="accountDropdown" role="button" >
+            <Link className="nav-link " to="/customer/collection" id="accountDropdown" role="button" >
               COLLECTION
-            </a>
+            </Link>
           </li>
           <li className="nav-item ">
-            <a className="nav-link " href="#" id="accountDropdown" role="button" >
+            <Link className="nav-link " to="/customer/about" id="accountDropdown" role="button" >
               ABOUT
-            </a>
+            </Link>
           </li>
           <li className="nav-item ">
-            <a className="nav-link " href="#" id="helpDropdown" role="button" >
+            <Link className="nav-link " to="/customer/contact" id="helpDropdown" role="button" >
               CONTACT
-            </a>
+            </Link>
           </li>
         </ul>
         {/*end::Start Navbar Links*/}

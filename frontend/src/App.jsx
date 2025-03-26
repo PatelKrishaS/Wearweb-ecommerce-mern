@@ -31,6 +31,11 @@ import { CustomerCartPage } from './components/customer/CustomerCartPage'
 import { CustomerOrdersPage } from './components/customer/CustomerOrdersPage'
 import { ResetPassword } from './components/common/ResetPassword'
 import { ForgotPassword } from './components/common/ForgotPassword'
+import { Collection } from './components/customer/Collection'
+import { Contact } from './components/customer/Contact'
+import { About } from './components/customer/About'
+import { Product } from './components/customer/Product'
+import { PlaceOrder } from './components/customer/PlaceOrder'
 
 
 function App() {
@@ -77,6 +82,11 @@ function App() {
             <Route path="/customer" element={<CustomerSidebar />}>
               <Route path="profile" element={<CustomerProfile />} />
               <Route path="dashboard" element={<CustomerDashboard />} />
+              <Route path="collection" element={<Collection/>} />
+              <Route path="contact" element={<Contact/>} />
+              <Route path="about" element={<About/>} />
+              <Route path="product/:id" element={<Product/>} />
+              <Route path="place-order" element={<PlaceOrder/>} />
               <Route path="addresses" element={<CustomerAddressPage />} />
               <Route path="wishlist" element={<CustomerWishlistPage />} />
               <Route path="cart" element={<CustomerCartPage />} />
