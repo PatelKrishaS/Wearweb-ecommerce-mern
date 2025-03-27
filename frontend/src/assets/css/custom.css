@@ -28,3 +28,162 @@ padding: 6px 5px 6px 5px !important;
 .nav-link:hover{
   background-color: #c2c7d0;
 }
+
+.home-container {
+  padding-left: 20px;  /* Moves only the text */
+  display: inline-block;
+  text-align: center;
+}
+
+#cust-navbar-items {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+
+
+.home-underline {
+  width: 60%;
+  margin: 2px auto;
+  /* border: 1px solid black; */
+  opacity: 0; 
+  transition: opacity 0.2s ease-in-out;
+}
+
+.home-container:hover .home-underline,
+.home-link.active + .home-underline {
+  opacity: 1;
+}
+
+.home-link {
+  text-decoration: none; /* Optional: To prevent default underline on links */
+  padding-bottom: 0;
+  height: 30px !important;
+}
+
+.count{
+  position: absolute; 
+  top: 22px;
+  left:30px;
+  /* aspect-ratio: 1 / 1;  */
+  width: 1rem; 
+  border-radius: 50%; 
+  background-color: rgb(0,0,0); 
+  text-align: center; 
+  font-size: 8px; 
+  line-height: 1rem; 
+  color: rgb(255,255,255);
+}
+
+
+/* Existing styles... */
+
+/* Mobile-first approach - base styles for small screens */
+.navbar-nav {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Hide some elements on small screens */
+#cust-navbar-items li:not(:first-child) {
+  display: none;
+}
+
+/* Show the logo */
+#logo {
+  display: block !important;
+}
+
+/* Hamburger menu button */
+.mobile-menu-btn {
+  display: block;
+  background: none;
+  border: none;
+  font-size: 1 rem;
+  cursor: pointer;
+  color: #293e53;
+  width: 35px;
+  height: 40px;
+}
+
+
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+  
+  #cust-navbar-items li {
+    display: block !important;
+  }
+  
+  .navbar-nav {
+    flex-direction: row;
+  }
+}
+
+
+
+@media (max-width: 412px) {
+  body, html {
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  /* Ensure navbar items wrap properly */
+  .navbar-nav {
+    flex-wrap: wrap;
+  }
+ 
+
+  #logo img {
+    width: 40px !important;
+    height: 30px !important;
+    width: 1.25rem; 
+
+   cursor: pointer;
+  }
+
+  .user-menu .dropdown-toggle span {
+    display: none;
+  }
+
+  .navbar-nav.ms-auto {
+    gap: 10px;
+    display: none !important;
+  }
+
+  .s-hidden{
+    position: absolute; 
+
+bottom: 0px; 
+
+right: 0px; 
+
+top: 0px; 
+
+overflow: hidden; 
+
+background-color: rgb(255,255,255); 
+
+transition-property: all; 
+
+transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); 
+
+transition-duration: 150ms;
+  }
+
+  .hide-content {
+    display: none;
+    border: 0;
+  }
+   
+
+    .bg-body {
+      border-bottom: 0 !important;
+   }
+
+}
+

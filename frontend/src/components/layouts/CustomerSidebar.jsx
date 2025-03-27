@@ -169,7 +169,7 @@ export const CustomerSidebar = () => {
         </div>
       </aside> */}
 
-      <main className="app-main">
+      <main className="app-main" style={{width:'100vw'}}>
         <Outlet />
       </main>
     </>

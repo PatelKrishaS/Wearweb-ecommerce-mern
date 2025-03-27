@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { Link, NavLink, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import axios from 'axios'; // Import axios for making HTTP requests
 import orders from "../../assets/booking.png"
 import ordersHover from "../../assets/new-booking.png"
 import WWLogo from "../../assets/WW-logo.png"
-
+import '../../assets/css/custom.css';
 
 
 export const CustomerNavbar = ({ toggleSidebar }) => {
   const navigate = useNavigate(); // Initialize useNavigate
   const [user, setUser] = useState(null); // State to store user data
   const [isHovered, setIsHovered] = useState(false);
+  // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [visible, setVisible] =useState(false)
 
 
   // Fetch user data when the component mounts
@@ -42,12 +44,15 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
   };
 
   return (
-    <nav className="app-header navbar navbar-expand bg-body">
+    <nav className={`app-header navbar navbar-expand bg-body  `}>
       {/*begin::Container*/}
       <div className="container-fluid">
         {/*begin::Start Navbar Links*/}
-        <ul className="navbar-nav">
-          {/* <li className="nav-item">
+        <ul 
+          className={`navbar-nav `} 
+          id='cust-navbar-items'
+        >        
+        {/* <li className="nav-item">
             <a
               className="nav-link btn btn-light"
               data-lte-toggle="sidebar"
@@ -58,39 +63,66 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
               <i className="bi bi-list" />
             </a>
           </li> */}
-          <div className="sidebar-brand" style={{height:'40px'}}>
+          <div className={`sidebar-brand ${visible ? 'hide-content' : ''}`} style={{height:'40px', marginRight:'240px'}} id='logo'>
                     <Link to="/customer/dashboard" className="brand-link">
-                      <img src={WWLogo} alt="AdminLTE Logo"  width='50px' height='40px' />
+                      <img src={WWLogo} alt="AdminLTE Logo"  width='50px' height='40px' className={` ${visible ? 'hide-content' : ''}`} />
                       
                     </Link>
-                  </div>
+          </div>
+              
           <li className="nav-item ">
-            <Link className="nav-link " to="/customer/dashboard" id="shopDropdown" role="button" style={{marginLeft:'350px'}}>
+          <div className="home-container">
+            <NavLink className={({ isActive }) => isActive ? "nav-link home-link active" : "nav-link home-link"}  to="/customer/dashboard" id="home" role="button" >
               HOME
-            </Link>
-            {/* <hr className='w-2/4 border-none h-[1.5px] bg-gray-700'/> */}
+            </NavLink>
+            <hr className='home-underline'/>
+            </div>
           </li>
           <li className="nav-item ">
-            <Link className="nav-link " to="/customer/collection" id="accountDropdown" role="button" >
+          <div className="home-container">
+            <NavLink className={({ isActive }) => isActive ? "nav-link home-link active" : "nav-link home-link"}  to="/customer/collection" id="collection" role="button" >
               COLLECTION
-            </Link>
+            </NavLink>
+            <hr className='home-underline'/>
+            </div>
+
+          {/* <hr className='w-2/4 border-none h-[1.5px] bg-gray-700'/> */}
           </li>
           <li className="nav-item ">
-            <Link className="nav-link " to="/customer/about" id="accountDropdown" role="button" >
+          <div className="home-container">
+            <NavLink className={({ isActive }) => isActive ? "nav-link home-link active" : "nav-link home-link"}  to="/customer/about" id="about" role="button" >
               ABOUT
-            </Link>
+            </NavLink>
+            <hr className='home-underline'/>
+            </div>
+
           </li>
           <li className="nav-item ">
-            <Link className="nav-link " to="/customer/contact" id="helpDropdown" role="button" >
+          <div className="home-container">
+            <NavLink className={({ isActive }) => isActive ? "nav-link home-link active" : "nav-link home-link"}  to="/customer/contact" id="contact" role="button" >
               CONTACT
-            </Link>
+            </NavLink>
+            <hr className='home-underline'/>
+            </div>
+
           </li>
+       
         </ul>
         {/*end::Start Navbar Links*/}
         {/*begin::End Navbar Links*/}
 
       
+        <button 
+            className="mobile-menu-btn d-md-none sm-hidden" 
+            onClick={() => setVisible(true)}
+          >
+          <i className="bi bi-list"></i>
+          </button> 
 
+          {/* Sidebar menu for small screens   */}
+          <div className="s-hidden" style={{ width: visible ? '100%' : '0%' }}>
+          <p>hello</p>
+          </div>
         <ul className="navbar-nav ms-auto">
 
         {/* <li className="nav-item dropdown">
@@ -154,6 +186,7 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
           <li className="nav-item ">
           <Link to='/customer/cart' className='nav-link '>
           <i class="fa-solid fa-cart-shopping"></i>
+          <p className='count'>10</p>
           </Link>
           </li>
           {/*begin::Navbar Search*/}
@@ -177,6 +210,9 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
             </a> */}
           </li>
           {/*end::Fullscreen Toggle*/}
+
+      
+
           {/*begin::User Menu Dropdown*/}
           <li className="nav-item dropdown user-menu">
             <a
@@ -250,13 +286,17 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
                   className="btn btn-default btn-flat float-end"
                   onClick={handleSignOut} // Attach handleSignOut to the Sign out button
                 >
-                  Sign out
+                  Log out
                 </a>
               </li>
               {/*end::Menu Footer*/}
             </ul>
           </li>
           {/*end::User Menu Dropdown*/}
+          
+          {/* Menu bar */}
+         
+      
         </ul>
         {/*end::End Navbar Links*/}
       </div>
