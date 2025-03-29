@@ -30,6 +30,7 @@ padding: 6px 5px 6px 5px !important;
 }
 
 .home-container {
+  
   padding-left: 20px;  /* Moves only the text */
   display: inline-block;
   text-align: center;
@@ -58,7 +59,7 @@ padding: 6px 5px 6px 5px !important;
 
 .home-link {
   text-decoration: none; /* Optional: To prevent default underline on links */
-  padding-bottom: 0;
+  padding-bottom: 8px;
   height: 30px !important;
 }
 
@@ -107,6 +108,17 @@ padding: 6px 5px 6px 5px !important;
   height: 40px;
 }
 
+.s-hidden {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  top: 0px;
+  overflow: hidden;
+  background-color: rgb(255,255,255);
+  transition: all 0.3s ease-in-out;
+  width: 0%;  /* Ensure it starts with width 0 */
+  display: none;  /* Hide it initially */
+}
 
 
 /* Medium devices (tablets, 768px and up) */
@@ -126,7 +138,7 @@ padding: 6px 5px 6px 5px !important;
 
 
 
-@media (max-width: 412px) {
+@media (max-width: 414px) {
   body, html {
     overflow-x: hidden;
     width: 100%;
@@ -157,7 +169,7 @@ padding: 6px 5px 6px 5px !important;
 
   .s-hidden{
     position: absolute; 
-
+display: block;
 bottom: 0px; 
 
 right: 0px; 
@@ -185,5 +197,21 @@ transition-duration: 150ms;
       border-bottom: 0 !important;
    }
 
+}
+
+.cust-div1{
+  display: flex; 
+
+flex-direction: column; 
+
+color: rgb(75,85,99);
+padding-top: 20px;
+cursor: pointer;
+margin-left:10px ;
+}
+
+.links{
+  /* margin-top: 80px; */
+  padding-left: 20px ;
 }
 

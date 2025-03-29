@@ -4,7 +4,9 @@ import axios from 'axios'; // Import axios for making HTTP requests
 import orders from "../../assets/booking.png"
 import ordersHover from "../../assets/new-booking.png"
 import WWLogo from "../../assets/WW-logo.png"
+import Dropdown from "../../assets/photos/drpdwn.png"
 import '../../assets/css/custom.css';
+
 
 
 export const CustomerNavbar = ({ toggleSidebar }) => {
@@ -72,7 +74,7 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
               
           <li className="nav-item ">
           <div className="home-container">
-            <NavLink className={({ isActive }) => isActive ? "nav-link home-link active" : "nav-link home-link"}  to="/customer/dashboard" id="home" role="button" >
+            <NavLink className={({ isActive }) => isActive ? "nav-link home-link active" : "nav-link home-link"}  to="/customer/dashboard" id="home" role="button"  >
               HOME
             </NavLink>
             <hr className='home-underline'/>
@@ -120,34 +122,28 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
           </button> 
 
           {/* Sidebar menu for small screens   */}
-          <div className="s-hidden" style={{ width: visible ? '100%' : '0%' }}>
-          <p>hello</p>
+          <div className="s-hidden" style={{ width: visible ? '100%' : '0%', height:'230px' }}>
+            <div onClick={() => setVisible(false)} className='cust-div1' >
+              <div style={{display:'inline-flex'}}>
+              <img 
+                src={Dropdown} 
+                alt="" 
+                width='30px' height='25px' 
+              />
+              <p style={{margin:'0'}}>Back</p>
+              </div>
+                <NavLink to='/customer/dashboard' className='links'>Home</NavLink>
+                <NavLink to='/customer/collection'  className='links' >Collection</NavLink>
+                <NavLink to='/customer/about'  className='links' >About</NavLink>
+                <NavLink to='/customer/contact'  className='links' >Contact</NavLink>
+                <NavLink to='/customer/wishlist'  className='links' >Wishlist</NavLink>
+                <NavLink to='/customer/cart'  className='links' >Cart</NavLink>
+                <NavLink to='/customer/orders'  className='links' >Orders</NavLink>
+            </div>
           </div>
         <ul className="navbar-nav ms-auto">
 
-        {/* <li className="nav-item dropdown">
-            <a className="nav-link" href="#" role="button" data-bs-toggle="dropdown">
-              <i className="bi bi-search"></i>
-            </a>
-            
-            <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-3">
-              <form className="d-flex">
-                <input className="form-control me-2" type="search" placeholder="Search..." aria-label="Search" />
-                <button className="btn btn-outline-primary" type="submit">
-                  <i className="bi bi-search"></i>
-                </button>
-              </form>
-            </div>
-          </li> */}
-
-         
-
-        {/* <li className="nav-item ">
-            <a href="#" className="nav-link ">
-            <img src={orders} alt="AdminLTE Logo"  width='20px' height='20px'/>
-            </a>
-        </li>  */}
-
+     
         
 
         {/* Search bar */}
@@ -189,27 +185,11 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
           <p className='count'>10</p>
           </Link>
           </li>
-          {/*begin::Navbar Search*/}
           
-          {/*end::Navbar Search*/}
-          {/*begin::Messages Dropdown Menu*/}
-          
-          {/*end::Messages Dropdown Menu*/}
-          {/*begin::Notifications Dropdown Menu*/}
-          
-          {/*end::Notifications Dropdown Menu*/}
-          {/*begin::Fullscreen Toggle*/}
           <li className="nav-item">
-            {/* <a className="nav-link" href="#" data-lte-toggle="fullscreen">
-              <i data-lte-icon="maximize" className="bi bi-arrows-fullscreen" />
-              <i
-                data-lte-icon="minimize"
-                className="bi bi-fullscreen-exit"
-                style={{ display: "none" }}
-              />
-            </a> */}
+           
           </li>
-          {/*end::Fullscreen Toggle*/}
+    
 
       
 

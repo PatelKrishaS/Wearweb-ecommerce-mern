@@ -67,6 +67,8 @@ button:focus-visible {
   }
 } */
 
+@import url('https://fonts.googleapis.com/css2?family=Liter&family=Outfit:wght@100..900&family=Prata&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -74,3 +76,17 @@ button:focus-visible {
 /* #tailwind .bg-purple-600 {
   background-color: rgb(147 51 234) !important;
 } */
+
+*{
+  font-family: Outfit;
+}
+
+.prata-regular {
+  font-family: "Prata", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body, html {
+  overflow-x: hidden;
+}

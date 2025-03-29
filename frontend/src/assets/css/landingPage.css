@@ -4,6 +4,10 @@
     color: white;
     padding: 50px 0;
   }
+
+  .body{
+    overflow-x: hidden;
+  }
   
   .landing-header {
     display: flex;
