@@ -36,8 +36,19 @@ const productSchema = new Schema(
     offerPercentage: {
       type: Number,
     },
-    size: {
-      type: String,
+    hasSizes: {
+      type:Boolean,
+      default:false,
+    },
+    sizes: {
+      type: [String], 
+      enum: ["S", "M", "L", "XL", "XXL"], 
+      required: false, 
+    },
+    dimensions: {
+      length: { type: Number },  
+      width: { type: Number }, // Width in cm or inches
+      height: { type: Number }, // Height in cm or inches
     },
     color: {
       type: String,
@@ -48,6 +59,10 @@ const productSchema = new Schema(
     stockQuantity: {
       type: Number,
       required: true,
+    },
+    bestSeller: {
+      type: Boolean,
+      default: false
     },
     imageURL1: {
       type: String,

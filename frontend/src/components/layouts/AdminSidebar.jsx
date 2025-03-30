@@ -28,7 +28,7 @@ export const AdminSidebar = () => {
     <>
       <AdminNavbar toggleSidebar={toggleSidebar}/>
       <aside className={`app-sidebar bg-body-secondary shadow ${
-            isSidebarOpen ? "open" : "d-none"}`}  data-bs-theme="dark">
+            isSidebarOpen ? "open" : "d-none"}`}  data-bs-theme="dark" style={{height:'1122px'}} >
         <div className="sidebar-brand" style={{height:'80px'}}>
           <a href="./index.html" className="brand-link">
             <img src={WWLogo} alt="AdminLTE Logo"  width='84px' height='73px'/>

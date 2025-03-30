@@ -30,6 +30,9 @@ router.put(
   productController.updateProduct
 );
 
+// Get latest products
+router.get('/latest', productController.getLatestProducts);
+
 // Delete a product
 router.delete("/delete/:id", productController.deleteProduct);
 

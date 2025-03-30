@@ -7,7 +7,7 @@ import { Bounce, toast } from 'react-toastify';
 export const ProductDetail = () => {
   const { id } = useParams(); // Get product ID from URL
   const navigate = useNavigate();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, watch } = useForm();
   const [product, setProduct] = useState(null); // Stores product details
   const [isEditing, setIsEditing] = useState(false); // Tracks edit mode
   const [image1, setImage1] = useState(null); // State for image 1
@@ -26,9 +26,15 @@ export const ProductDetail = () => {
         setValue("baseprice", res.data.data.baseprice);
         setValue("offerprice", res.data.data.offerprice);
         setValue("offerPercentage", res.data.data.offerPercentage);
-        setValue("size", res.data.data.size);
+        setValue("hasSizes", res.data.data.hasSizes || false);
+        const sizesInitialState = ["S", "M", "L", "XL", "XXL"].reduce((acc, size) => ({
+          ...acc,
+          [size]: res.data.data.sizes?.includes(size) || false
+        }), {});
+        setValue("sizes", sizesInitialState);       
         setValue("color", res.data.data.color);
         setValue("material", res.data.data.material);
+        setValue("bestSeller", res.data.data.bestSeller || false);
         setValue("stockQuantity", res.data.data.stockQuantity);
         setValue("categoryId", res.data.data.categoryId);
         setValue("subCategoryId", res.data.data.subCategoryId);
@@ -50,12 +56,29 @@ export const ProductDetail = () => {
       formData.append("baseprice", data.baseprice);
       formData.append("offerprice", data.offerprice);
       formData.append("offerPercentage", data.offerPercentage);
-      formData.append("size", data.size);
-      formData.append("color", data.color);
+      formData.append("bestSeller", data.bestSeller);     
       formData.append("material", data.material);
       formData.append("stockQuantity", data.stockQuantity);
       formData.append("categoryId", data.categoryId);
       formData.append("subCategoryId", data.subCategoryId);
+
+
+      formData.append("hasSizes", data.hasSizes);
+
+
+      const selectedSizes = data.sizes 
+      ? Object.entries(data.sizes)
+          .filter(([_, isChecked]) => isChecked)
+          .map(([size]) => size)
+      : [];
+
+    if (selectedSizes.length > 0) {
+      // When sizes are selected
+      selectedSizes.forEach(size => formData.append("sizes", size));
+    } else {
+      // When NO sizes are selected - explicitly clear
+      formData.append("sizes", "none"); // or "" or [] depending on backend
+    }
 
       // Append image files to FormData if new images are selected
       if (image1) formData.append("image1", image1);
@@ -78,6 +101,9 @@ export const ProductDetail = () => {
         },
       });
 
+      setProduct(res.data.data);
+
+
       console.log("Product updated:", res.data);
       toast.success('Product updated successfully!', {
         position: "top-center",
@@ -91,8 +117,9 @@ export const ProductDetail = () => {
         transition: Bounce,
       });
       // Redirect to the product detail page after successful update
-      navigate(`/seller/store-management/product/${id}`);
-    } catch (err) {
+      setIsEditing(false);
+      setProduct(res.data.data);    
+    }catch (err) {
       console.error("Failed to update product:", err);
     toast.error('Failed to update product!');    }
   };
@@ -116,11 +143,16 @@ export const ProductDetail = () => {
                 <p><strong>Base Price:</strong> ${product.baseprice}</p>
                 <p><strong>Offer Price:</strong> ${product.offerprice}</p>
                 <p><strong>Offer Percentage:</strong> {product.offerPercentage}%</p>
-                <p><strong>Size:</strong> {product.size}</p>
+                <p style={{ margin: '10px 0' }}>
+                <strong>Sizing:</strong> 
+                {product.hasSizes 
+                  ? `Multiple sizes available (${product.sizes?.join(', ') || "No sizes specified"})`
+                  : "One size fits all"}
+                </p>
                 <p><strong>Color:</strong> {product.color}</p>
                 <p><strong>Material:</strong> {product.material}</p>
                 <p><strong>Stock Quantity:</strong> {product.stockQuantity}</p>
-                <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+                <p><strong>Best Seller:</strong> {product.bestSeller === true ? "Yes" : "No"}</p>                <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
                   {product.imageURL1 && (
                     <img
                       src={product.imageURL1}
@@ -203,14 +235,50 @@ export const ProductDetail = () => {
                   />
                 </div>
 
-                {/* Size */}
-                <div className="form-group">
-                  <label>Size</label>
-                  <input
-                    type="text"
-                    {...register("size")}
-                    className="form-control"
-                  />
+               {/* Has Sizes */}
+                <div className="form-group" style={{ margin: '15px 0' }}>
+                  <label style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="checkbox"
+                      {...register("hasSizes")}
+                      style={{ marginRight: '8px' }}
+                    />
+                    This product comes in multiple sizes
+                  </label>
+                </div>
+
+                {/* Conditionally show sizes checkboxes */}
+                {watch("hasSizes") && (
+                  <div className="form-group">
+                    <label>Available Sizes</label>
+                    <div className="d-flex flex-wrap gap-2">
+                      {["S", "M", "L", "XL", "XXL"].map(size => (
+                        <div key={size} className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`size-${size}`}
+                            {...register(`sizes.${size}`)}
+                          />
+                          <label className="form-check-label" htmlFor={`size-${size}`}>
+                            {size}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Best Seller */}
+                <div className="form-group" style={{ margin: '15px 0' }}>
+                  <label style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="checkbox"
+                      {...register("bestSeller")}
+                      style={{ marginRight: '8px' }}
+                    />
+                    This is a best seller
+                  </label>
                 </div>
 
                 {/* Color */}

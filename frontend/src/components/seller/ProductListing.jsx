@@ -57,7 +57,17 @@ export const ProductListing = () => {
     fetchProducts();
   }, []);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, formState: { errors }, watch, setValue } = useForm({
+    defaultValues: {
+      sizes: {
+        S: false,
+        M: false,
+        L: false,
+        XL: false,
+        XXL: false
+      }
+    }
+  });
 
   // Handle file input changes
   const handleFileChange = (e, fieldName) => {
@@ -84,10 +94,25 @@ export const ProductListing = () => {
       formData.append("baseprice", data.baseprice);
       formData.append("offerprice", data.offerprice);
       formData.append("offerPercentage", data.offerPercentage);
-      formData.append("size", data.size);
+      // formData.append("size", data.size);
       formData.append("color", data.color);
       formData.append("material", data.material);
       formData.append("stockQuantity", data.stockQuantity);
+
+      formData.append("hasSizes", data.hasSizes ? "true" : "false");
+      formData.append("bestSeller", data.bestSeller ? "true" : "false");
+    
+      if (data.hasSizes) {
+        const selectedSizes = data.sizes 
+          ? Object.entries(data.sizes)
+              .filter(([_, isChecked]) => isChecked)
+              .map(([size]) => size)
+          : [];
+        
+        selectedSizes.forEach(size => formData.append("sizes", size));
+      } else {
+        formData.append("sizes", "none");
+      }
 
       // Append image files if they exist
       if (imageFiles.image1) formData.append("image1", imageFiles.image1);
@@ -194,7 +219,9 @@ export const ProductListing = () => {
                 />
               </div>
 
-              {/* Size Input */}
+
+
+              {/* Size Input
               <div className="form-group">
                 <label>Size</label>
                 <input
@@ -202,6 +229,52 @@ export const ProductListing = () => {
                   {...register("size")}
                   className="form-control"
                 />
+              </div> */}
+
+           {/* Has Sizes */}
+              <div className="form-group" style={{ margin: '15px 0' }}>
+                <label style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="checkbox"
+                    {...register("hasSizes")}
+                    style={{ marginRight: '8px' }}
+                  />
+                  This product comes in multiple sizes
+                </label>
+              </div>
+
+              {/* Conditionally show sizes checkboxes */}
+              {watch("hasSizes") && (
+                <div className="form-group">
+                  <label>Available Sizes</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {["S", "M", "L", "XL", "XXL"].map(size => (
+                      <div key={size} className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={`size-${size}`}
+                          {...register(`sizes.${size}`)}
+                        />
+                        <label className="form-check-label" htmlFor={`size-${size}`}>
+                          {size}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Best Seller */}
+              <div className="form-group" style={{ margin: '15px 0' }}>
+                <label style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="checkbox"
+                    {...register("bestSeller")}
+                    style={{ marginRight: '8px' }}
+                  />
+                  This is a best seller
+                </label>
               </div>
 
               {/* Color Input */}
