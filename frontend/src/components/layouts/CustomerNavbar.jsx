@@ -42,7 +42,7 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
     localStorage.removeItem("role");
 
     // Redirect to the login page
-    navigate("/login"); // Use navigate for redirection
+    navigate("/login"); 
   };
 
   return (

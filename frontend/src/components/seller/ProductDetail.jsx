@@ -124,6 +124,30 @@ export const ProductDetail = () => {
     toast.error('Failed to update product!');    }
   };
 
+    // Add the delete function here, right after your state declarations
+    const deleteProduct = async () => {
+      try {
+        const res = await axios.delete(`http://localhost:3000/product/delete/${id}`);
+        
+        toast.success('Product deleted successfully!', {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        
+        navigate('/seller/store-management/view-my-products'); 
+      } catch (err) {
+        console.error("Failed to delete product:", err);
+        toast.error('Failed to delete product!');
+      }
+    };
+
   if (!product) {
     return <div>Loading...</div>; // Show loading state while fetching product details
   }
@@ -180,6 +204,12 @@ export const ProductDetail = () => {
                   onClick={() => setIsEditing(true)} // Enter edit mode
                 >
                   Edit Product
+                </button>
+                <button
+                  className="btn btn-danger flex-grow-1"
+                  onClick={deleteProduct}
+                >
+                  Delete Product
                 </button>
               </div>
             ) : (
