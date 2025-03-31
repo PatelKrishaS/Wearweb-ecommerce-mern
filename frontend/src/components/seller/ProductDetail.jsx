@@ -56,29 +56,29 @@ export const ProductDetail = () => {
       formData.append("baseprice", data.baseprice);
       formData.append("offerprice", data.offerprice);
       formData.append("offerPercentage", data.offerPercentage);
-      formData.append("bestSeller", data.bestSeller);     
+      formData.append("bestSeller", data.bestSeller || false);      
       formData.append("material", data.material);
       formData.append("stockQuantity", data.stockQuantity);
       formData.append("categoryId", data.categoryId);
       formData.append("subCategoryId", data.subCategoryId);
 
 
+      // First send hasSizes flag (keep this)
       formData.append("hasSizes", data.hasSizes);
 
+      // Initialize with empty array (REQUIRED for your backend)
+      formData.append("sizes", JSON.stringify([])); 
 
+      // Get selected sizes (keep your existing logic)
       const selectedSizes = data.sizes 
-      ? Object.entries(data.sizes)
-          .filter(([_, isChecked]) => isChecked)
-          .map(([size]) => size)
-      : [];
+        ? Object.entries(data.sizes)
+            .filter(([_, isChecked]) => isChecked)
+            .map(([size]) => size)
+        : [];
 
-    if (selectedSizes.length > 0) {
-      // When sizes are selected
+      //Append selected sizes if any exist
       selectedSizes.forEach(size => formData.append("sizes", size));
-    } else {
-      // When NO sizes are selected - explicitly clear
-      formData.append("sizes", "none"); // or "" or [] depending on backend
-    }
+
 
       // Append image files to FormData if new images are selected
       if (image1) formData.append("image1", image1);

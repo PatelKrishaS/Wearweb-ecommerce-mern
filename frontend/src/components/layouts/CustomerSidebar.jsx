@@ -169,7 +169,7 @@ export const CustomerSidebar = () => {
         </div>
       </aside> */}
 
-      <main className= "app-main" >
+      <main className= "app-main" style={{overflowX:'hidden'}}>
         <Outlet />
       </main>
     </>

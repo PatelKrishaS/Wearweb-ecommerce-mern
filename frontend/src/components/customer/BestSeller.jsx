@@ -2,32 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { Title } from './Title';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+// import '../../assets/css/custom.css';
 
-export const LatestCollection = () => {
-  const [latestProducts, setLatestProducts] = useState([]);
+
+export const BestSeller = () => {
+  const [bestSellers, setBestSellers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchLatestProducts = async () => {
+    const fetchBestSellers = async () => {
       try {
-        const res = await axios.get('/product/latest');
-        setLatestProducts(res.data.data);
+        const res = await axios.get('/product/bestsellers');
+        setBestSellers(res.data.data);
       } catch (err) {
-        console.error("Failed to fetch latest products:", err);
+        console.error("Failed to fetch best sellers:", err);
       } finally {
         setLoading(false);
       }
     };
     
-    fetchLatestProducts();
+    fetchBestSellers();
   }, []);
 
   return (
     <div className="my-5"> 
       <div className="text-center py-4 display-4">
-        <Title text1={'LATEST'} text2={'COLLECTIONS'} />
+        <Title text1={'BEST'} text2={'SELLERS'} />
         <p className="w-75 mx-auto small text-secondary">
-          Discover our newest arrivals - fresh styles added just for you
+          Our most popular products loved by customers
         </p>
       </div>
       
@@ -40,14 +42,18 @@ export const LatestCollection = () => {
       ) : (
         <div className="container px-3">
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            {latestProducts.map((product) => (
+            {bestSellers.map((product) => (
               <div key={product._id} className="col d-flex">
-                {/* The entire card is wrapped in a Link */}
                 <Link 
-                  to={`/customer/getProductById/${product._id}`} // This should match your route
+                  to={`/customer/getProductById/${product._id}`}
                   className="text-decoration-none text-dark w-100"
                 >
                   <div className="card h-100 border-0 shadow-sm">
+                    {/* Best Seller badge */}
+                    <span className="badge position-absolute top-0 start-0 m-2" style={{backgroundColor:'#C68EFD'}}>
+                      TOP PICK
+                    </span>
+                    
                     {/* Discount badge */}
                     {product.offerPercentage && (
                       <span className="badge bg-success position-absolute top-0 end-0 m-2">
@@ -59,7 +65,7 @@ export const LatestCollection = () => {
                     <div className="flex-grow-1 d-flex align-items-center p-3" style={{ minHeight: '250px' }}>
                       <img 
                         src={product.imageURL1} 
-                        className="card-img-top img-fluid mx-auto " 
+                        className="card-img-top img-fluid mx-auto" 
                         alt={product.name}
                         style={{ 
                           maxHeight: '220px',

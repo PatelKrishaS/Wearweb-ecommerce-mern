@@ -124,12 +124,30 @@ const getProductsBySeller = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const updateData = req.body;
+    let updateData = req.body;
 
-    // Log the incoming request data
-    console.log("Incoming update data:", updateData);
+    // Convert string booleans to actual booleans
+    if (updateData.bestSeller) {
+      updateData.bestSeller = updateData.bestSeller === 'true';
+    }
+    if (updateData.hasSizes) {
+      updateData.hasSizes = updateData.hasSizes === 'true';
+    }
 
-    // Upload new images to Cloudinary if provided
+    // Handle sizes array (from multiple form fields)
+    if (req.body.sizes) {
+      // Get all size values (formdata sends multiple fields with same name)
+      const sizesArray = Array.isArray(req.body.sizes) 
+        ? req.body.sizes 
+        : [req.body.sizes];
+      
+      // Filter out empty values and the initial empty array marker
+      updateData.sizes = sizesArray
+        .filter(size => size && size !== '[]' && size !== 'none')
+        .map(size => size.toUpperCase()); // Ensure uppercase
+    }
+
+    // Handle images
     if (req.files?.image1) {
       updateData.imageURL1 = (await cloudinaryUtil.uploadFileToCloudinary(req.files.image1[0])).secure_url;
     }
@@ -140,10 +158,12 @@ const updateProduct = async (req, res) => {
       updateData.imageURL3 = (await cloudinaryUtil.uploadFileToCloudinary(req.files.image3[0])).secure_url;
     }
 
-    // Find and update the product
+    // Log final update data
+    console.log("Final update data:", updateData);
+
     const updatedProduct = await productModel.findByIdAndUpdate(
       productId,
-      { $set: updateData }, // Use $set to update only the provided fields
+      { $set: updateData },
       { new: true }
     );
 
@@ -185,7 +205,7 @@ const getLatestProducts = async (req, res) => {
   try {
     const products = await productModel.find()
       .sort({ createdAt: -1 }) // Sort by newest first
-      .limit(10) // Limit to 10 products
+      .limit(8) // Limit to 10 products
       .populate("categoryId")
       .populate("subCategoryId");
 
@@ -202,6 +222,27 @@ const getLatestProducts = async (req, res) => {
   }
 };
 
+// Get best seller products
+const getBestSellers = async (req, res) => {
+  try {
+    const products = await productModel.find({ bestSeller: true })
+      .limit(8) // Limit to 8 products
+      .populate("categoryId")
+      .populate("subCategoryId");
+
+    res.status(200).json({
+      message: "Best seller products fetched successfully",
+      data: products,
+    });
+  } catch (err) {
+    console.error("Error fetching best seller products:", err);
+    res.status(500).json({ 
+      message: "Failed to fetch best seller products", 
+      error: err.message 
+    });
+  }
+};
+
 module.exports = {
   addProduct,
   getAllProducts,
@@ -210,4 +251,5 @@ module.exports = {
   updateProduct,
   getLatestProducts,
   deleteProduct,
+  getBestSellers
 };

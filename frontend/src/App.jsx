@@ -36,6 +36,7 @@ import { Contact } from './components/customer/Contact'
 import { About } from './components/customer/About'
 import { Product } from './components/customer/Product'
 import { PlaceOrder } from './components/customer/PlaceOrder'
+import { ProductPage } from './components/customer/ProductPage'
 
 
 function App() {
@@ -85,7 +86,8 @@ function App() {
               <Route path="collection" element={<Collection/>} />
               <Route path="contact" element={<Contact/>} />
               <Route path="about" element={<About/>} />
-              <Route path="product/:id" element={<Product/>} />
+              {/* <Route path="product/:id" element={<Product/>} /> */}
+              <Route path="getProductById/:id" element={<ProductPage/>} />
               <Route path="place-order" element={<PlaceOrder/>} />
               <Route path="addresses" element={<CustomerAddressPage />} />
               <Route path="wishlist" element={<CustomerWishlistPage />} />
