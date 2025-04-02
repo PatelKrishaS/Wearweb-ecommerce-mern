@@ -6,16 +6,33 @@ import ordersHover from "../../assets/new-booking.png"
 import WWLogo from "../../assets/WW-logo.png"
 import Dropdown from "../../assets/photos/drpdwn.png"
 import '../../assets/css/custom.css';
+import { useLocation } from 'react-router-dom';
+// import { useSearch } from './components/context/SearchContext.jsx';
+import { useSearch } from '../context/SearchContext.jsx';
+
 
 
 
 export const CustomerNavbar = ({ toggleSidebar }) => {
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [user, setUser] = useState(null); // State to store user data
+  const navigate = useNavigate(); 
+  const location = useLocation();
+  const { searchQuery, setSearchQuery, isSearchVisible, setIsSearchVisible } = useSearch();
+  const [user, setUser] = useState(null); 
   const [isHovered, setIsHovered] = useState(false);
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [visible, setVisible] =useState(false)
 
+  const isCollectionPage = location.pathname === '/customer/collection';
+
+  const handleSearchClick = () => {
+    if (isCollectionPage) {
+      setIsSearchVisible(!isSearchVisible);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   // Fetch user data when the component mounts
   useEffect(() => {
@@ -147,11 +164,43 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
         
 
         {/* Search bar */}
-        <li className="nav-item ">
-            <a href="#" className="nav-link ">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            </a>
-  </li>
+        <li className="nav-item d-flex align-items-center">
+          {isCollectionPage && (
+            <div className="position-relative">
+              {isSearchVisible ? (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      console.log("Search query changed:", e.target.value);
+                    }}
+                    className="form-control search-input-expanded"
+                    autoFocus
+                  />
+                  <i 
+                    className="fa-solid fa-times search-close-icon" 
+                    onClick={() => {
+                      setIsSearchVisible(false);
+                      setSearchQuery('');
+                      console.log("Search cleared");
+                    }}
+                  />
+                </>
+              ) : (
+                <i 
+                  className="fa-solid fa-magnifying-glass search-toggle-icon" 
+                  onClick={() => {
+                    setIsSearchVisible(true);
+                    console.log("Search opened");
+                  }}
+                />
+              )}
+            </div>
+          )}
+        </li>
 
           {/* Orders */}
         <li className="nav-item">

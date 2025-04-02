@@ -346,3 +346,40 @@ margin-left:10px ;
     margin-bottom: 20px;
   }
 }
+
+
+.search-input-expanded {
+  /* width: 200px; */
+  padding: 5px 30px 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  /* height: 32px; */
+}
+
+.form-control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ADB2D4 !important;
+}
+.search-toggle-icon {
+  cursor: pointer;
+  color: #555;
+  font-size: 16px;
+  padding: 8px;
+  transition: all 0.3s ease;
+}
+
+.search-toggle-icon:hover {
+  color: #000;
+}
+
+.search-close-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+}

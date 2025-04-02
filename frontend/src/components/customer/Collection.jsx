@@ -5,6 +5,9 @@ import { Title } from './Title';
 import dropdown_icon from '../../assets/photos/dropdown_icon.png'
 // import { sortProducts } from '../../utils/productUtils';
 import { sortProducts } from '../../utils/ProductUtils.js';
+// import { useSearch } from './components/context/SearchContext.jsx';
+import { useSearch } from '../../components/context/SearchContext.jsx';
+
 
 
 axios.defaults.baseURL = 'http://localhost:3000';
@@ -22,7 +25,8 @@ export const Collection = () => {
     products: true
   });
   const [sortOption, setSortOption] = useState('relevant');
- 
+  const { searchQuery } = useSearch();
+
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
@@ -31,6 +35,13 @@ export const Collection = () => {
   useEffect(() => {
     let result = [...products];
     
+     // Apply search filter
+     if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter(product => {
+        return product.name.toLowerCase().includes(query);
+      });
+    }
      
 
     // Apply category filter
@@ -58,8 +69,10 @@ export const Collection = () => {
     // Apply sorting
     result = sortProducts(result, sortOption);
   
+
+
     setFilteredProducts(result);
-  }, [selectedCategory, selectedSubcategories, products, sortOption]);
+  }, [selectedCategory, selectedSubcategories, products, sortOption, searchQuery]);
 
   // Fetch all categories
   useEffect(() => {
@@ -222,7 +235,7 @@ export const Collection = () => {
 
         {/* Products Section - Main Content */}
         <div className="col-md-9">
-          <div className='d-flex justify-content-between' >
+          <div className='d-flex justify-content-between align-items-center mb-4' >  
             <Title text1={'PRODUCT'} text2={'COLLECTION'} />
             <p className=" mx-auto small text-secondary">
               {selectedCategory 
