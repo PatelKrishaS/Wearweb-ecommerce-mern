@@ -3,12 +3,13 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Title } from './Title';
 import dropdown_icon from '../../assets/photos/dropdown_icon.png'
+// import { sortProducts } from '../../utils/productUtils';
+import { sortProducts } from '../../utils/ProductUtils.js';
 
 
 axios.defaults.baseURL = 'http://localhost:3000';
 
 export const Collection = () => {
-  const [isFiltering, setIsFiltering] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
@@ -20,6 +21,45 @@ export const Collection = () => {
     subcategories: false,
     products: true
   });
+  const [sortOption, setSortOption] = useState('relevant');
+ 
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  useEffect(() => {
+    let result = [...products];
+    
+     
+
+    // Apply category filter
+    if (selectedCategory) {
+      result = result.filter(product => {
+        const productCategoryId = 
+          typeof product.categoryId === 'object' 
+            ? product.categoryId._id 
+            : product.categoryId;
+        return productCategoryId === selectedCategory;
+      });
+    }
+  
+    // Apply subcategory filter
+    if (selectedSubcategories.length > 0) {
+      result = result.filter(product => {
+        const productSubCategoryId = 
+          typeof product.subCategoryId === 'object'
+            ? product.subCategoryId._id?.toString()
+            : product.subCategoryId?.toString();
+        return selectedSubcategories.includes(productSubCategoryId);
+      });
+    }
+  
+    // Apply sorting
+    result = sortProducts(result, sortOption);
+  
+    setFilteredProducts(result);
+  }, [selectedCategory, selectedSubcategories, products, sortOption]);
 
   // Fetch all categories
   useEffect(() => {
@@ -79,31 +119,31 @@ export const Collection = () => {
   }, []);
 
   // Apply filters when selections change
-  useEffect(() => {
-    let result = [...products];
+  // useEffect(() => {
+  //   let result = [...products];
 
-    if (selectedCategory) {
-      result = result.filter(product => {
-        const productCategoryId = 
-          typeof product.categoryId === 'object' 
-            ? product.categoryId._id 
-            : product.categoryId;
-        return productCategoryId === selectedCategory;
-      });
-    }
+  //   if (selectedCategory) {
+  //     result = result.filter(product => {
+  //       const productCategoryId = 
+  //         typeof product.categoryId === 'object' 
+  //           ? product.categoryId._id 
+  //           : product.categoryId;
+  //       return productCategoryId === selectedCategory;
+  //     });
+  //   }
 
-    if (selectedSubcategories.length > 0) {
-      result = result.filter(product => {
-        const productSubCategoryId = 
-          typeof product.subCategoryId === 'object'
-            ? product.subCategoryId._id?.toString()
-            : product.subCategoryId?.toString();
-        return selectedSubcategories.includes(productSubCategoryId);
-      });
-    }
+  //   if (selectedSubcategories.length > 0) {
+  //     result = result.filter(product => {
+  //       const productSubCategoryId = 
+  //         typeof product.subCategoryId === 'object'
+  //           ? product.subCategoryId._id?.toString()
+  //           : product.subCategoryId?.toString();
+  //       return selectedSubcategories.includes(productSubCategoryId);
+  //     });
+  //   }
 
-    setFilteredProducts(result);
-  }, [selectedCategory, selectedSubcategories, products]);
+  //   setFilteredProducts(result);
+  // }, [selectedCategory, selectedSubcategories, products]);
 
   const handleSubcategoryToggle = (subcategoryId) => {
     setSelectedSubcategories(prev => 
@@ -131,7 +171,6 @@ export const Collection = () => {
           <div className="card mb-4">
             <div className="card-header bg-light">
               <h5 className="mb-0">FILTERS</h5>
-              <img src={dropdown_icon} className={`h-3 sm:hidden `} alt="" />
             </div>
             <div className="card-body">
               {/* Categories Filter */}
@@ -183,14 +222,25 @@ export const Collection = () => {
 
         {/* Products Section - Main Content */}
         <div className="col-md-9">
-          <div className="text-center py-4">
+          <div className='d-flex justify-content-between' >
             <Title text1={'PRODUCT'} text2={'COLLECTION'} />
-            <p className="w-75 mx-auto small text-secondary">
+            <p className=" mx-auto small text-secondary">
               {selectedCategory 
                 ? `Showing ${filteredProducts.length} products in ${categories.find(c => c._id === selectedCategory)?.categoryName}`
                 : `Showing all ${filteredProducts.length} products`}
             </p>
-          </div>
+            <select 
+  className="form-select border border-secondary p-0" 
+  style={{ width: '180px', height: '26px', fontSize: '14px', textAlign:'center' }}
+  value={sortOption}
+  onChange={handleSortChange}
+>
+  <option value="relevant">Sort by: Relevant</option>
+  <option value="low-high">Sort by: Low to High</option>
+  <option value="high-low">Sort by: High to Low</option>
+</select>
+
+            </div>
 
           {loading.products ? (
             <div className="text-center py-5">

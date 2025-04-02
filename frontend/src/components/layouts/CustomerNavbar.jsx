@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-import axios from 'axios'; // Import axios for making HTTP requests
+import { Link, NavLink, useNavigate } from 'react-router-dom'; 
+import axios from 'axios'; 
 import orders from "../../assets/booking.png"
 import ordersHover from "../../assets/new-booking.png"
 import WWLogo from "../../assets/WW-logo.png"
@@ -151,7 +151,7 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
             <a href="#" className="nav-link ">
             <i class="fa-solid fa-magnifying-glass"></i>
             </a>
-        </li>
+  </li>
 
           {/* Orders */}
         <li className="nav-item">
