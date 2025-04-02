@@ -19,6 +19,9 @@ router.get("/user/:userId", productController.getProductsBySeller);
 // Get product by ID
 router.get("/getProductById/:id", productController.getProductById);
 
+// Add this route before module.exports
+router.get("/getProductsByCategory", productController.getProductsByCategory);
+
 // Update a product (with file upload support)
 router.put(
   "/update/:id",

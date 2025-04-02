@@ -181,6 +181,34 @@ const updateProduct = async (req, res) => {
   }
 };
 
+// Get products by category
+const getProductsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.query;
+    const limit = parseInt(req.query.limit) || 4;
+    
+    if (!categoryId) {
+      return res.status(400).json({ message: "Category ID is required" });
+    }
+
+    const products = await productModel.find({ categoryId })
+      .limit(limit)
+      .populate("categoryId")
+      .populate("subCategoryId");
+
+    res.status(200).json({
+      message: "Products fetched successfully",
+      data: products,
+    });
+  } catch (err) {
+    console.error("Error fetching products by category:", err);
+    res.status(500).json({ 
+      message: "Failed to fetch products by category", 
+      error: err.message 
+    });
+  }
+};
+
 // Delete a product
 const deleteProduct = async (req, res) => {
   try {
@@ -250,6 +278,7 @@ module.exports = {
   getProductsBySeller, // Updated method name to match the route
   updateProduct,
   getLatestProducts,
+  getProductsByCategory,
   deleteProduct,
   getBestSellers
 };

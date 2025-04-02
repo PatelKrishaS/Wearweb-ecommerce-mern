@@ -383,3 +383,17 @@ margin-left:10px ;
   color: #999;
   font-size: 14px;
 }
+
+.review-form {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.review-form .fa-star {
+  transition: color 0.2s;
+}
+
+.review-form .fa-star:hover {
+  color: #ffc107 !important;
+}
