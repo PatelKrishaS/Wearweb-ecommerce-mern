@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Bounce, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const CustomerAddressPage = () => {
   const [states, setStates] = useState([]);
@@ -10,7 +10,9 @@ export const CustomerAddressPage = () => {
   const [areas, setAreas] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [userAddresses, setUserAddresses] = useState([]);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Fetch all states
   const fetchStates = async () => {
@@ -64,6 +66,15 @@ export const CustomerAddressPage = () => {
     fetchStates();
     fetchUserAddresses();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.fromOrder) {
+      toast.info('Please add a delivery address before placing an order', {
+        position: 'top-right',
+        autoClose: 5000
+      });
+    }
+  }, [location.state]);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 

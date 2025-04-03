@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { ProductContext, useProductContext } from '../context/ProductContext'; 
 import { RelatedProducts } from './RelatedProducts';
@@ -17,7 +17,10 @@ export const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const { relatedProducts, fetchRelatedProducts } = useContext(ProductContext);
   const [reviewsUpdated, setReviewsUpdated] = useState(false); 
+  const [isOrdering, setIsOrdering] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -27,6 +30,14 @@ export const ProductPage = () => {
           axios.get(`http://localhost:3000/review/product/${id}`)
         ]);
     
+        // Process product data
+        const productData = productRes.data.data;
+        
+        // Ensure sizes is always an array (even if empty or undefined)
+        const processedSizes = productData.hasSizes 
+          ? (productData.sizes || []).filter(size => size && size !== 'none')
+          : [];
+        
         // Filter out any invalid reviews
         const validReviews = (reviewsRes.data.reviews || []).filter(review => 
           review && 
@@ -36,14 +47,15 @@ export const ProductPage = () => {
         );
     
         setProduct({
-          ...productRes.data.data,
+          ...productData,
+          sizes: processedSizes,
           reviews: validReviews,
           reviewCount: reviewsRes.data.count || validReviews.length
         });
     
-        if (productRes.data.data.categoryId) {
-          fetchRelatedProducts(productRes.data.data.categoryId._id || 
-                             productRes.data.data.categoryId);
+        if (productData.categoryId) {
+          fetchRelatedProducts(productData.categoryId._id || 
+                             productData.categoryId);
         }
       } catch (err) {
         setError(err.message || 'Failed to fetch product');
@@ -51,7 +63,7 @@ export const ProductPage = () => {
         setLoading(false);
       }
     };
-  
+    
     fetchProduct();
   }, [id, reviewsUpdated]);
 
@@ -74,11 +86,62 @@ export const ProductPage = () => {
   };
 
   const handleSizeSelect = (size) => {
-    setSelectedSize(size);
+    if (product?.sizes?.includes(size)) {
+      setSelectedSize(size);
+    }
   };
+
 
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, prev + change));
+  };
+
+  const handleAddToCart = async () => {
+    if (product.hasSizes && !selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+  
+    try {
+      const cartItem = {
+        productId: product._id,
+        quantity,
+        ...(product.hasSizes && { size: selectedSize })
+      };
+  
+      // Add to cart API call would go here
+      console.log('Adding to cart:', cartItem);
+      // await axios.post('/cart/add', cartItem);
+      
+      alert('Product added to cart successfully!');
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+      alert('Failed to add to cart');
+    }
+  };
+
+  
+  const handlePlaceOrder = () => {
+    if (product.hasSizes && !selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+  
+    // Prepare order data to pass to PlaceOrder page
+    const orderData = {
+      productId: product._id,
+      productName: product.name,
+      quantity,
+      size: product.hasSizes ? selectedSize : 'One Size',
+      price: product.offerprice || product.baseprice,
+      image: product.imageURL1,
+      subtotal: (product.offerprice || product.baseprice) * quantity,
+      deliveryCharge: 10, // Add delivery charge here
+      totalAmount: ((product.offerprice || product.baseprice) * quantity) + 10 // Calculate total with delivery
+    };
+  
+    // Navigate to PlaceOrder page with state
+    navigate('/customer/place-order', { state: { orderData } });
   };
 
   const renderRatingStars = (rating) => {
@@ -199,28 +262,40 @@ export const ProductPage = () => {
             </div>
 
             {/* Size Selection */}
-            {availableSizes.length > 0 && (
-              <div className="mb-4">
-                <h6 className="mb-2">Select Size</h6>
-                <div className="d-flex flex-wrap gap-2">
-                  {availableSizes.map((size, index) => (
-                    <div key={index} className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="productSize"
-                        id={`size-${index}`}
-                        checked={selectedSize === size}
-                        onChange={() => handleSizeSelect(size)}
-                      />
-                      <label className="form-check-label" htmlFor={`size-${index}`}>
-                        {size}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+
+          {product.hasSizes && product.sizes && product.sizes.length > 0 ? (
+            <div className="mb-4">
+              <h6 className="mb-2">Select Size</h6>
+              <div className="d-flex flex-wrap gap-2">
+                {product.sizes.map((size, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`btn btn-outline-secondary ${selectedSize === size ? 'active' : ''}`}
+                    style={{
+                      minWidth: '40px',
+                      border: selectedSize === size ? '2px solid #0d6efd' : '1px solid #dee2e6'
+                    }}
+                    onClick={() => handleSizeSelect(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
-            )}
+              {selectedSize && (
+                <small className="text-muted mt-2 d-block">
+                  Selected: {selectedSize}
+                </small>
+              )}
+            </div>
+          ) : (
+            !product.hasSizes && (
+              <div className="mb-4">
+                <h6 className="mb-2">Size</h6>
+                <p className="text-muted">One Size</p>
+              </div>
+            )
+          )}
 
             {/* Quantity Selector */}
             <div className="mb-4">
@@ -247,13 +322,43 @@ export const ProductPage = () => {
 
             {/* Action Buttons */}
             <div className="d-flex gap-3 mt-4 mb-5">
-              <button className="btn btn-primary px-4 py-2" style={{width:'200px'}}>
+              <button 
+                className="btn btn-primary px-4 py-2" 
+                style={{width:'200px'}}
+                disabled={product.hasSizes && !selectedSize}
+                onClick={() => handleAddToCart()}
+              >
                 Add to Cart
               </button>
-              <button className="btn btn-outline-secondary px-4 py-2" style={{width:'200px'}}>
-                <i className="far fa-heart me-2"></i> Wishlist
+
+              {/* Order Now Button */}
+              <button 
+                className="btn btn-success px-4 py-2" 
+                style={{width:'200px'}}
+                onClick={handlePlaceOrder}
+                disabled={isOrdering || (product.hasSizes && !selectedSize)}
+              >
+                {isOrdering ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Ordering...
+                  </>
+                ) : (
+                  'Order Now'
+                )}
               </button>
+
+              <button className="btn btn-outline-secondary px-4 py-2" style={{width:'200px'}}>
+                  <i className="far fa-heart me-2"></i> Wishlist
+                </button>
             </div>
+
+            {orderSuccess && (
+              <div className="alert alert-success mt-3">
+                Order placed successfully! 
+                <Link to="/customer/orders" className="ms-2">View your orders</Link>
+              </div>
+            )}
 
             
           </div>
@@ -353,7 +458,6 @@ export const ProductPage = () => {
       {/* Related Products Section */}
       <div className="row mt-5">
         <div className="col-12">
-          <h3 className="mb-4">Related Products</h3>
           <RelatedProducts products={relatedProducts} />
         </div>
       </div>

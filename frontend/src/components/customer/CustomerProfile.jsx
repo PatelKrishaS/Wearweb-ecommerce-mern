@@ -3,14 +3,16 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const CustomerProfile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null); // State for profile picture file
   const { register, handleSubmit, setValue } = useForm();
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Fetch user details on component mount
   useEffect(() => {
@@ -54,6 +56,15 @@ export const CustomerProfile = () => {
     };
     fetchUserDetails();
   }, [setValue, navigate]);
+
+  useEffect(() => {
+    if (location.state?.fromOrder) {
+      toast.info('Please complete your profile before placing an order', {
+        position: 'top-right',
+        autoClose: 5000
+      });
+    }
+  }, [location.state]);
 
   // Handle form submission for updating user details
   const submitHandler = async (data) => {

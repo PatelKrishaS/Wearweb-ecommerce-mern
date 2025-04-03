@@ -243,17 +243,17 @@ export const Collection = () => {
                 : `Showing all ${filteredProducts.length} products`}
             </p>
             <select 
-  className="form-select border border-secondary p-0" 
-  style={{ width: '180px', height: '26px', fontSize: '14px', textAlign:'center' }}
-  value={sortOption}
-  onChange={handleSortChange}
->
-  <option value="relevant">Sort by: Relevant</option>
-  <option value="low-high">Sort by: Low to High</option>
-  <option value="high-low">Sort by: High to Low</option>
-</select>
+              className="form-select border border-secondary p-0" 
+              style={{ width: '180px', height: '26px', fontSize: '14px', textAlign:'center' }}
+              value={sortOption}
+              onChange={handleSortChange}
+            >
+              <option value="relevant">Sort by: Relevant</option>
+              <option value="low-high">Sort by: Low to High</option>
+              <option value="high-low">Sort by: High to Low</option>
+            </select>
 
-            </div>
+          </div>
 
           {loading.products ? (
             <div className="text-center py-5">

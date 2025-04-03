@@ -3,11 +3,12 @@ const orderModel = require("../models/OrderModel");
 // Create an order
 const createOrder = async (req, res) => {
   try {
-    const { userId, totalAmount } = req.body;
+    const { userId, totalAmount, details } = req.body;
 
     const newOrder = await orderModel.create({
       userId,
       totalAmount,
+      details: [details] // Wrap in array if you want to support multiple products later
     });
 
     res.status(201).json({
@@ -15,7 +16,10 @@ const createOrder = async (req, res) => {
       data: newOrder,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: "Failed to create order",
+      error: err.message 
+    });
   }
 };
 
