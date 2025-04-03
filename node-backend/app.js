@@ -39,6 +39,9 @@ app.use("/area",areaRoutes)
 const productListingRoutes = require("./src/routes/ProductListingRoutes")
 app.use("/product",productListingRoutes) 
 
+const reviewRoutes = require("./src/routes/ReviewRoutes")
+app.use("/review",reviewRoutes) 
+
 
 
 mongoose.connect("mongodb://localhost:27017/MyDatabase").then(()=>{

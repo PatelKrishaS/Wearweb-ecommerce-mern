@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { ProductContext, useProductContext } from '../context/ProductContext'; 
 import { RelatedProducts } from './RelatedProducts';
+import { ReviewForm } from './ReviewForm';
 // const { relatedProducts, fetchRelatedProducts } = useProductContext();
 
 export const ProductPage = () => {
@@ -15,16 +16,34 @@ export const ProductPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [quantity, setQuantity] = useState(1);
   const { relatedProducts, fetchRelatedProducts } = useContext(ProductContext);
+  const [reviewsUpdated, setReviewsUpdated] = useState(false); 
+
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/product/getProductById/${id}`);
-        setProduct(response.data.data);
-        
-        // Use categoryId instead of category
-        if (response.data.data.categoryId) {
-          fetchRelatedProducts(response.data.data.categoryId._id || response.data.data.categoryId);
+        const [productRes, reviewsRes] = await Promise.all([
+          axios.get(`http://localhost:3000/product/getProductById/${id}`),
+          axios.get(`http://localhost:3000/review/product/${id}`)
+        ]);
+    
+        // Filter out any invalid reviews
+        const validReviews = (reviewsRes.data.reviews || []).filter(review => 
+          review && 
+          review._id && 
+          review.rating && 
+          (review.userId || review.user)
+        );
+    
+        setProduct({
+          ...productRes.data.data,
+          reviews: validReviews,
+          reviewCount: reviewsRes.data.count || validReviews.length
+        });
+    
+        if (productRes.data.data.categoryId) {
+          fetchRelatedProducts(productRes.data.data.categoryId._id || 
+                             productRes.data.data.categoryId);
         }
       } catch (err) {
         setError(err.message || 'Failed to fetch product');
@@ -34,7 +53,7 @@ export const ProductPage = () => {
     };
   
     fetchProduct();
-  }, [id]);
+  }, [id, reviewsUpdated]);
 
   if (loading) return <div className="text-center py-5">Loading...</div>;
   if (error) return <div className="alert alert-danger">Error: {error}</div>;
@@ -73,6 +92,38 @@ export const ProductPage = () => {
       );
     }
     return stars;
+  };
+
+  const onReviewSubmit = async (newReview) => {
+    try {
+      // Validate the new review before adding
+      if (!newReview || !newReview._id || !newReview.rating) {
+        console.error('Invalid review format:', newReview);
+        return;
+      }
+  
+      setProduct(prev => {
+        if (!prev) return prev;
+        
+        return {
+          ...prev,
+          reviewCount: (prev.reviewCount || 0) + 1,
+          reviews: [{
+            ...newReview,
+            userId: newReview.userId || { name: 'You' } // Ensure userId exists
+          }, ...(prev.reviews || [])]
+        };
+      });
+  
+      // Force refresh from server to ensure consistency
+      const reviewsResponse = await axios.get(`http://localhost:3000/review/product/${id}`);
+      setProduct(prev => ({
+        ...prev,
+        reviews: reviewsResponse.data.reviews || []
+      }));
+    } catch (err) {
+      console.error("Error updating reviews:", err);
+    }
   };
 
   return (
@@ -125,7 +176,7 @@ export const ProductPage = () => {
             {/* Rating */}
             <div className="d-flex align-items-center mb-2">
               <div className="me-2">
-                {renderRatingStars(product.averageRating || 0)}
+                {renderRatingStars(product.reviewCount > 0 ? product.averageRating : 0)}
               </div>
               <small className="text-muted">({product.reviewCount || 0} reviews)</small>
             </div>
@@ -210,64 +261,94 @@ export const ProductPage = () => {
       </div>
 
       {/* Description/Reviews Tabs */}
-      <div className="mb-5">
-              <ul className="nav nav-tabs">
-                <li className="nav-item">
-                  <button
-                    className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('description')}
-                  >
-                    Description
-                  </button>
+      {/* Description/Reviews Tabs */}
+<div className="mb-5">
+  <ul className="nav nav-tabs">
+    <li className="nav-item">
+      <button
+        className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
+        onClick={() => setActiveTab('description')}
+      >
+        Description
+      </button>
+    </li>
+    <li className="nav-item">
+      <button
+        className={`nav-link ${activeTab === 'reviews' ? 'active' : ''}`}
+        onClick={() => setActiveTab('reviews')}
+      >
+        Reviews ({product.reviewCount || 0})
+      </button>
+    </li>
+  </ul>
+  <div className="tab-content p-3 border border-top-0">
+    {activeTab === 'description' ? (
+      <div className="tab-pane active">
+        <p className="text-muted">{product.description}</p>
+        {product.specifications && (
+          <div className="mt-3">
+            <h6>Specifications</h6>
+            <ul className="list-unstyled">
+              {Object.entries(product.specifications).map(([key, value]) => (
+                <li key={key} className="mb-1">
+                  <strong>{key}:</strong> {value}
                 </li>
-                <li className="nav-item">
-                  <button
-                    className={`nav-link ${activeTab === 'reviews' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('reviews')}
-                  >
-                    Reviews ({product.reviewCount || 0})
-                  </button>
-                </li>
-              </ul>
-              <div className="tab-content p-3 border border-top-0">
-                {activeTab === 'description' ? (
-                  <div className="tab-pane active">
-                    <p className="text-muted">{product.description}</p>
-                    {product.specifications && (
-                      <div className="mt-3">
-                        <h6>Specifications</h6>
-                        <ul className="list-unstyled">
-                          {Object.entries(product.specifications).map(([key, value]) => (
-                            <li key={key} className="mb-1">
-                              <strong>{key}:</strong> {value}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="tab-pane active">
-                    {product.reviews && product.reviews.length > 0 ? (
-                      product.reviews.map((review, index) => (
-                        <div key={index} className="mb-3 pb-3 border-bottom">
-                          <div className="d-flex justify-content-between">
-                            <h6>{review.userName}</h6>
-                            <small className="text-muted">{new Date(review.date).toLocaleDateString()}</small>
-                          </div>
-                          <div className="mb-2">
-                            {renderRatingStars(review.rating)}
-                          </div>
-                          <p>{review.comment}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p>No reviews yet. Be the first to review!</p>
-                    )}
-                  </div>
-                )}
-              </div>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div className="tab-pane active">
+  {/* Add Review Form - only for logged in users */}
+  {localStorage.getItem('id') && (
+    <ReviewForm 
+      productId={id} 
+      onReviewSubmit={onReviewSubmit}
+    />
+  )}
+  
+  {/* Reviews list */}
+  {product.reviewCount > 0 ? (
+    product.reviews?.length > 0 ? (
+      product.reviews.map((review) => {
+        // Skip if review is undefined
+        if (!review) return null;
+        
+        // Safely get user name
+        const userName = review.userId?.name || 
+                        (typeof review.userId === 'object' ? review.userId?.name : 'Anonymous');
+        
+        // Skip if review is invalid
+        if (!review._id || !review.rating) return null;
+
+        return (
+          <div key={review._id} className="mb-3 pb-3 border-bottom">
+            <div className="d-flex justify-content-between">
+              <h6>{userName}</h6>
+              <small className="text-muted">
+                {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
+              </small>
             </div>
+            <div className="mb-2">
+              {renderRatingStars(review.rating)}
+            </div>
+            <p>{review.comment || ''}</p>
+          </div>
+        );
+      })
+    ) : (
+      <div className="alert alert-warning">
+        Could not load reviews (expected {product.reviewCount})
+      </div>
+    )
+  ) : (
+    <p>No reviews yet. {!localStorage.getItem('id') && "Login to be the first to review!"}</p>
+  )}
+</div>
+    )}
+  </div>
+</div>
 
       {/* Related Products Section */}
       <div className="row mt-5">

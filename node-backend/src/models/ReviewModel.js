@@ -5,12 +5,12 @@ const reviewSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "users", // Reference to the users collection
+      ref: "users", 
       required: true,
     },
     productId: {
       type: Schema.Types.ObjectId,
-      ref: "products", // Reference to the products collection
+      ref: "products", 
       required: true,
     },
     rating: {
@@ -21,7 +21,7 @@ const reviewSchema = new Schema(
     },
     comment: {
       type: String,
-    },
+    }
   },
   { timestamps: true } // Adds createdAt and updatedAt fields
 );

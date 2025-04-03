@@ -74,6 +74,14 @@ const productSchema = new Schema(
     imageURL3: {
       type: String,
     },
+    reviewCount: {
+      type: Number,
+      default: 0
+    },
+    averageRating: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true } // Adds createdAt and updatedAt fields
 );
