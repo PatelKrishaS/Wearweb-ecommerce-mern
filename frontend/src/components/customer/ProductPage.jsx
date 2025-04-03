@@ -247,10 +247,10 @@ export const ProductPage = () => {
 
             {/* Action Buttons */}
             <div className="d-flex gap-3 mt-4 mb-5">
-              <button className="btn btn-primary px-4 py-2">
+              <button className="btn btn-primary px-4 py-2" style={{width:'200px'}}>
                 Add to Cart
               </button>
-              <button className="btn btn-outline-secondary px-4 py-2">
+              <button className="btn btn-outline-secondary px-4 py-2" style={{width:'200px'}}>
                 <i className="far fa-heart me-2"></i> Wishlist
               </button>
             </div>
