@@ -38,6 +38,7 @@ import { Product } from './components/customer/Product'
 import { PlaceOrder } from './components/customer/PlaceOrder'
 import { ProductPage } from './components/customer/ProductPage'
 import { OrderConfirmation } from './components/customer/OrderConfirmation'
+import { OrderDetailsPage } from './components/customer/OrderDetailsPage'
 
 
 function App() {
@@ -95,6 +96,7 @@ function App() {
               <Route path="cart" element={<CustomerCartPage />} />
               <Route path="orders" element={<CustomerOrdersPage />} />
               <Route path="order-confirmation" element={<OrderConfirmation/>} />
+              <Route path="order-detail-page/:orderId" element={<OrderDetailsPage/>} />
               <Route path="account">
                 <Route path="my-profile" element={<CustomerProfile />} />
                 <Route path="update-address/:id" element={<UpdateAddress />} />

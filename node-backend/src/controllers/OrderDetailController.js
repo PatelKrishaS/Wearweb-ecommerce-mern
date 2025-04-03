@@ -11,7 +11,7 @@ const addOrderDetails = async (req, res) => {
       quantity,
       price,
     });
-
+    
     res.status(201).json({
       message: "Order details added successfully",
       data: newDetail,

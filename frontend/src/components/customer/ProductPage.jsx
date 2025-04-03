@@ -127,20 +127,21 @@ export const ProductPage = () => {
       return;
     }
   
-    // Prepare order data to pass to PlaceOrder page
+    // Calculate amounts without delivery charge (will be added in PlaceOrder)
+    const price = product.offerprice || product.baseprice;
+    const subtotal = price * quantity;
+  
     const orderData = {
       productId: product._id,
       productName: product.name,
       quantity,
       size: product.hasSizes ? selectedSize : 'One Size',
-      price: product.offerprice || product.baseprice,
+      price,
       image: product.imageURL1,
-      subtotal: (product.offerprice || product.baseprice) * quantity,
-      deliveryCharge: 10, // Add delivery charge here
-      totalAmount: ((product.offerprice || product.baseprice) * quantity) + 10 // Calculate total with delivery
+      subtotal, // Pass subtotal only
+      totalAmount: subtotal // Will be recalculated in PlaceOrder
     };
   
-    // Navigate to PlaceOrder page with state
     navigate('/customer/place-order', { state: { orderData } });
   };
 

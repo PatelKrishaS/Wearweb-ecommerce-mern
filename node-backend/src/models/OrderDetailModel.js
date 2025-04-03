@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const orderDetailSchema = new Schema(
   {
     orderId: {
-      type: Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId, 
       ref: "orders", // Reference to the orders collection
       required: true,
     },
@@ -13,12 +13,12 @@ const orderDetailSchema = new Schema(
       ref: "products", // Reference to the products collection
       required: true,
     },
-    quantity: {
-      type: Number,
+    quantity: { 
+      type: Number, 
       required: true,
     },
-    price: {
-      type: Number,
+    price: { 
+      type: Number, 
       required: true,
     },
   },

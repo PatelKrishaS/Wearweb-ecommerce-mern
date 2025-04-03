@@ -59,12 +59,13 @@ export const PlaceOrder = () => {
       alert('Please select a delivery address');
       return;
     }
-
+  
     try {
       const orderPayload = {
         userId: localStorage.getItem('id'),
         products: [{
           productId: state.orderData.productId,
+          productName: state.orderData.productName, 
           quantity: state.orderData.quantity,
           price: state.orderData.price,
           size: state.orderData.size
@@ -73,17 +74,17 @@ export const PlaceOrder = () => {
         paymentMethod,
         totalAmount: state.orderData.totalAmount
       };
-
+  
       const response = await axios.post('http://localhost:3000/order/create', orderPayload);
       toast.success('Order placed successfully!', {
         position: 'top-right',
         autoClose: 3000
       });
-      navigate('/customer/order-confirmation', { 
-        state: { 
+      navigate('/customer/order-confirmation', {
+        state: {
           orderId: response.data.data._id,
           totalAmount: state.orderData.totalAmount 
-        } 
+        }
       });
     } catch (error) {
       console.error('Order error:', error);
@@ -117,19 +118,27 @@ export const PlaceOrder = () => {
           </div>
         </div>
         <hr />
-        <div className="d-flex justify-content-between mb-2">
-          <span>Subtotal:</span>
-          <span>₹{state.orderData.subtotal}</span>
-        </div>
-          <div className="d-flex justify-content-between mb-2">
-            <span>Delivery Charge:</span>
-            <span>₹10</span>
-          </div>
-        <hr />
-          <div className="d-flex justify-content-between">
-            <h5>Total:</h5>
-            <h5>₹{state.orderData.totalAmount}</h5>
-          </div>
+        {/* In your Order Summary card */}
+<div className="d-flex justify-content-between mb-2">
+  <span>Subtotal:</span>
+  <span>₹{state.orderData.subtotal}</span>
+</div>
+
+{paymentMethod === 'cod' && (
+  <div className="d-flex justify-content-between mb-2">
+    <span>Delivery Charge:</span>
+    <span>₹10</span>
+  </div>
+)}
+
+<div className="d-flex justify-content-between">
+  <h5>Total:</h5>
+  <h5>
+    ₹{paymentMethod === 'cod' 
+      ? (parseFloat(state.orderData.subtotal) + 10).toFixed(2)
+      : state.orderData.subtotal}
+  </h5>
+</div>
         </div>
     </div>
 

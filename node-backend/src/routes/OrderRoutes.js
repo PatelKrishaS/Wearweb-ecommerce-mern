@@ -8,4 +8,6 @@ router.post("/create", orderController.createOrder);
 // Get orders by user
 router.get("/user/:userId", orderController.getOrdersByUser);
 
+router.get('/:orderId', orderController.getOrderDetails);
+
 module.exports = router;

@@ -397,3 +397,44 @@ margin-left:10px ;
 .review-form .fa-star:hover {
   color: #ffc107 !important;
 }
+
+@media (max-width: 768px) {
+  .table-responsive {
+    border: 0;
+  }
+  .table thead {
+    display: none;
+  }
+  .table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+  }
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 1rem;
+  }
+}
+
+.table-responsive td, .table-responsive th {
+  white-space: nowrap;
+  padding: 12px !important;
+}
+
+.table-responsive td:last-child {
+  text-align: right;
+}
+
+.item-count {
+  min-width: 80px;
+  display: inline-block;
+  text-align: center;
+}
+
