@@ -272,7 +272,7 @@ export const ProductPage = () => {
                     type="button"
                     className={`btn btn-outline-secondary ${selectedSize === size ? 'active' : ''}`}
                     style={{
-                      minWidth: '40px',
+                      width: '50px',
                       border: selectedSize === size ? '2px solid #0d6efd' : '1px solid #dee2e6'
                     }}
                     onClick={() => handleSizeSelect(size)}

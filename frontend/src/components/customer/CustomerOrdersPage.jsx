@@ -133,7 +133,7 @@ export const CustomerOrdersPage = () => {
           <p>You haven't placed any orders yet.</p>
           <button 
             className="btn btn-primary mt-3"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/customer/collection')}
           >
             Continue Shopping
           </button>

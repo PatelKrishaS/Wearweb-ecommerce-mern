@@ -1,5 +1,46 @@
 const wishlistModel = require("../models/WishlistModel");
 
+// Add to wishlist
+const addToWishlist = async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+    
+    const wishlist = await wishlistModel.findOneAndUpdate(
+      { userId },
+      { $addToSet: { items: { productId } } },
+      { new: true, upsert: true }
+    ).populate('items.productId');
+    
+    res.status(200).json({
+      message: "Product added to wishlist",
+      data: wishlist
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Remove from wishlist
+const removeFromWishlist = async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+    
+    const wishlist = await wishlistModel.findOneAndUpdate(
+      { userId },
+      { $pull: { items: { productId } } },
+      { new: true }
+    ).populate('items.productId');
+    
+    res.status(200).json({
+      message: "Product removed from wishlist",
+      data: wishlist
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 // Create a wishlist
 const createWishlist = async (req, res) => {
   try {

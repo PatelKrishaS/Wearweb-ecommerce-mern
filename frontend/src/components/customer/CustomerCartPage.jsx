@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Title } from './Title';
+
 
 export const CustomerCartPage = () => {
   const { cart, loading, error, updateCartItem, removeFromCart, clearCart } = useCart();
@@ -85,10 +87,13 @@ export const CustomerCartPage = () => {
         <div className="col-lg-8">
           <div className="card mb-4">
             <div className="card-header bg-white d-flex justify-content-between align-items-center">
-              <h4 className="mb-0">Your Cart ({cart.items.length} items)</h4>
+              <div className="col-12" style={{width:'550px'}}>
+                        <Title text1="YOUR" text2="CART" />
+              </div>
               <button 
                 className="btn btn-sm btn-outline-danger"
                 onClick={clearCart}
+                style={{width:'150px'}}
               >
                 Clear Cart
               </button>
@@ -175,8 +180,10 @@ export const CustomerCartPage = () => {
         <div className="col-lg-4">
           <div className="card">
             <div className="card-header bg-white">
-              <h4 className="mb-0">Order Summary</h4>
-            </div>
+              <div className="col-12" style={{width:'550px'}}>
+                  <Title text1="ORDER" text2="SUMMARY" />
+                </div>            
+              </div>
             <div className="card-body">
               <div className="d-flex justify-content-between mb-2">
                 <span>Subtotal ({selectedItems.length} items):</span>

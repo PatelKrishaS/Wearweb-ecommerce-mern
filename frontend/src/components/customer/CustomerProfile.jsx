@@ -137,6 +137,7 @@ export const CustomerProfile = () => {
                     style={{ width: "100px", height: "100px", borderRadius: "50%", position:"relative", left:"40%" }}
                   />
                 )}
+                <div style={{position:'relative', left:'35%', marginTop:'25px'}}>
                 <p><strong>Name:</strong> {user.name}</p>
                 <p><strong>Phone Number:</strong> {user.phoneNumber}</p>
                 <p><strong>Email:</strong> {user.email}</p>
@@ -144,10 +145,12 @@ export const CustomerProfile = () => {
                 <p><strong>Age:</strong> {user.age}</p>
                 <button
                   className="btn btn-primary mt-3"
-                  onClick={() => setIsEditing(true)} // Enter edit mode
+                  onClick={() => setIsEditing(true)} 
+                  style={{width:'400px', position:"relative", right:"13%"}}
                 >
                   Edit Profile
                 </button>
+                </div>
               </div>
             ) : (
               // Edit form
@@ -216,16 +219,22 @@ export const CustomerProfile = () => {
                 </div>
 
                 {/* Submit Button */}
-                <button type="submit" className="btn btn-success w-100 mt-3">
-                  Update Profile
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary w-100 mt-2"
-                  onClick={() => setIsEditing(false)} // Cancel edit mode
-                >
-                  Cancel
-                </button>
+                <div className="row mt-3">
+                  <div className="col-md-6">
+                    <button type="submit" className="btn btn-success w-100">
+                      Update Profile
+                    </button>
+                  </div>
+                  <div className="col-md-6">
+                    <button
+                      type="button"
+                      className="btn btn-secondary w-100"
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </form>
             )}
           </div>

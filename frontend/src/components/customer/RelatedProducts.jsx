@@ -12,13 +12,19 @@ export const RelatedProducts = ({ products }) => {
   }
 
   return (
-    <div className="my-5">
-      <div className="text-center py-4">
+    <div className="my-1">
+      {/* <div className="text-center py-4">
         <Title text1={'RELATED'} text2={'PRODUCTS'} />
         <p className="w-75 mx-auto small text-secondary">
           You might also like these similar products
         </p>
-      </div>
+      </div> */}
+            <div className="text-center py-4 display-4">
+              <Title text1={'RELATED'} text2={'PRODUCTS'} />
+              <p className="w-75 mx-auto small text-secondary">
+              You might also like these similar products
+              </p>
+            </div>
       
       <div className="container px-3">
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
