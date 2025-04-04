@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { SearchProvider } from './components/context/SearchContext.jsx';
 import { ProductProvider } from './components/context/ProductContext.jsx';
 import { CartProvider } from './components/context/CartContext.jsx';
+import { WishlistProvider } from './components/context/WishlistContext.jsx';
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')).render(
         <SearchProvider>
             <ProductProvider>
                 <CartProvider>
-                    <App />
+                        <WishlistProvider>
+                            <App />
+                        </WishlistProvider>
                 </CartProvider>
             </ProductProvider>
         </SearchProvider>

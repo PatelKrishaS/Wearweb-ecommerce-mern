@@ -3,8 +3,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { ProductContext, useProductContext } from '../context/ProductContext';
 import { useCart } from '../context/CartContext'; 
+import { useWishlist } from '../context/WishlistContext';
 import { RelatedProducts } from './RelatedProducts';
 import { ReviewForm } from './ReviewForm';
+import { toast } from 'react-toastify';
 // const { relatedProducts, fetchRelatedProducts } = useProductContext();
 
 export const ProductPage = () => {
@@ -23,6 +25,16 @@ export const ProductPage = () => {
 
   const navigate = useNavigate();
   const { addToCart } = useCart();
+
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  
+
+  useEffect(() => {
+    if (product) {
+      setIsWishlisted(isInWishlist(product._id));
+    }
+  }, [product, isInWishlist]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -109,12 +121,7 @@ export const ProductPage = () => {
       selectedSize,
       quantity
     };
-  
-    // This single call will handle:
-    // 1. Optimistic UI update
-    // 2. API call to backend
-    // 3. Error handling
-    // 4. Toast notifications
+
     addToCart(cartItem);
   };
 
@@ -185,6 +192,25 @@ export const ProductPage = () => {
       }));
     } catch (err) {
       console.error("Error updating reviews:", err);
+    }
+  };
+
+  const toggleWishlist = async () => {
+    if (!product) return;
+    
+    try {
+      if (isWishlisted) {
+        await removeFromWishlist(product._id);
+        setIsWishlisted(false);
+        toast.success('Removed from wishlist');
+      } else {
+        await addToWishlist(product._id);
+        setIsWishlisted(true);
+        toast.success('Added to wishlist!');
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
+      toast.error(err.response?.data?.message || 'Failed to update wishlist');
     }
   };
 
@@ -347,9 +373,14 @@ export const ProductPage = () => {
                 )}
               </button>
 
-              <button className="btn btn-outline-secondary px-4 py-2" style={{width:'200px'}}>
-                  <i className="far fa-heart me-2"></i> Wishlist
-                </button>
+              <button 
+                className={`btn px-4 py-2 ${isWishlisted ? 'btn-danger' : 'btn-outline-secondary'}`}
+                style={{width:'200px'}}
+                onClick={toggleWishlist}
+              >
+                <i className={`far fa-heart me-2 ${isWishlisted ? 'fas' : 'far'}`}></i>
+                {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+              </button>
             </div>
 
             {orderSuccess && (

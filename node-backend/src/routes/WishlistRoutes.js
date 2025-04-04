@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 const wishlistController = require("../controllers/WishlistController");
 
-// Create a wishlist
-router.post("/create", wishlistController.createWishlist);
+// Create wishlist
+router.post("/", wishlistController.createWishlist);
 
-// Get wishlist by user
-router.get("/user/:userId", wishlistController.getWishlistByUser);
+// Add item to wishlist
+router.post("/:userId/add/:productId", wishlistController.addToWishlist);
 
-// Add to wishlist
-router.post("/user/:userId/add/:productId", wishlistController.addToWishlist);
+// Remove item from wishlist
+router.delete("/:userId/remove/:productId", wishlistController.removeFromWishlist);
 
-// Remove from wishlist
-router.delete("/user/:userId/item/:productId", wishlistController.removeFromWishlist);
+// Get user's wishlist
+router.get("/:userId", wishlistController.getWishlistByUser);
 
 module.exports = router;
