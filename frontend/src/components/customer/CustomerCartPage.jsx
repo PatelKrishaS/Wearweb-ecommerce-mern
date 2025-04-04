@@ -200,7 +200,7 @@ export const CustomerCartPage = () => {
               </button>
               <button
                 className="btn btn-outline-secondary w-100 mt-2 py-2"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/customer/collection')}
               >
                 Continue Shopping
               </button>
