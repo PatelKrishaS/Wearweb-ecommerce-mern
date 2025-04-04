@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { ProductContext, useProductContext } from '../context/ProductContext'; 
+import { ProductContext, useProductContext } from '../context/ProductContext';
+import { useCart } from '../context/CartContext'; 
 import { RelatedProducts } from './RelatedProducts';
 import { ReviewForm } from './ReviewForm';
 // const { relatedProducts, fetchRelatedProducts } = useProductContext();
@@ -21,6 +22,7 @@ export const ProductPage = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
 
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -102,21 +104,25 @@ export const ProductPage = () => {
       return;
     }
   
+    const cartItem = {
+      ...product,
+      selectedSize,
+      quantity
+    };
+  
+    // Optimistic UI update
+    addToCart(cartItem); 
+  
     try {
-      const cartItem = {
+      await axios.post('/api/cart', {
         productId: product._id,
         quantity,
-        ...(product.hasSizes && { size: selectedSize })
-      };
-  
-      // Add to cart API call would go here
-      console.log('Adding to cart:', cartItem);
-      // await axios.post('/cart/add', cartItem);
-      
-      alert('Product added to cart successfully!');
+        size: selectedSize
+      });
     } catch (err) {
-      console.error('Error adding to cart:', err);
-      alert('Failed to add to cart');
+      // Rollback on error
+      removeFromCart(product._id); 
+      alert('Failed to save cart');
     }
   };
 
@@ -323,14 +329,14 @@ export const ProductPage = () => {
 
             {/* Action Buttons */}
             <div className="d-flex gap-3 mt-4 mb-5">
-              <button 
-                className="btn btn-primary px-4 py-2" 
-                style={{width:'200px'}}
-                disabled={product.hasSizes && !selectedSize}
-                onClick={() => handleAddToCart()}
-              >
-                Add to Cart
-              </button>
+            <button 
+              className="btn btn-primary px-4 py-2" 
+              style={{width:'200px'}}
+              disabled={product.hasSizes && !selectedSize}
+              onClick={handleAddToCart}  // Connect the handler here
+            >
+              Add to Cart
+            </button>
 
               {/* Order Now Button */}
               <button 

@@ -9,6 +9,8 @@ import '../../assets/css/custom.css';
 import { useLocation } from 'react-router-dom';
 // import { useSearch } from './components/context/SearchContext.jsx';
 import { useSearch } from '../context/SearchContext.jsx';
+import { useCart } from '../context/CartContext';
+
 
 
 
@@ -21,6 +23,9 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
   const [isHovered, setIsHovered] = useState(false);
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [visible, setVisible] =useState(false)
+
+  const { itemCount } = useCart();
+
 
   const isCollectionPage = location.pathname === '/customer/collection';
 
@@ -229,10 +234,12 @@ export const CustomerNavbar = ({ toggleSidebar }) => {
 
           {/* Cart icon */}
           <li className="nav-item ">
-          <Link to='/customer/cart' className='nav-link '>
-          <i class="fa-solid fa-cart-shopping"></i>
-          <p className='count'>10</p>
-          </Link>
+          <Link to='/customer/cart' className='nav-link'>
+      <i className="fa-solid fa-cart-shopping"></i>
+      {itemCount > 0 && (
+        <span className="count">{itemCount}</span>
+      )}
+    </Link>
           </li>
           
           <li className="nav-item">
