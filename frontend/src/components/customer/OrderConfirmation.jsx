@@ -27,7 +27,7 @@ export const OrderConfirmation = () => {
           
           {/* Message */}
           <p className="text-muted mb-4 fs-5">
-            Thank you for your purchase. We've sent a confirmation email.
+            {/* Thank you for your purchase. We've sent a confirmation email. */}
           </p>
           
           {/* Buttons */}
