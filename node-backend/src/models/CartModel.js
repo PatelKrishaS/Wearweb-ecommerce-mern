@@ -24,16 +24,16 @@ const cartItemSchema = new Schema({
 
 const cartSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
+  userId: {
+    type: Schema.Types.ObjectId,
       ref: "users",
-      required: true,
-      unique: true
-    },
-    items: [cartItemSchema],
-    total: {
-      type: Number,
-      default: 0
+    required: true,
+    unique: true
+  },
+  items: [cartItemSchema],
+  total: {
+    type: Number,
+    default: 0
     }
   },
   { timestamps: true }

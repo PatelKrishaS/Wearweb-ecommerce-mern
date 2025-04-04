@@ -110,20 +110,12 @@ export const ProductPage = () => {
       quantity
     };
   
-    // Optimistic UI update
-    addToCart(cartItem); 
-  
-    try {
-      await axios.post('/api/cart', {
-        productId: product._id,
-        quantity,
-        size: selectedSize
-      });
-    } catch (err) {
-      // Rollback on error
-      removeFromCart(product._id); 
-      alert('Failed to save cart');
-    }
+    // This single call will handle:
+    // 1. Optimistic UI update
+    // 2. API call to backend
+    // 3. Error handling
+    // 4. Toast notifications
+    addToCart(cartItem);
   };
 
   

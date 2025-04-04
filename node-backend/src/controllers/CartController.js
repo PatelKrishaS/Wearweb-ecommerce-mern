@@ -54,8 +54,8 @@ const addToCart = async (req, res) => {
       cart.items[existingItemIndex].quantity += quantity;
     } else {
       // Add new item to cart
-      cart.items.push({ 
-        productId, 
+      cart.items.push({
+        productId,
         quantity, 
         size: size || null,
         price,
@@ -66,7 +66,7 @@ const addToCart = async (req, res) => {
 
     await cart.save();
 
-    res.status(200).json({
+    res.status(200).json({ 
       success: true,
       message: "Item added to cart",
       data: await cartModel.findById(cart._id).populate('items.productId')

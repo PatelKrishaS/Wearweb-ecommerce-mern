@@ -9,8 +9,8 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const userId = localStorage.getItem('id');
+    const navigate = useNavigate();
+    const userId = localStorage.getItem('id');
 
   // Memoized fetch function to prevent unnecessary recreations
   const fetchCart = useCallback(async () => {
@@ -79,7 +79,7 @@ export const CartProvider = ({ children }) => {
       // API call to backend
       await axios.post(`http://localhost:3000/cart/user/${userId}/add`, {
         productId: _id,
-        quantity: product.quantity || 1,
+          quantity: product.quantity || 1,
         size: hasSizes ? product.selectedSize : null,
         price,
         image: imageURL1,
@@ -162,13 +162,13 @@ export const CartProvider = ({ children }) => {
   return (
     <CartContext.Provider
       value={{
-        cart,
+      cart, 
         loading,
         error,
         itemCount, // Added item count
-        addToCart,
+      addToCart,
         updateCartItem,
-        removeFromCart,
+      removeFromCart,
         clearCart,
         fetchCart
       }}
