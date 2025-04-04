@@ -62,12 +62,12 @@ export const SellerSidebar = () => {
                       <p>View My Products</p>
                     </Link>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Inventory Management</p>
                     </a>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
                     <a href="./index2.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
@@ -78,7 +78,7 @@ export const SellerSidebar = () => {
               </li>
 
               {/*Sale and Analytics */}
-              <li className={`nav-item ${openMenus.analytics ? 'menu-open' : ''}`}>
+              {/* <li className={`nav-item ${openMenus.analytics ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('analytics')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
@@ -106,8 +106,8 @@ export const SellerSidebar = () => {
                     </a>
                   </li>
                 </ul>
-              </li>
-              <li className={`nav-item ${openMenus.marketing ? 'menu-open' : ''}`}>
+              </li> */}
+              {/* <li className={`nav-item ${openMenus.marketing ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('marketing')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
@@ -129,7 +129,7 @@ export const SellerSidebar = () => {
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> */}
               <li className={`nav-item ${openMenus.settings ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('settings')}>
                   {/* <i className="nav-icon bi bi-graph-up"></i> */}
@@ -148,12 +148,12 @@ export const SellerSidebar = () => {
                       <p>Store Profile</p>
                     </a>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>GST/Bank Details </p>
                     </a>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
@@ -162,7 +162,7 @@ export const SellerSidebar = () => {
                   </li>
                 </ul>
               </li>
-              <li className={`nav-item ${openMenus.support ? 'menu-open' : ''}`}>
+              {/* <li className={`nav-item ${openMenus.support ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('support')}>
                   <i className="nav-icon bi bi-graph-up"></i>
                   <p>
@@ -184,7 +184,7 @@ export const SellerSidebar = () => {
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> */}
             </ul>
           </nav>
         </div>

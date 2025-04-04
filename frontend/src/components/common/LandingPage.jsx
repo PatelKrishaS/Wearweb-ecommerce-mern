@@ -14,9 +14,9 @@ const LandingPage = () => {
         <div className="container-fluid">
           <nav className="navbar navbar-expand-lg custom_nav-container ">
             <a className="navbar-brand" href="index.html">
-              <span>
+              {/* <span>
                 Wear Web
-              </span>
+              </span> */}
             </a>
             <button
               className="navbar-toggler"
@@ -95,18 +95,16 @@ const LandingPage = () => {
                   <div className="col-md-6 ">
                     <div className="detail_box">
                       <h1>WEAR WEB</h1>
-                      <p>
-                        It is a long established fact that a reader will be
-                        distracted by the readable content of a page when
-                        looking
+                      <p style={{marginLeft:'50px'}}>
+                      "Elevate Your Style, Effortlessly.
+                      Where Innovation Meets Fashion –
+                      Designed for the Modern You."
                       </p>
                       <div className="btn-box">
-                        <a href="" className="btn-1">
+                        <Link to="customer/contact" className="btn-1" style={{marginLeft:'70px'}}>
                           Contact Us
-                        </a>
-                        <a href="" className="btn-2">
-                          Get A Quote
-                        </a>
+                        </Link>
+                        
                       </div>
                     </div>
                   </div>
@@ -159,12 +157,10 @@ const LandingPage = () => {
                         looking
                       </p>
                       <div className="btn-box">
-                        <a href="" className="btn-1">
+                        <Link to="/customer/contact" className="btn-1">
                           Contact Us
-                        </a>
-                        <a href="" className="btn-2">
-                          Get A Quote
-                        </a>
+                        </Link>
+                        
                       </div>
                     </div>
                   </div>
@@ -178,7 +174,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="carousel_btn-container">
-            <a
+            {/* <a
               className="carousel-control-prev"
               href="#carouselExampleIndicators"
               role="button"
@@ -193,7 +189,7 @@ const LandingPage = () => {
               data-slide="next"
             >
               <span className="sr-only">Next</span>
-            </a>
+            </a> */}
           </div>
         </div>
       </section>
@@ -211,11 +207,9 @@ const LandingPage = () => {
                   <h2>About Us</h2>
                 </div>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud
+                "We believe in fashion that moves with you—seamless, smart, and sustainable. Born from a passion for innovation, we craft wearables designed for the future, today."
                 </p>
-                <a href="">Read More</a>
+                <Link to="/customer/about">Read More</Link>
               </div>
             </div>
           </div>

@@ -28,6 +28,7 @@ export const ProductPage = () => {
 
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlistUpdating, setIsWishlistUpdating] = useState(false);
   
 
   useEffect(() => {
@@ -196,21 +197,36 @@ export const ProductPage = () => {
   };
 
   const toggleWishlist = async () => {
-    if (!product) return;
+    if (!product || isWishlistUpdating) return;
     
     try {
-      if (isWishlisted) {
+      setIsWishlistUpdating(true);
+      toast.dismiss(); 
+      
+      const currentStatus = isInWishlist(product._id);
+      if (currentStatus) {
         await removeFromWishlist(product._id);
-        setIsWishlisted(false);
-        toast.success('Removed from wishlist');
       } else {
         await addToWishlist(product._id);
-        setIsWishlisted(true);
-        toast.success('Added to wishlist!');
       }
+      
+      // Update state based on actual operation
+      setIsWishlisted(!currentStatus);
+      
+      // toast.success(
+      //   currentStatus ? 'Removed from wishlist' : 'Added to wishlist!',
+      //   { toastId: 'wishlist-update' }
+      // );
     } catch (err) {
-      console.error("Error updating wishlist:", err);
-      toast.error(err.response?.data?.message || 'Failed to update wishlist');
+      console.error("Wishlist error:", err);
+      // Revert to actual status
+      setIsWishlisted(isInWishlist(product._id));
+      toast.error(
+        err.response?.data?.message || 'Failed to update wishlist',
+        { toastId: 'wishlist-error' }
+      );
+    } finally {
+      setIsWishlistUpdating(false);
     }
   };
 
@@ -377,9 +393,19 @@ export const ProductPage = () => {
                 className={`btn px-4 py-2 ${isWishlisted ? 'btn-danger' : 'btn-outline-secondary'}`}
                 style={{width:'200px'}}
                 onClick={toggleWishlist}
+                disabled={isWishlistUpdating || loading}
               >
-                <i className={`far fa-heart me-2 ${isWishlisted ? 'fas' : 'far'}`}></i>
-                {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                {isWishlistUpdating ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <i className={`fa-heart me-2 ${isWishlisted ? 'fas text-white' : 'far'}`}></i>
+                    {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                  </>
+                )}
               </button>
             </div>
 

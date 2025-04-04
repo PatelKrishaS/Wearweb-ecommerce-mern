@@ -28,7 +28,7 @@ export const CustomerWishlistPage = () => {
         quantity: 1
       });
       await removeFromWishlist(product._id);
-      toast.success('Moved to cart!');
+      // toast.success('Moved to cart!');
     } catch (err) {
       toast.error('Failed to move to cart');
     }
@@ -77,7 +77,7 @@ export const CustomerWishlistPage = () => {
                     {wishlist.map((item) => {
                       const product = item.productId; // Populated product data
                       return (
-                        <tr key={item._id || product._id}>
+                        <tr key={item._id || `product-${product._id}`}>
                           <td>
                             <div className="d-flex align-items-center">
                               <img
