@@ -10,4 +10,6 @@ router.get("/user/:userId", orderController.getOrdersByUser);
 
 router.get('/:orderId', orderController.getOrderDetails);
 
+router.patch("/:orderId/cancel", orderController.cancelOrder);
+
 module.exports = router;

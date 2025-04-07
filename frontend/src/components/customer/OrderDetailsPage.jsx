@@ -8,6 +8,8 @@ export const OrderDetailsPage = () => {
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCancelling, setIsCancelling] = useState(false); 
+
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -23,6 +25,29 @@ export const OrderDetailsPage = () => {
     };
     fetchOrderDetails();
   }, [orderId, navigate]);
+
+
+  const handleCancelOrder = async (orderId) => {
+    if (window.confirm('Are you sure you want to cancel this order?')) {
+      setIsCancelling(true);
+      try {
+        const response = await axios.patch(
+          `http://localhost:3000/order/${orderId}/cancel`
+        );
+        
+        toast.success('Order cancelled successfully');
+        setOrder(prev => ({
+          ...prev,
+          status: 'Cancelled'
+        }));
+      } catch (error) {
+        console.error('Cancellation error:', error);
+        toast.error(error.response?.data?.message || 'Failed to cancel order');
+      } finally {
+        setIsCancelling(false);
+      }
+    }
+  };
 
   if (loading) {
     return <div className="text-center py-5">Loading...</div>;
@@ -148,13 +173,13 @@ export const OrderDetailsPage = () => {
               ← Back to Orders
             </button>
             {order.status === 'Processing' && (
-              <button 
-                className="btn btn-danger px-4"
-                onClick={() => handleCancelOrder(order._id)}
-              >
+            <button 
+              className="btn btn-danger px-4"
+              onClick={() => handleCancelOrder(order._id)}
+            >
                 Cancel Order
-              </button>
-            )}
+            </button>
+          )}
           </div>
         </div>
       </div>
