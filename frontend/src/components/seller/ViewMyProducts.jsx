@@ -1,25 +1,27 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CustLoder } from '../common/CustLoader'; // Assuming you have a custom loader component
+import { CustLoder } from '../common/CustLoader';
+import { toast } from 'react-toastify';
+import { Title } from '../customer/Title';
+
 
 export const ViewMyProducts = () => {
-  const [products, setProducts] = useState([]); // Stores the list of products
-  const [isLoading, setIsLoading] = useState(false); // Tracks loading state
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null); // Track which product is being deleted
 
-  // Fetch products for the current user
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const sellerId = localStorage.getItem("id"); // Get sellerId from localStorage
+      const sellerId = localStorage.getItem("id");
       if (!sellerId) {
         alert("User ID not found. Please log in again.");
         return;
       }
 
       const res = await axios.get(`/product/user/${sellerId}`);
-      console.log("Products fetched:", res.data); // Log the response
-      setProducts(res.data.data); // Update the state
+      setProducts(res.data.data);
     } catch (err) {
       console.error("Failed to fetch products:", err);
     } finally {
@@ -27,66 +29,176 @@ export const ViewMyProducts = () => {
     }
   };
 
-  // Fetch products on component mount
+  // Delete product function
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) {
+      return;
+    }
+    
+    setDeletingId(productId);
+    try {
+      await axios.delete(`/product/delete/${productId}`);
+      toast.success('Product deleted successfully!');
+      // Refresh the product list after deletion
+      fetchProducts();
+    } catch (err) {
+      console.error("Failed to delete product:", err);
+      toast.error('Failed to delete product');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      {isLoading && <CustLoder />} {/* Show loader while fetching data */}
-      <h1>MY PRODUCTS</h1>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
-        {products?.map((product) => (
-          <Link
-            key={product._id}
-            to={`/seller/store-management/product/${product._id}`} // Navigate to product detail page
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <div
-              style={{
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "15px",
-                width: "300px",
-                height:"532px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                backgroundColor: "#f9f9f9",
-                cursor: "pointer",
-              }}
-            >
-              <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <p>
-                <strong>Price:</strong> ${product.offerprice} <del>(${product.baseprice})</del>
-              </p>
-              <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-                {product.imageURL1 && (
-                  <img
-                    src={product.imageURL1}
-                    alt="Product Image 1"
-                    style={{ height: 100, width: 100, borderRadius: "5px" }}
-                  />
-                )}
-                {product.imageURL2 && (
-                  <img
-                    src={product.imageURL2}
-                    alt="Product Image 2"
-                    style={{ height: 100, width: 100, borderRadius: "5px" }}
-                  />
-                )}
-                {product.imageURL3 && (
-                  <img
-                    src={product.imageURL3}
-                    alt="Product Image 3"
-                    style={{ height: 100, width: 100, borderRadius: "5px" }}
-                  />
-                )}
-              </div>
-            </div>
-          </Link>
-        ))}
+    <div className="container py-3">
+      {isLoading && <CustLoder />}
+        <div className="row text-center display-4">
+          <div className="col-12">
+            <Title text1="PRODUCT" text2="LISTING" />
+          </div>
+        </div>      
+      <div className="table-responsive">
+        <table className="table table-sm table-hover align-middle">
+          <thead className="table-light">
+            <tr>
+              <th style={{ width: '80px' }}>Image</th>
+              <th style={{ minWidth: '180px' }}>Product</th>
+              <th style={{ width: '90px' }} className="text-end pe-2">Price</th>
+              <th style={{ width: '80px' }} className="text-center">Stock</th>
+              <th style={{ width: '120px' }} className="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products?.map((product) => (
+              <tr key={product._id}>
+                {/* Product Image */}
+                <td>
+                  <div className="d-flex justify-content-center">
+                    {product.imageURL1 ? (
+                      <img 
+                        src={product.imageURL1} 
+                        alt={product.name}
+                        className="img-thumbnail"
+                        style={{ 
+                          width: '60px', 
+                          height: '60px', 
+                          objectFit: 'cover',
+                          padding: '2px'
+                        }}
+                      />
+                    ) : (
+                      <div className="bg-light d-flex align-items-center justify-content-center" 
+                        style={{ 
+                          width: '60px', 
+                          height: '60px',
+                          fontSize: '0.8rem'
+                        }}>
+                        <span className="text-muted">No Image</span>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                
+                {/* Product Details */}
+                <td className="small">
+                  <Link 
+                    to={`/seller/store-management/product/${product._id}`}
+                    className="text-decoration-none text-dark"
+                  >
+                    <div className="fw-semibold" style={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      fontSize: '1rem',
+                      lineHeight: '1.2'
+                    }}>
+                      {product.name}
+                    </div>
+                  </Link>
+                  <div className="d-flex flex-wrap gap-2">
+                    {product.color && (
+                      <span className="badge bg-light text-dark border" style={{ fontSize: '0.85rem' }}>
+                        <span className="fw-medium" style={{ fontSize: '0.85rem' }}>Color: </span>
+                        {product.color}
+                      </span>
+                    )}
+                    {product.material && (
+                      <span className="badge bg-light text-dark border" style={{ fontSize: '0.85rem' }}>
+                        <span className="fw-medium" style={{ fontSize: '0.85rem' }}>Material: </span>
+                        {product.material}
+                      </span>
+                    )}
+                    {product.sizes && product.sizes.length > 0 && product.sizes[0] !== 'none' && (
+                      <span className="badge bg-light text-dark border" style={{ fontSize: '0.85rem' }}>
+                        {product.sizes.length > 2 ? 'Multiple sizes' : product.sizes.join(', ')}
+                      </span>
+                    )}
+                  </div>
+                </td>
+                
+                {/* Pricing */}
+                <td className="text-end pe-2 small">
+                  <div className="d-flex flex-column">
+                    <span className="fw-bold text-danger">${product.offerprice}</span>
+                    {product.offerprice < product.baseprice && (
+                      <small className="text-muted text-decoration-line-through">
+                        ${product.baseprice}
+                      </small>
+                    )}
+                  </div>
+                </td>
+                
+                {/* Stock */}
+                <td className="text-center small">
+                  <span className={`badge ${product.stockQuantity > 0 ? 'bg-success' : 'bg-danger'}`}>
+                    {product.stockQuantity > 0 ? product.stockQuantity : '0'}
+                  </span>
+                </td>
+                
+                {/* Actions */}
+                <td className="text-center small">
+                  <div className="d-flex justify-content-center gap-1">
+                    <Link
+                      to={`/seller/store-management/product/${product._id}`}
+                      className="btn btn-sm btn-outline-primary py-0 px-2"
+                      title="Edit"
+                    >
+                      <i className="fas fa-edit"></i>
+                    </Link>
+                    <button 
+                      className="btn btn-sm btn-outline-danger py-0 px-2"
+                      title="Delete"
+                      onClick={() => handleDeleteProduct(product._id)}
+                      disabled={deletingId === product._id}
+                    >
+                      {deletingId === product._id ? (
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      ) : (
+                        <i className="fas fa-trash"></i>
+                      )}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+      
+      {products.length === 0 && !isLoading && (
+        <div className="text-center py-4">
+          <h5>No products found</h5>
+          <p className="small mb-3">You haven't added any products yet.</p>
+          <Link to="/seller/store-management/add-product" className="btn btn-sm btn-primary">
+            Add Your First Product
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

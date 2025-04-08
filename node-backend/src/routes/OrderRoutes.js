@@ -12,4 +12,8 @@ router.get('/:orderId', orderController.getOrderDetails);
 
 router.patch("/:orderId/cancel", orderController.cancelOrder);
 
+router.patch("/:orderId/status", orderController.updateOrderStatus);
+
+router.get("/seller/:sellerId", orderController.getOrdersBySeller);
+
 module.exports = router;

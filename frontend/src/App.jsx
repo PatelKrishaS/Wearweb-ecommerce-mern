@@ -39,6 +39,8 @@ import { PlaceOrder } from './components/customer/PlaceOrder'
 import { ProductPage } from './components/customer/ProductPage'
 import { OrderConfirmation } from './components/customer/OrderConfirmation'
 import { OrderDetailsPage } from './components/customer/OrderDetailsPage'
+import { SellerOrdersPage } from './components/seller/SellerOrdersPage'
+import { SellerOrderDetailPage } from './components/seller/SellerOrderDetailPage'
 
 
 function App() {
@@ -115,6 +117,8 @@ function App() {
                 <Route path="product-listing" element={<ProductListing />} />
                 <Route path="view-my-products" element={<ViewMyProducts />} />
                 <Route path="product/:id" element={<ProductDetail />} />
+                <Route path="order-page" element={<SellerOrdersPage />} />
+                <Route path="order-detail/:orderId" element={<SellerOrderDetailPage />} />
               </Route>
             </Route>
           </Route>

@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Bounce, toast } from 'react-toastify';
+import { Title } from '../customer/Title';
+
 
 export const ProductListing = () => {
   const [categories, setCategories] = useState([]); // Stores all categories
@@ -153,12 +155,19 @@ export const ProductListing = () => {
 
   return (
     <div className="container">
-      <h1>Product Listing</h1>
-
+        <div className="row text-center display-4">
+                  <div className="col-12 ">
+                    <Title text1="PRODUCT" text2="LISTING" />
+                  </div>
+                </div> 
       {/* Add Product Button */}
-      <button className="btn btn-primary mb-3" onClick={() => setShowForm(!showForm)}>
+      <div className="d-flex justify-content-center">
+
+      <button className="btn btn-primary mb-3 " onClick={() => setShowForm(!showForm)}>
         {showForm ? "Cancel" : "Add Product"}
       </button>
+      </div>
+
 
       {/* Add Product Form (Conditionally Rendered) */}
       {showForm && (

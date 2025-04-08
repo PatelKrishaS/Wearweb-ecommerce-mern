@@ -193,13 +193,18 @@ const getOrderDetails = async (req, res) => {
   try {
     const order = await orderModel.findById(req.params.orderId)
       .populate({
+        path: 'userId',
+        select: 'name email phone',  // Include all needed user fields
+        model: 'users'               // Make sure this matches your User model name
+      })
+      .populate({
         path: 'products.productId',
-        select: 'name imageURL1 price',
+        select: 'name imageURL1 imageURL2 imageURL3 baseprice offerprice sizes color material', // More product details
         model: 'products'
       })
       .populate({
         path: 'shippingAddress',
-        select: 'title unitName street landMark addressDetail zipCode',
+        select: 'title unitName street landMark addressDetail zipCode phoneNumber',
         populate: [
           {
             path: 'cityId',
@@ -212,7 +217,8 @@ const getOrderDetails = async (req, res) => {
             model: 'states'
           }
         ]
-      });
+      })
+      .lean(); // Convert to plain JavaScript object
 
     if (!order) {
       return res.status(404).json({ 
@@ -221,15 +227,41 @@ const getOrderDetails = async (req, res) => {
       });
     }
 
+    // Transform the order data for better frontend consumption
+    const transformedOrder = {
+      ...order,
+      products: order.products.map(product => ({
+        ...product,
+        // Ensure productName falls back to populated product name
+        productName: product.productName || product.productId?.name,
+        // Ensure image falls back to product's first image
+        image: product.image || product.productId?.imageURL1,
+        // Include all product details
+        productDetails: product.productId
+      })),
+      // Format address for easy display
+      formattedAddress: order.shippingAddress ? [
+        order.shippingAddress.unitName,
+        order.shippingAddress.street,
+        order.shippingAddress.landMark,
+        order.shippingAddress.addressDetail,
+        order.shippingAddress.cityId?.cityName,
+        order.shippingAddress.stateId?.stateName,
+        order.shippingAddress.zipCode
+      ].filter(Boolean).join(', ') : null
+    };
+
     res.status(200).json({ 
       success: true, 
-      data: order 
+      data: transformedOrder 
     });
   } catch (err) {
+    console.error("Error fetching order details:", err);
     res.status(500).json({ 
       success: false, 
-      message: 'Server error', 
-      error: err.message 
+      message: 'Failed to fetch order details', 
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
   }
 };
@@ -271,9 +303,117 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].includes(status)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid status value' 
+      });
+    }
+
+    const updatedOrder = await orderModel.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Order not found' 
+      });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Status updated successfully',
+      data: updatedOrder 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error', 
+      error: err.message 
+    });
+  }
+};
+
+const getOrdersBySeller = async (req, res) => {
+  try {
+    const sellerId = req.params.sellerId;
+    
+    if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Invalid seller ID format" 
+      });
+    }
+
+    // Find orders that contain products from this seller
+    const orders = await orderModel.aggregate([
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.productId",
+          foreignField: "_id",
+          as: "productDetails"
+        }
+      },
+      {
+        $match: {
+          "productDetails.sellerId": new mongoose.Types.ObjectId(sellerId)
+        }
+      },
+      {
+        $sort: { createdAt: -1 }
+      }
+    ]);
+
+    // Manually populate the remaining fields
+    const populatedOrders = await orderModel.populate(orders, [
+      {
+        path: 'products.productId',
+        select: 'name imageURL1 baseprice offerprice sellerId',
+        model: 'products'
+      },
+      {
+        path: 'userId',
+        select: 'name email',
+        model: 'users'
+      },
+      {
+        path: 'shippingAddress',
+        select: 'title unitName street landMark addressDetail zipCode phoneNumber',
+        model: 'user_addresses'
+      }
+    ]);
+
+    res.status(200).json({ 
+      success: true,
+      data: populatedOrders 
+    });
+  } catch (err) {
+    console.error("Error fetching seller orders:", err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch seller orders', 
+      error: err.message 
+    });
+  }
+};
+
+
+
+
 module.exports = {
   createOrder,
   getOrdersByUser,
   getOrderDetails,
-  cancelOrder
+  cancelOrder,
+  updateOrderStatus,
+  getOrdersBySeller,
 };

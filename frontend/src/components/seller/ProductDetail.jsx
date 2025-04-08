@@ -205,12 +205,12 @@ export const ProductDetail = () => {
                 >
                   Edit Product
                 </button>
-                <button
+                {/* <button
                   className="btn btn-danger flex-grow-1"
                   onClick={deleteProduct}
                 >
                   Delete Product
-                </button>
+                </button> */}
               </div>
             ) : (
               // Edit form

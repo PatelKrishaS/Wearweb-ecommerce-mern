@@ -69,10 +69,10 @@ export const SellerSidebar = () => {
                     </a>
                   </li> */}
                   <li className="nav-item">
-                    <a href="./index2.html" className="nav-link">
+                    <Link to="/seller/store-management/order-page" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>Order Fulfillment</p>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </li>
