@@ -19,7 +19,7 @@ export const ProductPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [quantity, setQuantity] = useState(1);
   const { relatedProducts, fetchRelatedProducts } = useContext(ProductContext);
-  const [reviewsUpdated, setReviewsUpdated] = useState(false); 
+  const [reviewsUpdated, setReviewsUpdated] = useState(false);
   const [isOrdering, setIsOrdering] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
@@ -29,6 +29,7 @@ export const ProductPage = () => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isWishlistUpdating, setIsWishlistUpdating] = useState(false);
+  
   
 
   useEffect(() => {
@@ -201,30 +202,18 @@ export const ProductPage = () => {
     
     try {
       setIsWishlistUpdating(true);
-      toast.dismiss(); 
+      toast.dismiss();
       
-      const currentStatus = isInWishlist(product._id);
-      if (currentStatus) {
+      if (isWishlisted) {
         await removeFromWishlist(product._id);
+        toast.success('Removed from wishlist');
       } else {
         await addToWishlist(product._id);
+        toast.success('Added to wishlist!');
       }
-      
-      // Update state based on actual operation
-      setIsWishlisted(!currentStatus);
-      
-      // toast.success(
-      //   currentStatus ? 'Removed from wishlist' : 'Added to wishlist!',
-      //   { toastId: 'wishlist-update' }
-      // );
     } catch (err) {
       console.error("Wishlist error:", err);
-      // Revert to actual status
-      setIsWishlisted(isInWishlist(product._id));
-      toast.error(
-        err.response?.data?.message || 'Failed to update wishlist',
-        { toastId: 'wishlist-error' }
-      );
+      toast.error(err.response?.data?.message || 'Failed to update wishlist');
     } finally {
       setIsWishlistUpdating(false);
     }
@@ -304,39 +293,39 @@ export const ProductPage = () => {
 
             {/* Size Selection */}
 
-          {product.hasSizes && product.sizes && product.sizes.length > 0 ? (
-            <div className="mb-4">
-              <h6 className="mb-2">Select Size</h6>
-              <div className="d-flex flex-wrap gap-2">
-                {product.sizes.map((size, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`btn btn-outline-secondary ${selectedSize === size ? 'active' : ''}`}
-                    style={{
-                      width: '50px',
-                      border: selectedSize === size ? '2px solid #0d6efd' : '1px solid #dee2e6'
-                    }}
-                    onClick={() => handleSizeSelect(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-              {selectedSize && (
-                <small className="text-muted mt-2 d-block">
-                  Selected: {selectedSize}
-                </small>
-              )}
-            </div>
-          ) : (
-            !product.hasSizes && (
+            {product.hasSizes && product.sizes && product.sizes.length > 0 ? (
               <div className="mb-4">
-                <h6 className="mb-2">Size</h6>
-                <p className="text-muted">One Size</p>
+                <h6 className="mb-2">Select Size</h6>
+                <div className="d-flex flex-wrap gap-2">
+                  {product.sizes.map((size, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className={`btn btn-outline-secondary ${selectedSize === size ? 'active' : ''}`}
+                      style={{
+                        width: '50px',
+                        border: selectedSize === size ? '2px solid #0d6efd' : '1px solid #dee2e6'
+                      }}
+                      onClick={() => handleSizeSelect(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+                {selectedSize && (
+                  <small className="text-muted mt-2 d-block">
+                    Selected: {selectedSize}
+                  </small>
+                )}
               </div>
-            )
-          )}
+            ) : (
+              !product.hasSizes && (
+                <div className="mb-4">
+                  <h6 className="mb-2">Size</h6>
+                  <p className="text-muted">One Size</p>
+                </div>
+              )
+            )}
 
             {/* Quantity Selector */}
             <div className="mb-4">
@@ -363,14 +352,14 @@ export const ProductPage = () => {
 
             {/* Action Buttons */}
             <div className="d-flex gap-3 mt-4 mb-5">
-            <button 
-              className="btn btn-primary px-4 py-2" 
-              style={{width:'200px'}}
-              disabled={product.hasSizes && !selectedSize}
+              <button 
+                className="btn btn-primary px-4 py-2" 
+                style={{width:'200px'}}
+                disabled={product.hasSizes && !selectedSize}
               onClick={handleAddToCart}  // Connect the handler here
-            >
-              Add to Cart
-            </button>
+              >
+                Add to Cart
+              </button>
 
               {/* Order Now Button */}
               <button 
@@ -423,93 +412,93 @@ export const ProductPage = () => {
 
       {/* Description/Reviews Tabs */}
       {/* Description/Reviews Tabs */}
-<div className="mb-5">
-  <ul className="nav nav-tabs">
-    <li className="nav-item">
-      <button
-        className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
-        onClick={() => setActiveTab('description')}
-      >
-        Description
-      </button>
-    </li>
-    <li className="nav-item">
-      <button
-        className={`nav-link ${activeTab === 'reviews' ? 'active' : ''}`}
-        onClick={() => setActiveTab('reviews')}
-      >
-        Reviews ({product.reviewCount || 0})
-      </button>
-    </li>
-  </ul>
-  <div className="tab-content p-3 border border-top-0">
-    {activeTab === 'description' ? (
-      <div className="tab-pane active">
-        <p className="text-muted">{product.description}</p>
-        {product.specifications && (
-          <div className="mt-3">
-            <h6>Specifications</h6>
-            <ul className="list-unstyled">
-              {Object.entries(product.specifications).map(([key, value]) => (
-                <li key={key} className="mb-1">
-                  <strong>{key}:</strong> {value}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    ) : (
-      <div className="tab-pane active">
+      <div className="mb-5">
+        <ul className="nav nav-tabs">
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
+              onClick={() => setActiveTab('description')}
+            >
+              Description
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === 'reviews' ? 'active' : ''}`}
+              onClick={() => setActiveTab('reviews')}
+            >
+              Reviews ({product.reviewCount || 0})
+            </button>
+          </li>
+        </ul>
+        <div className="tab-content p-3 border border-top-0">
+          {activeTab === 'description' ? (
+            <div className="tab-pane active">
+              <p className="text-muted">{product.description}</p>
+              {product.specifications && (
+                <div className="mt-3">
+                  <h6>Specifications</h6>
+                  <ul className="list-unstyled">
+                    {Object.entries(product.specifications).map(([key, value]) => (
+                      <li key={key} className="mb-1">
+                        <strong>{key}:</strong> {value}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="tab-pane active">
   {/* Add Review Form - only for logged in users */}
-  {localStorage.getItem('id') && (
-    <ReviewForm 
-      productId={id} 
-      onReviewSubmit={onReviewSubmit}
-    />
-  )}
-  
+              {localStorage.getItem('id') && (
+                <ReviewForm 
+                  productId={id} 
+                  onReviewSubmit={onReviewSubmit}
+                />
+              )}
+              
   {/* Reviews list */}
-  {product.reviewCount > 0 ? (
-    product.reviews?.length > 0 ? (
-      product.reviews.map((review) => {
+              {product.reviewCount > 0 ? (
+                product.reviews?.length > 0 ? (
+                  product.reviews.map((review) => {
         // Skip if review is undefined
-        if (!review) return null;
-        
+                    if (!review) return null;
+                    
         // Safely get user name
-        const userName = review.userId?.name || 
-                        (typeof review.userId === 'object' ? review.userId?.name : 'Anonymous');
-        
+                    const userName = review.userId?.name || 
+                                    (typeof review.userId === 'object' ? review.userId?.name : 'Anonymous');
+                    
         // Skip if review is invalid
-        if (!review._id || !review.rating) return null;
+                    if (!review._id || !review.rating) return null;
 
-        return (
-          <div key={review._id} className="mb-3 pb-3 border-bottom">
-            <div className="d-flex justify-content-between">
-              <h6>{userName}</h6>
-              <small className="text-muted">
-                {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
-              </small>
+                    return (
+                      <div key={review._id} className="mb-3 pb-3 border-bottom">
+                        <div className="d-flex justify-content-between">
+                          <h6>{userName}</h6>
+                          <small className="text-muted">
+                            {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
+                          </small>
+                        </div>
+                        <div className="mb-2">
+                          {renderRatingStars(review.rating)}
+                        </div>
+                        <p>{review.comment || ''}</p>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="alert alert-warning">
+                    Could not load reviews (expected {product.reviewCount})
+                  </div>
+                )
+              ) : (
+                <p>No reviews yet. {!localStorage.getItem('id') && "Login to be the first to review!"}</p>
+              )}
             </div>
-            <div className="mb-2">
-              {renderRatingStars(review.rating)}
-            </div>
-            <p>{review.comment || ''}</p>
-          </div>
-        );
-      })
-    ) : (
-      <div className="alert alert-warning">
-        Could not load reviews (expected {product.reviewCount})
+          )}
+        </div>
       </div>
-    )
-  ) : (
-    <p>No reviews yet. {!localStorage.getItem('id') && "Login to be the first to review!"}</p>
-  )}
-</div>
-    )}
-  </div>
-</div>
 
       {/* Related Products Section */}
       <div className="row mt-5">

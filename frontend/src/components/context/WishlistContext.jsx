@@ -36,32 +36,37 @@ export const WishlistProvider = ({ children }) => {
     }
   
     try {
-      // Optimistic UI update
+      // Optimistic update
       setWishlist(prev => [...(prev || []), { productId }]);
       
       await axios.post(`http://localhost:3000/wishlist/${userId}/add/${productId}`);
-      toast.success('Added to wishlist!');
+      await fetchWishlist(); // Refresh the wishlist from server
     } catch (err) {
       fetchWishlist(); // Revert on error
-      toast.error(err.response?.data?.message || 'Failed to add to wishlist');
+      throw err;
     }
   };
-
+  
   const removeFromWishlist = async (productId) => {
     try {
       // Optimistic update
-      setWishlist(prev => (prev?.filter(item => item.productId !== productId) || []));
+      setWishlist(prev => (prev?.filter(item => 
+        item.productId?._id !== productId && item.productId !== productId
+      ) || []));
       
       await axios.delete(`http://localhost:3000/wishlist/${userId}/remove/${productId}`);
-      toast.success('Removed from wishlist');
+      await fetchWishlist(); // Refresh the wishlist from server
     } catch (err) {
       fetchWishlist(); // Revert on error
-      toast.error(err.response?.data?.message || 'Failed to remove from wishlist');
+      throw err;
     }
   };
-
+  
   const isInWishlist = (productId) => {
-    return wishlist?.some(item => item.productId === productId) || false;
+    return wishlist?.some(item => 
+      String(item.productId?._id) === String(productId) || 
+      String(item.productId) === String(productId)
+    ) || false;
   };
 
   // Auto-fetch wishlist when userId changes
