@@ -51,6 +51,9 @@ app.use("/cart",cartRoutes)
 const wishlistRoutes = require("./src/routes/WishlistRoutes")
 app.use("/wishlist",wishlistRoutes) 
 
+const statsRoutes = require("./src/routes/StatsRoutes")
+app.use("/stats",statsRoutes) 
+
 
 
 mongoose.connect("mongodb://localhost:27017/MyDatabase").then(()=>{
