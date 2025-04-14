@@ -4,7 +4,7 @@ const orderModel = require("../models/OrderModel");
 // Create an order
 const createOrder = async (req, res) => {
   try {
-    const { userId, products, shippingAddress, paymentMethod } = req.body;
+    const { userId, products, shippingAddress, paymentMethod, razorpayPaymentId, razorpayOrderId } = req.body;
 
     // Validate required fields
     if (!userId || !products || !shippingAddress || !paymentMethod) {
@@ -19,6 +19,14 @@ const createOrder = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid payment method"
+      });
+    }
+
+    // Additional validation for online payments
+    if (paymentMethod === 'online' && !razorpayPaymentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment ID is required for online payments"
       });
     }
 
@@ -58,22 +66,36 @@ const createOrder = async (req, res) => {
     // Calculate total amount
     const totalAmount = paymentMethod === 'cod' ? subtotal + DELIVERY_CHARGE : subtotal;
 
-    // Create order
-    const newOrder = await orderModel.create({
+    // Determine initial status based on payment method
+    let status = 'Processing';
+    if (paymentMethod === 'online') {
+      status = razorpayPaymentId ? 'Paid' : 'Payment Pending';
+    }
+
+    // Create order data object
+    const orderData = {
       userId,
       products: orderDetails,
       shippingAddress,
       paymentMethod,
       totalAmount,
       deliveryCharge: paymentMethod === 'cod' ? DELIVERY_CHARGE : 0,
-      status: 'Processing' // All orders start as Processing
-    });
+      status,
+      paymentDetails: paymentMethod === 'online' ? {
+        paymentId: razorpayPaymentId,
+        orderId: razorpayOrderId,
+        gateway: 'Razorpay'
+      } : null
+    };
+
+    // Create order
+    const newOrder = await orderModel.create(orderData);
 
     // Properly populate all relationships
     const populatedOrder = await orderModel.findById(newOrder._id)
       .populate({
         path: 'products.productId',
-        select: 'name imageURL1 baseprice',
+        select: 'name imageURL1 baseprice stockQuantity',
         model: 'products'
       })
       .populate({
@@ -83,24 +105,30 @@ const createOrder = async (req, res) => {
           {
             path: 'cityId',
             select: 'cityName',
-            model: 'cities' // Ensure this matches your model name
+            model: 'cities'
           },
           {
             path: 'stateId',
             select: 'stateName',
-            model: 'states' // Ensure this matches your model name
+            model: 'states'
           }
         ]
       })
       .lean();
 
+    // Update product stock quantities
+    if (status === 'Paid' || paymentMethod === 'cod') {
+      await updateProductStock(orderDetails);
+    }
+
     res.status(201).json({
       success: true,
-      message: "Order created successfully",
+      message: `Order created successfully. Status: ${status}`,
       data: {
         ...populatedOrder,
         subtotal,
-        deliveryCharge: paymentMethod === 'cod' ? DELIVERY_CHARGE : 0
+        deliveryCharge: paymentMethod === 'cod' ? DELIVERY_CHARGE : 0,
+        paymentStatus: status
       }
     });
 
@@ -113,6 +141,18 @@ const createOrder = async (req, res) => {
       stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
   }
+};
+
+// Helper function to update product stock
+const updateProductStock = async (orderDetails) => {
+  const bulkOps = orderDetails.map(item => ({
+    updateOne: {
+      filter: { _id: item.productId },
+      update: { $inc: { stockQuantity: -item.quantity } }
+    }
+  }));
+
+  await mongoose.model('products').bulkWrite(bulkOps);
 };
 
 // Get orders by user

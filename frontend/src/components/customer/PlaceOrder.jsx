@@ -1,8 +1,10 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Title } from './Title';
 import { toast } from 'react-toastify';
+import { initiateRazorpayPayment } from '../../utils/Payment';
+
 
 export const PlaceOrder = () => {
   const { state } = useLocation();
@@ -17,6 +19,8 @@ export const PlaceOrder = () => {
     subtotal: 0,
     totalAmount: 0
   });
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
 
   // Initialize order data from location state or fallback
   useEffect(() => {
@@ -86,12 +90,52 @@ export const PlaceOrder = () => {
     }));
   }, [paymentMethod]);
 
-  const handlePlaceOrder = async () => {
+  // const handlePlaceOrder = async () => {
+  //   if (!selectedAddress) {
+  //     toast.error('Please select a delivery address');
+  //     return;
+  //   }
+
+  //   try {
+  //     const orderPayload = {
+  //       userId: localStorage.getItem('id'),
+  //       products: orderData.products.map(product => ({
+  //         productId: product.productId,
+  //         productName: product.productName,
+  //         quantity: product.quantity,
+  //         price: product.price,
+  //         size: product.size,
+  //         image: product.image
+  //       })),
+  //       shippingAddress: selectedAddress._id,
+  //       paymentMethod,
+  //       totalAmount: orderData.totalAmount
+  //     };
+
+  //     const response = await axios.post('http://localhost:3000/order/create', orderPayload);
+      
+  //     toast.success('Order placed successfully!');
+  //     navigate('/customer/order-confirmation', {
+  //       state: {
+  //         orderId: response.data.data._id,
+  //         totalAmount: orderData.totalAmount,
+  //         products: orderData.products
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error('Order error:', error);
+  //     toast.error(error.response?.data?.message || 'Failed to place order');
+  //   }
+  // };
+
+  const handlePayment = async () => {
     if (!selectedAddress) {
       toast.error('Please select a delivery address');
       return;
     }
-
+  
+    setIsProcessingPayment(true);
+  
     try {
       const orderPayload = {
         userId: localStorage.getItem('id'),
@@ -107,20 +151,64 @@ export const PlaceOrder = () => {
         paymentMethod,
         totalAmount: orderData.totalAmount
       };
-
-      const response = await axios.post('http://localhost:3000/order/create', orderPayload);
-      
-      toast.success('Order placed successfully!');
-      navigate('/customer/order-confirmation', {
-        state: {
-          orderId: response.data.data._id,
-          totalAmount: orderData.totalAmount,
-          products: orderData.products
-        }
-      });
+  
+      if (paymentMethod === 'online') {
+        await initiateRazorpayPayment(
+          {
+            amount: orderData.totalAmount * 100, 
+            currency: 'INR',
+            products: orderData.products,
+            user: {
+              name: userProfile.name,
+              email: userProfile.email,
+              contact: userProfile.phoneNumber
+            }
+          },
+          // Success Handler (Updated)
+          async (paymentResponse) => {
+            try {
+              // Create the order in your backend
+              const response = await axios.post('http://localhost:3000/order/create', {
+                ...orderPayload,
+                razorpayPaymentId: paymentResponse.razorpay_payment_id,
+                razorpayOrderId: paymentResponse.razorpay_order_id,
+                status: 'Paid'
+              });
+  
+              // Redirect to OrderConfirmation with state
+              navigate('/customer/order-confirmation', {
+                state: {
+                  orderId: response.data.data._id, // From your backend
+                  paymentId: paymentResponse.razorpay_payment_id,
+                  totalAmount: orderData.totalAmount,
+                  products: orderData.products
+                }
+              });
+            } catch (orderError) {
+              console.error('Order creation failed:', orderError);
+              toast.error('Order creation failed after payment');
+            }
+          },
+          // Error Handler
+          (error) => {
+            toast.error(error.error?.description || 'Payment failed');
+          }
+        );
+      } else {
+        // Handle COD flow (if needed)
+        const response = await axios.post('http://localhost:3000/order/create', orderPayload);
+        navigate('/customer/order-confirmation', {
+          state: {
+            orderId: response.data.data._id,
+            totalAmount: orderData.totalAmount,
+            products: orderData.products
+          }
+        });
+      }
     } catch (error) {
-      console.error('Order error:', error);
-      toast.error(error.response?.data?.message || 'Failed to place order');
+      toast.error(error.message || 'Payment processing failed');
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -269,13 +357,20 @@ export const PlaceOrder = () => {
       </div>
 
       <div className="text-center mt-4">
-        <button 
-          className="btn btn-primary btn-lg px-5"
-          onClick={handlePlaceOrder}
-          disabled={!selectedAddress}
-        >
-          Place Order
-        </button>
+      <button 
+  className="btn btn-primary btn-lg px-5"
+  onClick={handlePayment}
+  disabled={!selectedAddress || isProcessingPayment}
+>
+  {isProcessingPayment ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2"></span>
+      {paymentMethod === 'online' ? 'Processing Payment...' : 'Placing Order...'}
+    </>
+  ) : (
+    paymentMethod === 'online' ? 'Proceed to Payment' : 'Place Order'
+  )}
+</button>
       </div>
     </div>
   );

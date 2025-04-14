@@ -54,6 +54,9 @@ app.use("/wishlist",wishlistRoutes)
 const statsRoutes = require("./src/routes/StatsRoutes")
 app.use("/stats",statsRoutes) 
 
+const razorpayRoutes = require("./src/routes/RazorPayRoutes")
+app.use("/razorpay",razorpayRoutes) 
+
 
 
 mongoose.connect("mongodb://localhost:27017/MyDatabase").then(()=>{
