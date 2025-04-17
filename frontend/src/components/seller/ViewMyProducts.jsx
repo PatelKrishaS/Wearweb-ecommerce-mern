@@ -58,7 +58,7 @@ export const ViewMyProducts = () => {
       {isLoading && <CustLoder />}
         <div className="row text-center display-4">
           <div className="col-12">
-            <Title text1="PRODUCT" text2="LISTING" />
+            <Title text1="VIEW" text2="MY PRODUCTS" />
           </div>
         </div>      
       <div className="table-responsive">
@@ -144,10 +144,10 @@ export const ViewMyProducts = () => {
                 {/* Pricing */}
                 <td className="text-end pe-2 small">
                   <div className="d-flex flex-column">
-                    <span className="fw-bold text-danger">${product.offerprice}</span>
+                    <span className="fw-bold text-danger">₹{product.offerprice}</span>
                     {product.offerprice < product.baseprice && (
                       <small className="text-muted text-decoration-line-through">
-                        ${product.baseprice}
+                        ₹{product.baseprice}
                       </small>
                     )}
                   </div>

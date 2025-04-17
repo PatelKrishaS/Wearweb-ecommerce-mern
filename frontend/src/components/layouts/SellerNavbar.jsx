@@ -111,9 +111,9 @@ export const SellerNavbar = ({ toggleSidebar }) => {
         <ul className="navbar-nav ms-auto">
         {/*begin::Navbar Search*/}
         <li className="nav-item dropdown">
-            <a className="nav-link" href="#" role="button" data-bs-toggle="dropdown">
+            {/* <a className="nav-link" href="#" role="button" data-bs-toggle="dropdown">
                 <i className="bi bi-search"></i>
-            </a>
+            </a> */}
             <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-3">
                 <form className="d-flex">
                 <input className="form-control me-2" type="search" placeholder="Search..." aria-label="Search" />

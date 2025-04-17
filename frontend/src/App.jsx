@@ -41,6 +41,8 @@ import { OrderConfirmation } from './components/customer/OrderConfirmation'
 import { OrderDetailsPage } from './components/customer/OrderDetailsPage'
 import { SellerOrdersPage } from './components/seller/SellerOrdersPage'
 import { SellerOrderDetailPage } from './components/seller/SellerOrderDetailPage'
+import { AllUsersPage } from './components/admin/AllUsersPage'
+import { UserViewPage } from './components/admin/UserViewPage'
 
 
 function App() {
@@ -56,7 +58,7 @@ function App() {
       document.body.className = "layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded sidebar-open"
     }
   }, [location.pathname])
-  
+
 
   return (
     <div className={location.pathname === "/login" || location.pathname === "/signup" ? "" : "app-wrapper"}>
@@ -108,6 +110,9 @@ function App() {
             <Route path="/admin" element={<AdminSidebar />}>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="profile" element={<AdminProfile />} />
+              <Route path="all-users" element={<AllUsersPage />} />
+              <Route path="users/:userId" element={<UserViewPage />} />
+              {/* <Route path="all-sellers" element={<AllSellersPage />} /> */}
             </Route>
 
             <Route path="/seller" element={<SellerSidebar />}>

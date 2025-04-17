@@ -53,7 +53,7 @@ export const SellerSidebar = () => {
                   <li className="nav-item">
                   <Link to="/seller/store-management/product-listing" className="nav-link"> {/* Use Link */}
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Product Listings</p>
+                      <p>Products Listings Form</p>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -71,7 +71,7 @@ export const SellerSidebar = () => {
                   <li className="nav-item">
                     <Link to="/seller/store-management/order-page" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
-                      <p>Order Fulfillment</p>
+                      <p>Order Management</p>
                     </Link>
                   </li>
                 </ul>
@@ -130,10 +130,9 @@ export const SellerSidebar = () => {
                   </li>
                 </ul>
               </li> */}
-              <li className={`nav-item ${openMenus.settings ? 'menu-open' : ''}`}>
+              {/* <li className={`nav-item ${openMenus.settings ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('settings')}>
-                  {/* <i className="nav-icon bi bi-graph-up"></i> */}
-                  {/* <i class="fa-regular fa-gear"></i> */}
+                 
                   <i className="fas fa-cog"></i>
 
                   <p>
@@ -148,12 +147,12 @@ export const SellerSidebar = () => {
                       <p>Store Profile</p>
                     </a>
                   </li>
-                  {/* <li className="nav-item">
+                  <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>GST/Bank Details </p>
                     </a>
-                  </li> */}
+                  </li>
                   <li className="nav-item">
                     <a href="./index.html" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
@@ -161,7 +160,7 @@ export const SellerSidebar = () => {
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> */}
               {/* <li className={`nav-item ${openMenus.support ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('support')}>
                   <i className="nav-icon bi bi-graph-up"></i>

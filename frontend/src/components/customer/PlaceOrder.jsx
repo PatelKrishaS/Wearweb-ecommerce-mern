@@ -135,7 +135,7 @@ export const PlaceOrder = () => {
     }
   
     setIsProcessingPayment(true);
-  
+    
     try {
       const orderPayload = {
         userId: localStorage.getItem('id'),
@@ -155,8 +155,8 @@ export const PlaceOrder = () => {
       if (paymentMethod === 'online') {
         await initiateRazorpayPayment(
           {
-            amount: orderData.totalAmount * 100, 
-            currency: 'INR',
+        amount: orderData.totalAmount * 100,
+        currency: 'INR',
             products: orderData.products,
             user: {
               name: userProfile.name,
@@ -322,7 +322,7 @@ export const PlaceOrder = () => {
                 
                 <button 
                   className="list-group-item list-group-item-action text-center"
-                  onClick={() => navigate('/customer/address')}
+                  onClick={() => navigate('/customer/addresses')}
                   style={{
                     borderTop: '1px solid rgba(0,0,0,.125)',
                     color: '#0d6efd',

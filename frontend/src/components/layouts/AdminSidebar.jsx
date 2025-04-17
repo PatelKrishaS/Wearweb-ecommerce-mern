@@ -56,22 +56,22 @@ export const AdminSidebar = () => {
                 </a>
                 <ul className={`nav nav-treeview collapse ${openMenus.user ? 'show' : ''}`}>
                   <li className="nav-item">
-                    <Link to="/admin/users" className="nav-link">
+                    <Link to="/admin/all-users" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>All Users</p>
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to="/admin/users/sellers" className="nav-link">
+                  {/* <li className="nav-item">
+                    <Link to="/admin/all-sellers" className="nav-link">
                       <i className="nav-icon bi bi-circle"></i>
                       <p>All Sellers</p>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </li>
 
               {/* Reports & Analytics */}
-              <li className={`nav-item ${openMenus.reports ? 'menu-open' : ''}`}>
+              {/* <li className={`nav-item ${openMenus.reports ? 'menu-open' : ''}`}>
                 <a href="#" className="nav-link" onClick={() => toggleMenu('reports')}>
                   <i className="nav-icon bi bi-bar-chart-line"></i>
                   <p>
@@ -99,7 +99,7 @@ export const AdminSidebar = () => {
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li> */}
 
             </ul>
           </nav>
